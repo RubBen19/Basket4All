@@ -138,7 +138,21 @@ private fun Formulary () {
             else VisualTransformation.None,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .size(height = 60.dp, width = 225.dp)
+                .size(height = 60.dp, width = 225.dp),
+            trailingIcon = {
+
+                IconButton(onClick = { hidden = !hidden }) {
+                    Icon(
+                        painterResource(
+                            id = if (hidden) R.drawable.visibility_off
+                            else R.drawable.visibility_on
+                        ),
+                        contentDescription = "Visibility",
+                        tint = if (hidden) Color.Gray
+                                else MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
         )
         Spacer(modifier = Modifier.height(35.dp))
         TextButton(
@@ -153,8 +167,10 @@ private fun Formulary () {
                 .border(
                     width = 3.dp,
                     brush = Brush.verticalGradient(
-                        listOf (MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.tertiary)
+                        listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.tertiary
+                        )
                     ),
                     shape = RoundedCornerShape(15.dp)
                 )
