@@ -24,6 +24,7 @@ import com.example.basket4all.R
 import com.example.basket4all.navigation.AppScreens
 import kotlinx.coroutines.delay
 
+
 @Composable
 fun SplashScreen(navController: NavHostController) {
 
@@ -50,7 +51,7 @@ private fun Splash() {
         Image(
             painter = painterResource(
                 id = if(isSystemInDarkTheme()) R.drawable.black_removebg_preview
-                else R.drawable.white),
+                else R.drawable.white_removebg_preview),
             contentDescription = "Logo App",
             modifier = Modifier.size(250.dp, 250.dp)
         )

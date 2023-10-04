@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -139,38 +141,29 @@ private fun Formulary () {
                 .size(height = 60.dp, width = 225.dp)
         )
         Spacer(modifier = Modifier.height(35.dp))
-        IconButton(
+        TextButton(
             onClick = { /*TODO*/ },
             modifier = Modifier
-                .size(50.dp)
+                .size(150.dp, 50.dp)
                 .background(
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.background
-                        )
-                    ), shape = CircleShape
+                    color = Color.Transparent,
+                    shape = RoundedCornerShape(15.dp)
                 )
                 .align(Alignment.CenterHorizontally)
                 .border(
-                    width = 2.dp,
+                    width = 3.dp,
                     brush = Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.onBackground,
-                            MaterialTheme.colorScheme.onPrimary
-
-                        )
+                        listOf (MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.tertiary)
                     ),
-                    shape = CircleShape
+                    shape = RoundedCornerShape(15.dp)
                 )
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.login_icon),
-                contentDescription = "Icono de Login",
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .size(30.dp)
-                    .align(Alignment.CenterHorizontally)
+            Text(
+                text = "Iniciar Sesión",
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -184,7 +177,9 @@ private fun GoToRegister (navController: NavHostController) {
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row (verticalAlignment = Alignment.CenterVertically){
+        Row (verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 18.dp)
+        ){
             Text(text = "¿Aún no tienes una cuenta?", fontSize = fontSize.sp)
             TextButton(onClick = {
                 navController.navigate(route = AppScreens.RegisterScreen.route)
