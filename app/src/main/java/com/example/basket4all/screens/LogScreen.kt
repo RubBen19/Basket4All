@@ -23,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,10 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.basket4all.R
+import com.example.basket4all.elements.TextButtonMain
+import com.example.basket4all.elements.TextButtonOnlyText
 import com.example.basket4all.navigation.AppScreens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,12 +76,16 @@ private fun BodyContent (navController: NavHostController){
             Spacer(modifier = Modifier.height(100.dp))
             Logo()
             Spacer(modifier = Modifier.height(50.dp))
-            Formulary()
+            Formulary(navController)
             GoToRegister(navController)
         }
     }
 }
 
+/**
+ * Logo ()
+ * Se encarga de proyectar el logo de la app en la pantalla-
+ */
 @Composable
 private fun Logo () {
     Image(
@@ -92,12 +98,17 @@ private fun Logo () {
     )
 }
 
+/**
+ * Formulary (navController: NavHostController)
+ * Se encarga de la representación gráfica de la entrada del usuario para introducir sus credenciales
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Formulary () {
-    var name by remember { mutableStateOf("") }
+private fun Formulary (navController: NavHostController) {
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var hidden by remember { mutableStateOf(true) }
+
     Column (modifier = Modifier
         .background(
             brush = Brush.verticalGradient(
@@ -115,9 +126,9 @@ private fun Formulary () {
     ) {
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
-            value = name,
-            onValueChange = {name = it},
-            label = { Text(text = "Nombre de usuario",
+            value = email,
+            onValueChange = {email = it},
+            label = { Text(text = "E-Mail",
                 fontWeight = FontWeight.Light) },
             singleLine = true,
             modifier = Modifier
@@ -138,7 +149,6 @@ private fun Formulary () {
                 .align(Alignment.CenterHorizontally)
                 .size(height = 60.dp, width = 225.dp),
             trailingIcon = {
-
                 IconButton(onClick = { hidden = !hidden }) {
                     Icon(
                         painterResource(
@@ -153,36 +163,20 @@ private fun Formulary () {
             },
         )
         Spacer(modifier = Modifier.height(35.dp))
-        TextButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .size(150.dp, 50.dp)
-                .background(
-                    color = Color.Transparent,
-                    shape = RoundedCornerShape(15.dp)
-                )
-                .align(Alignment.CenterHorizontally)
-                .border(
-                    width = 3.dp,
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.tertiary
-                        )
-                    ),
-                    shape = RoundedCornerShape(15.dp)
-                )
-        ) {
-            Text(
-                text = "Iniciar Sesión",
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        TextButtonMain(
+            text = "Iniciar Sesión",
+            click = {
+                navController.popBackStack()
+                navController.navigate(route = AppScreens.FirstScreen.route) },
+            Alignment.CenterHorizontally
+        )
     }
 }
 
+/**
+ * GoToRegister (navController: NavHostController)
+ * Escribe la línea de texto inferior y su respectivo botón para permitir al usuario crear una cuenta
+ */
 @Composable
 private fun GoToRegister (navController: NavHostController) {
     val fontSize = 15
@@ -195,11 +189,17 @@ private fun GoToRegister (navController: NavHostController) {
             modifier = Modifier.padding(bottom = 18.dp)
         ){
             Text(text = "¿Aún no tienes una cuenta?", fontSize = fontSize.sp)
-            TextButton(onClick = {
-                navController.navigate(route = AppScreens.RegisterScreen.route)
-            }) {
-                Text(text = "Crea una aquí", fontSize = fontSize.sp)
-            }
+            TextButtonOnlyText(
+                text = "Crea una aqui",
+                click = { navController.navigate(route = AppScreens.RegisterScreen.route) },
+                fontSize = fontSize
+            )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LogPreview() {
+
 }

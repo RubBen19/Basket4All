@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "65017845409",
+    "project_id": "basket4all-a8b81",
+    "storage_bucket": "basket4all-a8b81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:65017845409:android:ce587138aaf36f6ba142e0",
+        "android_client_info": {
+          "package_name": "com.example.basket4all"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBP-tugtMYwf0nCyrF4PoqEcStJJ4XwkJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
