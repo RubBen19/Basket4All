@@ -24,6 +24,10 @@ import com.example.basket4all.R
 import com.example.basket4all.navigation.AppScreens
 import kotlinx.coroutines.delay
 
+/**
+ * ARCHIVO: SplashScreen.kt
+ * FUNCIÓN: El objetivo de este archivo es mostrar una pantalla Splash mientras la app inicia.
+ */
 
 @Composable
 fun SplashScreen(navController: NavHostController) {

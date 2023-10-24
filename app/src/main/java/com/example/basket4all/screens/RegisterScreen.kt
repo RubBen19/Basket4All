@@ -42,6 +42,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * ARCHIVO: RegisterScreen.kt
+ * FUNCIÓN: El objetivo de este archivo es la funcionalidad de la pantalla de registro
+ *          para nuevos usuarios
+ */
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

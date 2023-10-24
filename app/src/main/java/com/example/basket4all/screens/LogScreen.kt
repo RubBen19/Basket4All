@@ -1,6 +1,5 @@
 package com.example.basket4all.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,11 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,8 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,117 +35,164 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.basket4all.R
-import com.example.basket4all.elements.TextButtonMain
-import com.example.basket4all.elements.TextButtonOnlyText
 import com.example.basket4all.navigation.AppScreens
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+/**
+ * ARCHIVO: LogScreen.kt
+ * FUNCIÓN: El objetivo de este archivo es la funcionalidad de la pantalla de iniciar sesión
+ */
+
+// Variables relacionadas con el tamaño de la fuente
+private const val FONT_SIZE: Int = 16
+
+/**
+ * Función composable principal de la pantalla de inicio de sesión
+ */
 @Composable
 fun LogScreen(navController: NavHostController) {
-    Scaffold {
-        BodyContent(navController)
-    }
-}
-
-@Composable
-private fun BodyContent (navController: NavHostController){
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(
-            Brush.verticalGradient(
-                listOf(
-                    MaterialTheme.colorScheme.background,
-                    MaterialTheme.colorScheme.surface
+    // Se ocupa toda la pantalla y se establece el fondo
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.surface
+                    )
                 )
             )
+    ) {
+        // Se muestra el contenido de la pantalla
+        LogContent (
+            navController = navController,
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(Alignment.TopCenter)
         )
-    ){
+    }
+
+}
+
+/**
+ * Funcion composable contenedora del contenido de la pantalla de Log.
+ * Se encarga de dibujar la pantalla de Log invocando a todos los elementos necesarios.
+ * Mediante su agrupación y gestión se logra el funcionamiento deseado para la screen.
+ **/
+@Composable
+private fun LogContent(navController: NavHostController, modifier: Modifier = Modifier) {
+    // IDs de las imágenes que se utilizarán como logo de la app
+    val lightLogoID = R.drawable.white_removebg_preview
+    val darkLogoID = R.drawable.black_removebg_preview
+    Column(
+        modifier = modifier
+    ) {
+        // Logo de la App
+        Logo(
+            lightLogoID = lightLogoID,
+            darkLogoID = darkLogoID,
+            modifier = Modifier
+                .padding(top = 80.dp)
+                .size(252.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        // Formulario para el inicio de sesión
+        LogInFormulary(
+            navController = navController,
+            modifier = Modifier
+                .padding(top = 72.dp)
+                .align(Alignment.CenterHorizontally)
+                .background(
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.secondary,
+                            MaterialTheme.colorScheme.surface
+                        )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .size(272.dp)
+                .border(
+                    width = 4.dp,
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.surface
+                        )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+        )
         Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(100.dp))
-            Logo()
-            Spacer(modifier = Modifier.height(50.dp))
-            Formulary(navController)
-            GoToRegister(navController)
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 8.dp)
+        ){
+            TextWithButtonText(
+                text = "¿Aún no tienes una cuenta?",
+                buttonText = "Crea una aquí",
+                click = {
+                    navController.navigate(route = AppScreens.RegisterScreen.route)
+                },
+                fontSize = FONT_SIZE,
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
         }
     }
 }
 
 /**
- * Logo ()
- * Se encarga de proyectar el logo de la app en la pantalla-
- */
-@Composable
-private fun Logo () {
-    Image(
-        painter = painterResource(
-            id = if(isSystemInDarkTheme())R.drawable.black_removebg_preview
-            else R.drawable.white_removebg_preview
-        ),
-        contentDescription = "App Logo",
-        modifier = Modifier.size(250.dp)
-    )
-}
-
-/**
- * Formulary (navController: NavHostController)
- * Se encarga de la representación gráfica de la entrada del usuario para introducir sus credenciales
- */
+ * Funcion composable contenedora del contenido del formulario de inicio de sesión.
+ * Se encarga de dibujar los campos de datos y botones, invocando a todos los elementos necesarios.
+ * Mediante su agrupación y gestión se logra el funcionamiento deseado.
+ **/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Formulary (navController: NavHostController) {
+private fun LogInFormulary(navController: NavHostController, modifier: Modifier = Modifier) {
+    // Variables relacionadas con los campos del formulario
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var hidden by remember { mutableStateOf(true) }
 
-    Column (modifier = Modifier
-        .background(
-            brush = Brush.verticalGradient(
-                listOf(MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.surface)
-            ), shape = RoundedCornerShape(15.dp)
-        )
-        .size(270.dp)
-        .border(
-            width = 3.dp,
-            brush = Brush.verticalGradient(
-                listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.surface)
-            ),
-            shape = RoundedCornerShape(15.dp)
-        )
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        // Campo de texto para pedir el e-mail
         OutlinedTextField(
             value = email,
-            onValueChange = {email = it},
-            label = { Text(text = "E-Mail",
-                fontWeight = FontWeight.Light) },
+            onValueChange = { email = it },
+            label = {
+                Text(
+                    text = "E-Mail"
+                ) },
             singleLine = true,
             modifier = Modifier
+                .padding(top = 16.dp)
                 .align(Alignment.CenterHorizontally)
-                .size(height = 60.dp, width = 225.dp)
+                .size(height = 60.dp, width = 232.dp)
         )
-        Spacer(modifier = Modifier.height(15.dp))
+        // Campo de texto para pedir la contraseña
         OutlinedTextField(
             value = password,
-            onValueChange = {password = it},
-            label = { Text(text = "Contraseña",
-                fontWeight = FontWeight.Light,) },
+            onValueChange = { password = it },
+            label = {
+                Text(
+                    text = "Contraseña"
+                ) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             singleLine = true,
+            // Trasnformacion del campo para visualizar el texto introducido
             visualTransformation = if(hidden) PasswordVisualTransformation ()
             else VisualTransformation.None,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(height = 60.dp, width = 225.dp),
+            // Cambio en el icono de visualizar contraseña
             trailingIcon = {
                 IconButton(onClick = { hidden = !hidden }) {
                     Icon(
@@ -157,49 +202,107 @@ private fun Formulary (navController: NavHostController) {
                         ),
                         contentDescription = "Visibility",
                         tint = if (hidden) Color.Gray
-                                else MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.primary
                     )
                 }
             },
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .align(Alignment.CenterHorizontally)
+                .size(height = 60.dp, width = 232.dp)
         )
-        Spacer(modifier = Modifier.height(35.dp))
-        TextButtonMain(
+        // Botón de iniciar sesión
+        LogInButton(
             text = "Iniciar Sesión",
             click = {
-                navController.popBackStack()
-                navController.navigate(route = AppScreens.FirstScreen.route) },
-            Alignment.CenterHorizontally
+                navController.navigate(route = AppScreens.FirstScreen.route)
+            },
+            fontSize = FONT_SIZE,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .size(152.dp, 52.dp)
+                .background(
+                    color = Color.Transparent,
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .border(
+                    width = 4.dp,
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.tertiary
+                        )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+        )
+        // Botón para ir al campo de contraseña olvidada
+        TextWithButtonText(
+            text = "",
+            buttonText = "He olvidado mi contraseña",
+            click = { /*TODO*/ },
+            fontSize = FONT_SIZE,
+            color = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier.padding(top = 8.dp)
         )
     }
 }
 
 /**
- * GoToRegister (navController: NavHostController)
- * Escribe la línea de texto inferior y su respectivo botón para permitir al usuario crear una cuenta
- */
+ *  Función composable encargada de dibujar un botón.
+ *  Dicho botón mostrará el texto (en negrita) indicado en el campo "text".
+ *  Además podrá realizar la acción (o acciones) indicadas en click cuando el usuario lo presione
+ **/
 @Composable
-private fun GoToRegister (navController: NavHostController) {
-    val fontSize = 15
-    Column (
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
+private fun LogInButton(text: String, click: () -> Unit, fontSize: Int, color: Color,
+                        modifier: Modifier = Modifier) {
+    TextButton(
+        modifier = modifier,
+        onClick = { click.invoke() }
     ) {
-        Row (verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 18.dp)
-        ){
-            Text(text = "¿Aún no tienes una cuenta?", fontSize = fontSize.sp)
-            TextButtonOnlyText(
-                text = "Crea una aqui",
-                click = { navController.navigate(route = AppScreens.RegisterScreen.route) },
-                fontSize = fontSize
-            )
-        }
+        Text(
+            text = text,
+            fontSize = fontSize.sp,
+            fontWeight = FontWeight.Bold,
+            color = color
+        )
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun LogPreview() {
+private fun TextWithButtonText(text: String, buttonText: String, click: () -> Unit,
+                               fontSize: Int, color: Color, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Text(
+            text = text,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = fontSize.sp
+        )
+        TextButton(
+            onClick = { click.invoke() }
+        ) {
+            Text(
+                text = buttonText,
+                fontSize = fontSize.sp,
+                color = color
+            )
+        }
+    }
 
+}
+
+/* Función composable encargada de proyectar el logo de la app */
+@Composable
+private fun Logo(lightLogoID: Int, darkLogoID: Int, modifier: Modifier = Modifier) {
+    Image(
+        painter = painterResource(
+            id = if (isSystemInDarkTheme()) darkLogoID else lightLogoID
+        ),
+        contentDescription = "Logo de la app en la pantalla de log",
+        modifier = modifier
+    )
 }

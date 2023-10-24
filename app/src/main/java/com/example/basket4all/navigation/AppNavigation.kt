@@ -7,11 +7,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.basket4all.FirebaseAuthService
+import com.example.basket4all.screens.CalendarScreen
+import com.example.basket4all.screens.ExerciseScreen
 import com.example.basket4all.screens.FirstScreen
 import com.example.basket4all.screens.LogScreen
+import com.example.basket4all.screens.ProfileScreen
 import com.example.basket4all.screens.RegisterScreen
 import com.example.basket4all.screens.SecondScreen
 import com.example.basket4all.screens.SplashScreen
+import com.example.basket4all.screens.TacticsScreen
+import com.example.basket4all.screens.TeamScreen
 
 /**
  * ARCHIVO: AppNavigation.kt
@@ -41,6 +46,21 @@ fun AppNavigation(authService: FirebaseAuthService) {
         }
         composable(route = AppScreens.RegisterScreen.route) {
             RegisterScreen(navController,authService)
+        }
+        composable(route = AppScreens.ProfileScreen.route) {
+            ProfileScreen(navController)
+        }
+        composable(route = AppScreens.CalendarScreen.route) {
+            CalendarScreen(navController)
+        }
+        composable(route = AppScreens.TeamScreen.route) {
+            TeamScreen(navController)
+        }
+        composable(route = AppScreens.ExerciseScreen.route) {
+            ExerciseScreen(navController)
+        }
+        composable(route = AppScreens.TacticsScreen.route) {
+            TacticsScreen(navController)
         }
     }
 }

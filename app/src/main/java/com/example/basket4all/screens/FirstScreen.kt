@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.basket4all.R
 import com.example.basket4all.elements.IconButtonBottomBar
+import com.example.basket4all.elements.NavigationBar
 import com.example.basket4all.navigation.AppScreens
 import com.example.basket4all.ui.theme.Basket4allTheme
 
@@ -44,92 +45,13 @@ import com.example.basket4all.ui.theme.Basket4allTheme
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FirstScreen (navController: NavController) {
-    Scaffold(bottomBar = {
-        BottomAppBar (
-            modifier = Modifier
-                .border(
-                    width = 2.dp,
-                    brush =  Brush.verticalGradient(
-                        listOf(MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.tertiary)
-                    ),
-                    shape = RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp)
-            )
-                .background(
-                    brush = Brush.verticalGradient(
-                        listOf(MaterialTheme.colorScheme.secondary,
-                            MaterialTheme.colorScheme.surface)
-                    ),
-                    shape = RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp)
-                )
-            ,
-            containerColor = Color.Transparent
-        ) {
-            Row (modifier = Modifier
-                .fillMaxSize()
-                .align(Bottom)
-                .padding(top = 5.dp, start = 5.dp)
-            ){
-                val buttonSize = 60.dp
-                val iconSize = 38.dp
-                val spacerSize = 18.dp
-                IconButtonBottomBar(
-                    click = { /*TODO*/ },
-                    buttonSize = buttonSize,
-                    icon = R.drawable.account_circle,
-                    iconSize = iconSize,
-                    text = "Perfil",
-                    description = "Icono de acceso al perfil"
-                )
-
-                Spacer(modifier = Modifier.width(spacerSize))
-                IconButtonBottomBar(
-                    click = { /*TODO*/ },
-                    buttonSize = buttonSize,
-                    icon = R.drawable.calendar_month,
-                    iconSize = iconSize,
-                    text = "Eventos",
-                    description = "Icono de acceso al calendario de eventos"
-                )
-
-                Spacer(modifier = Modifier.width(spacerSize + 5.dp))
-                IconButtonBottomBar(
-                    click = { /*TODO*/ },
-                    buttonSize = buttonSize,
-                    icon = R.drawable.sports_basketball,
-                    iconSize = iconSize,
-                    text = "Equipo",
-                    description = "Icono de acceso a la pantalla de equipo"
-                )
-
-                Spacer(modifier = Modifier.width(spacerSize - 2.dp))
-                IconButtonBottomBar(
-                    click = { /*TODO*/ },
-                    buttonSize = buttonSize,
-                    icon = R.drawable.exercise,
-                    iconSize = iconSize,
-                    text = "Rutina",
-                    description = "Icono de acceso a la ventana de ejercicios"
-                )
-
-                Spacer(modifier = Modifier.width(spacerSize - 2.dp))
-                IconButtonBottomBar(
-                    click = { /*TODO*/ },
-                    buttonSize = buttonSize,
-                    icon = R.drawable.tactic,
-                    iconSize = iconSize,
-                    text = "Tácticas",
-                    description = "Icono de acceso a las tácticas"
-                )
-            }
-        }
-    }) {
-        BodyContent(navController)
-    }
+    BodyContent(navController)
 }
 
 @Composable
 private fun BodyContent(navController: NavController) {
+    val navigationBar: NavigationBar? = NavigationBar.getInstance(navController)
+
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = CenterHorizontally,
@@ -141,6 +63,12 @@ private fun BodyContent(navController: NavController) {
         }) {
             Text(text = "Navigate")
         }
+    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        navigationBar?.NavBar()
     }
 }
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
