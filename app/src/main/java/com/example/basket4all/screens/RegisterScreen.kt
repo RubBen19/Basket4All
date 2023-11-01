@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.basket4all.FirebaseAuthService
 import com.example.basket4all.R
-import com.example.basket4all.elements.TextButtonMain
+import com.example.basket4all.old_elements.TextButtonMain
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

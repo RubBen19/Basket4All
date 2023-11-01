@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -58,14 +59,7 @@ fun LogScreen(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.surface
-                    )
-                )
-            )
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // Se muestra el contenido de la pantalla
         LogContent (
@@ -106,22 +100,14 @@ private fun LogContent(navController: NavHostController, modifier: Modifier = Mo
             modifier = Modifier
                 .padding(top = 72.dp)
                 .align(Alignment.CenterHorizontally)
-                .background(
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.secondary,
-                            MaterialTheme.colorScheme.surface
-                        )
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                )
+                .background(MaterialTheme.colorScheme.background)
                 .size(272.dp)
                 .border(
                     width = 4.dp,
                     brush = Brush.verticalGradient(
                         listOf(
                             MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.surface
+                            MaterialTheme.colorScheme.background
                         )
                     ),
                     shape = RoundedCornerShape(16.dp)
@@ -163,7 +149,7 @@ private fun LogInFormulary(navController: NavHostController, modifier: Modifier 
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         // Campo de texto para pedir el e-mail
         OutlinedTextField(
@@ -175,9 +161,10 @@ private fun LogInFormulary(navController: NavHostController, modifier: Modifier 
                 ) },
             singleLine = true,
             modifier = Modifier
-                .padding(top = 16.dp)
+                .padding(top = 4.dp)
                 .align(Alignment.CenterHorizontally)
-                .size(height = 60.dp, width = 232.dp)
+                .size(height = 60.dp, width = 232.dp),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
         // Campo de texto para pedir la contraseña
         OutlinedTextField(
@@ -187,7 +174,11 @@ private fun LogInFormulary(navController: NavHostController, modifier: Modifier 
                 Text(
                     text = "Contraseña"
                 ) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+
+            ),
             singleLine = true,
             // Trasnformacion del campo para visualizar el texto introducido
             visualTransformation = if(hidden) PasswordVisualTransformation ()
@@ -207,7 +198,6 @@ private fun LogInFormulary(navController: NavHostController, modifier: Modifier 
                 }
             },
             modifier = Modifier
-                .padding(top = 12.dp)
                 .align(Alignment.CenterHorizontally)
                 .size(height = 60.dp, width = 232.dp)
         )
@@ -221,7 +211,7 @@ private fun LogInFormulary(navController: NavHostController, modifier: Modifier 
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .padding(top = 24.dp)
-                .size(152.dp, 52.dp)
+                .size(160.dp, 52.dp)
                 .background(
                     color = Color.Transparent,
                     shape = RoundedCornerShape(16.dp)
@@ -244,7 +234,7 @@ private fun LogInFormulary(navController: NavHostController, modifier: Modifier 
             click = { /*TODO*/ },
             fontSize = FONT_SIZE,
             color = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 4.dp)
         )
     }
 }

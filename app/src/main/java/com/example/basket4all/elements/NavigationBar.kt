@@ -1,17 +1,16 @@
 package com.example.basket4all.elements
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,11 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.basket4all.navigation.AppScreens
@@ -34,97 +32,66 @@ import com.example.basket4all.navigation.NavBarItems
  * ARCHIVO: NavigationBar.kt
  * FUNCIÓN: El objetivo de este archivo es la funcionalidad de una barra de navegación
  */
-class NavigationBar private constructor(private val navController: NavController) {
 
-    private val barButtons = listOf<NavBarItems>(
-        NavBarItems.ProfileScreen,
-        NavBarItems.CalendarScreen,
-        NavBarItems.TeamScreen,
-        NavBarItems.ExerciseScreen,
-        NavBarItems.TacticsScreen
-    )
+// Obtengo todos los elementos que tendra la barra de navegación
+private val barButtons = listOf<NavBarItems>(
+    NavBarItems.ProfileScreen,
+    NavBarItems.CalendarScreen,
+    NavBarItems.TeamScreen,
+    NavBarItems.ExerciseScreen,
+    NavBarItems.TacticsScreen
+)
 
-    companion object {
-        private var instance: NavigationBar? = null
+// Método para implementar la barra de navegación
+@Composable
+fun B4AllNavigationBar(navController: NavController) {
 
-        fun getInstance(navController: NavController): NavigationBar? {
-            if (instance == null) instance = NavigationBar(navController)
-            return instance
-        }
-    }
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val actualScreenRoute: String? = currentBackStackEntry?.destination?.route
 
-    @Composable
-    fun NavBar(modifier: Modifier = Modifier) {
-        NavigationBar(
-            containerColor = MaterialTheme.colorScheme.onBackground,
-            contentColor = MaterialTheme.colorScheme.background
-        ) {
-
-            val currentBackStackEntry by navController.currentBackStackEntryAsState()
-            val actualScreenRoute: String? = currentBackStackEntry?.destination?.route
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                barButtons.forEach { screen ->
-                    var selected by remember { mutableStateOf(false) }
-                    selected = (actualScreenRoute == screen.route)
-                    BarIcon(
-                        iconID = screen.iconID,
-                        text = screen.name,
-                        current = selected
-                    ) {
-                        navController.navigate(screen.route) {
-                            navController.popBackStack(
-                                route = AppScreens.FirstScreen.route,
-                                inclusive = false,
-                                saveState = true
-                            )
-                        }
-                    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        barButtons.forEach { item ->
+            val selected = actualScreenRoute == item.route
+            ButtonOfTheBar(screen = item, selected = selected) {
+                navController.navigate(item.route) {
+                    navController.popBackStack(
+                        route = AppScreens.FirstScreen.route,
+                        inclusive = false,
+                        saveState = false
+                    )
                 }
             }
-
         }
     }
+}
 
-    @Composable
-    private fun BarIcon(iconID: Int, text: String, current: Boolean, onClick: () -> Unit) {
-        val imageSize = if (current) 36.dp else 32.dp
-        Button(
-            onClick = {
-                onClick.invoke()
-            },
-            shape = RectangleShape,
-            colors = buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = if (current) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.background
-            ),
-            contentPadding = PaddingValues(12.dp)
-        ) {
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Imagen para el botón
-                Icon(
-                    painter = painterResource(id = iconID),
-                    contentDescription = "Botón para ir a: $text",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .size(imageSize)
-                        .padding(top = 2.dp)
-                )
-                // Texto para mostrar debajo de la imagen
-                Text(
-                    text = text,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 1.dp)
-                )
-            }
-        }
+@Composable
+private fun ButtonOfTheBar(screen: NavBarItems, selected: Boolean, clickable: ()->Unit) {
+    val imageSize: Int = if (selected) 36 else 32
+    val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    Column(
+        modifier = Modifier
+            .clickable { clickable.invoke() },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Icon(
+            painter = painterResource(id = screen.iconID),
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(imageSize.dp)
+        )
+        Text(
+            text = screen.name,
+            color = color,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
-
 }

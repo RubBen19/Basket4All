@@ -1,4 +1,4 @@
-package com.example.basket4all.elements
+package com.example.basket4all.old_elements
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -68,27 +68,5 @@ fun TextButtonOnlyText (text: String, click: () -> Unit?, fontSize: Int) {
     TextButton(onClick = { click.invoke() }
     ) {
         Text(text = text, fontSize = fontSize.sp)
-    }
-}
-
-@Composable
-fun IconButtonBottomBar (click: () -> Unit?, buttonSize: Dp, icon: Int, iconSize: Dp,
-                         text: String, description: String)
-{
-    IconButton(onClick = {click .invoke()},
-        modifier = Modifier.size(buttonSize)
-    ) {
-        Column (modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Icon(painter = painterResource(icon),
-                contentDescription = description,
-                modifier = Modifier
-                    .size(iconSize),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Text(text = text, color = MaterialTheme.colorScheme.onBackground)
-        }
     }
 }

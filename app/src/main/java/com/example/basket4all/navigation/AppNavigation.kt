@@ -7,14 +7,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.basket4all.FirebaseAuthService
-import com.example.basket4all.elements.NavigationBar
+import com.example.basket4all.elements.B4AllNavigationBar
 import com.example.basket4all.screens.CalendarScreen
 import com.example.basket4all.screens.ExerciseScreen
 import com.example.basket4all.screens.FirstScreen
@@ -34,8 +33,7 @@ import com.example.basket4all.screens.TeamScreen
 fun AppNavigation(authService: FirebaseAuthService) {
     // Recuerdo y obtengo el controlador de navegación
     val navController = rememberNavController()
-    // Creo la barra de navegación
-    val navBar = NavigationBar.getInstance(navController = navController)
+    
     // Esta variable indicará si la barra de navegación tiene que mostrarse o no en la screen
     var navIsVisible by remember {mutableStateOf (false)}
 
@@ -87,10 +85,9 @@ fun AppNavigation(authService: FirebaseAuthService) {
     }
     if (navIsVisible) {
         Column(
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.End
+            verticalArrangement = Arrangement.Bottom
         ) {
-            navBar?.NavBar()
+            B4AllNavigationBar(navController = navController)
         }
     }
 }
