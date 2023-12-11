@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.basket4all.common.enums.CoachRoles
 
@@ -18,14 +19,18 @@ import com.example.basket4all.common.enums.CoachRoles
             parentColumns = ["id"],
             childColumns = ["Team"]
         )
-    ])
+    ],
+    indices = [Index("Team")]
+)
 data class CoachEntity(
     @PrimaryKey(autoGenerate = true)
     val coachId: Int = 0,
     @Embedded
-    val user: User,
+    val user: UserEntity,
     @ColumnInfo(name = "Team")
     val teamId: Int,
+    /*
     @ColumnInfo(name = "Roles")
     val coachroles: MutableList<CoachRoles> = mutableListOf()
+     */
 )

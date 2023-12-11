@@ -30,7 +30,7 @@ data class MatchEntity(
     @ColumnInfo("Visitor")
     val visitorTeamId: Int,
     @ColumnInfo("Date")
-    val date: LocalDate,
+    val date: String,
     @ColumnInfo("Score")
-    val score: Score
+    val score: String
 )

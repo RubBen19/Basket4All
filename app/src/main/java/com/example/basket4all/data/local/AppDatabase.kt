@@ -14,7 +14,8 @@ import com.example.basket4all.data.local.entities.TeamStats
 @Database(
     entities = [PlayerEntity::class, CoachEntity::class, TeamEntity::class, ClubEntity::class,
         MatchEntity::class, PlayerStats::class, MatchStats::class, TeamStats::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 }
