@@ -3,6 +3,7 @@ package com.example.basket4all.data.local.daos
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.basket4all.common.enums.Categories
@@ -10,6 +11,15 @@ import com.example.basket4all.data.local.entities.TeamEntity
 
 @Dao
 interface TeamDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(team: TeamEntity)
+
+    @Update
+    fun update(team: TeamEntity)
+
+    @Delete
+    fun delete(team: TeamEntity)
 
     @Query("SELECT * FROM teams_table")
     fun getAll(): List<TeamEntity>
@@ -25,13 +35,4 @@ interface TeamDao {
 
     @Query("SELECT * FROM teams_table WHERE League LIKE :league")
     fun getByLeague(league: String): List<TeamEntity>
-
-    @Insert
-    fun insert(team: TeamEntity)
-
-    @Update
-    fun update(team: TeamEntity)
-
-    @Delete
-    fun delete(team: TeamEntity)
 }

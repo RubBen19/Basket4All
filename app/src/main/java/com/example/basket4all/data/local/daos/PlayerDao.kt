@@ -3,6 +3,7 @@ package com.example.basket4all.data.local.daos
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.basket4all.common.enums.Categories
@@ -11,8 +12,20 @@ import com.example.basket4all.data.local.entities.PlayerEntity
 @Dao
 interface PlayerDao {
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(player: PlayerEntity)
+
+    @Update
+    fun update(player: PlayerEntity)
+
+    @Delete
+    fun delete(player: PlayerEntity)
+
     @Query("SELECT * FROM players_table")
     fun getAll(): List<PlayerEntity>
+
+    @Query("SELECT * FROM players_table WHERE id = :id")
+    fun getByID(id: Int): PlayerEntity
 
     @Query("SELECT * FROM players_table WHERE Name LIKE :name")
     fun getByName(name: String): List<PlayerEntity>
@@ -24,12 +37,4 @@ interface PlayerDao {
     @Query("SELECT * FROM players_table WHERE Category LIKE :category")
     fun getByCategory(category: Categories): PlayerEntity
 
-    @Insert
-    fun insert(player: PlayerEntity)
-
-    @Update
-    fun update(player: PlayerEntity)
-
-    @Delete
-    fun delete(player: PlayerEntity)
 }
