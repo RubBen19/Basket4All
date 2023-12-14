@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 /**
  * Entidad que representa a los clubes en la base de datos local
  */
-@Entity(tableName = "clubes_table")
+@Entity(tableName = "clubs_table")
 data class ClubEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "Name") val name: String,

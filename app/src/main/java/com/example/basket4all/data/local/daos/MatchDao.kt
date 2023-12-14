@@ -5,8 +5,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.basket4all.data.local.entities.MatchEntity
+import com.example.basket4all.data.local.relations.MatchWithMatchStats
 
 @Dao
 interface MatchDao {
@@ -31,4 +33,8 @@ interface MatchDao {
 
     @Query("SELECT * FROM matches_tables WHERE Date LIKE :date")
     fun getByDate(date: String): List<MatchEntity>
+
+    @Transaction
+    @Query("SELECT * FROM matches_tables")
+    fun getMatchesWithStats(): List<MatchWithMatchStats>
 }

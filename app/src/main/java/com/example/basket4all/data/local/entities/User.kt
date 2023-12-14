@@ -1,12 +1,8 @@
 package com.example.basket4all.data.local.entities
 
 import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "users_table")
-data class UserEntity(
-    @PrimaryKey(autoGenerate = true) val userId: Int,
+data class User(
     @ColumnInfo(name = "Email") val email: String,
     @ColumnInfo(name = "Password") val password: String,
     @ColumnInfo(name = "Name") val name: String,

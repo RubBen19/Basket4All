@@ -5,16 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "players_stats_table",
-    foreignKeys = [
-        ForeignKey(
-            entity = PlayerEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["Player"]
-        )
-    ]
-)
+@Entity(tableName = "players_stats_table")
 data class PlayerStats(
     @PrimaryKey(autoGenerate = true)
     val id: Int,

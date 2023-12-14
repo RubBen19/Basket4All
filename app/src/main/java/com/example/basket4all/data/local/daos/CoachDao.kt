@@ -4,8 +4,10 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.basket4all.data.local.entities.CoachEntity
+import com.example.basket4all.data.local.relations.CoachWithTeam
 
 @Dao
 interface CoachDao {
@@ -32,4 +34,7 @@ interface CoachDao {
     @Query("SELECT * FROM coaches_table WHERE Name LIKE :coachName")
     fun getByName(coachName: String): List<CoachEntity>
 
+    @Transaction
+    @Query("SELECT * FROM coaches_table")
+    fun getCoachesWithTeams(): List<CoachWithTeam>
 }

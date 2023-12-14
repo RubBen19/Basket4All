@@ -11,22 +11,12 @@ import com.example.basket4all.common.enums.CoachRoles
 /**
  * Entidad que representa a los entrenadores en la base de datos local
  */
-@Entity(
-    tableName = "coaches_table",
-    foreignKeys = [
-        ForeignKey(
-            entity = TeamEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["Team"]
-        )
-    ],
-    indices = [Index("Team")]
-)
+@Entity(tableName = "coaches_table")
 data class CoachEntity(
     @PrimaryKey(autoGenerate = true)
     val coachId: Int = 0,
     @Embedded
-    val user: UserEntity,
+    val user: User,
     @ColumnInfo(name = "Team")
     val teamId: List<Int>,
     /*

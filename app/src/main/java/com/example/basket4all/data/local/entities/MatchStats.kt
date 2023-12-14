@@ -5,21 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "matches_stats_table",
-    foreignKeys = [
-        ForeignKey(
-            entity = MatchEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["Match"]
-        ),
-        ForeignKey(
-            entity = PlayerEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["Player"]
-        )
-    ]
-)
+@Entity(tableName = "matches_stats_table")
 data class MatchStats(
     @PrimaryKey(autoGenerate = true)
     val id: Int,

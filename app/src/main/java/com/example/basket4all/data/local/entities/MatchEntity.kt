@@ -7,21 +7,7 @@ import androidx.room.PrimaryKey
 import com.example.basket4all.common.classes.Score
 import java.time.LocalDate
 
-@Entity(
-    tableName = "matches_tables",
-    foreignKeys = [
-        ForeignKey(
-            entity = TeamEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["Local"]
-        ),
-        ForeignKey(
-            entity = TeamEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["Visitor"]
-        ),
-    ]
-)
+@Entity(tableName = "matches_tables")
 data class MatchEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,

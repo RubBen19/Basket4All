@@ -9,16 +9,7 @@ import com.example.basket4all.common.enums.Categories
 /**
  * Entidad que representa a los equipos en la base de datos local
  */
-@Entity(
-    tableName = "teams_table",
-    foreignKeys = [
-        ForeignKey(
-            entity = ClubEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["Club"]
-        )
-    ]
-)
+@Entity(tableName = "teams_table")
 data class TeamEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
