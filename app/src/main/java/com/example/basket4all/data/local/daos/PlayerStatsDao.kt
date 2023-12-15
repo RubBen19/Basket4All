@@ -8,25 +8,26 @@ import androidx.room.Query
 import androidx.room.Update
 import com.example.basket4all.data.local.entities.MatchStats
 import com.example.basket4all.data.local.entities.PlayerStats
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlayerStatsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(player: PlayerStats)
+    suspend fun insert(player: PlayerStats)
 
     @Delete
-    fun delete(player: PlayerStats)
+    suspend fun delete(player: PlayerStats)
 
     @Update
-    fun update(player: PlayerStats)
+    suspend fun update(player: PlayerStats)
 
     @Query("SELECT * FROM players_stats_table")
-    fun getAll(): List<PlayerStats>
+    fun getAll(): Flow<List<PlayerStats>>
 
     @Query("SELECT * FROM players_stats_table WHERE id = :id")
-    fun getByID(id: Int): PlayerStats
+    fun getByID(id: Int): Flow<PlayerStats>
 
     @Query("SELECT * FROM players_stats_table WHERE Player = :playerId")
-    fun getByPlayer(playerId: Int): List<PlayerStats>
+    fun getByPlayer(playerId: Int): Flow<List<PlayerStats>>
 }

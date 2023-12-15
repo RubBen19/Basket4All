@@ -11,41 +11,42 @@ import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.data.local.entities.PlayerEntity
 import com.example.basket4all.data.local.relations.PlayerAndPlayerStats
 import com.example.basket4all.data.local.relations.PlayerWithMatchStats
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlayerDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(player: PlayerEntity)
+    suspend fun insert(player: PlayerEntity)
 
     @Update
-    fun update(player: PlayerEntity)
+    suspend fun update(player: PlayerEntity)
 
     @Delete
-    fun delete(player: PlayerEntity)
+    suspend fun delete(player: PlayerEntity)
 
     @Query("SELECT * FROM players_table")
-    fun getAll(): List<PlayerEntity>
+    fun getAll(): Flow<List<PlayerEntity>>
 
     @Query("SELECT * FROM players_table WHERE id = :id")
-    fun getByID(id: Int): PlayerEntity
+    fun getByID(id: Int): Flow<PlayerEntity>
 
     @Query("SELECT * FROM players_table WHERE Name LIKE :name")
-    fun getByName(name: String): List<PlayerEntity>
+    fun getByName(name: String): Flow<List<PlayerEntity>>
 
     @Query("SELECT * FROM players_table WHERE Name LIKE :name AND " +
             "`First Surname` LIKE :surname1 AND `Second Surname` LIKE :surname2 LIMIT 1")
-    fun getByName(name: String, surname1: String, surname2: String): PlayerEntity
+    fun getByName(name: String, surname1: String, surname2: String): Flow<PlayerEntity>
 
     @Query("SELECT * FROM players_table WHERE Category LIKE :category")
-    fun getByCategory(category: Categories): PlayerEntity
+    fun getByCategory(category: Categories): Flow<PlayerEntity>
 
     @Transaction
     @Query("SELECT * FROM players_table")
-    fun getPlayersAndStats(): List<PlayerAndPlayerStats>
+    fun getPlayersAndStats(): Flow<List<PlayerAndPlayerStats>>
 
     @Transaction
     @Query("SELECT * FROM players_table")
-    fun getPlayersWithMatchStats(): List<PlayerWithMatchStats>
+    fun getPlayersWithMatchStats(): Flow<List<PlayerWithMatchStats>>
 
 }

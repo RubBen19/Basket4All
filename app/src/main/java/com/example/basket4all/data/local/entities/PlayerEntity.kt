@@ -21,10 +21,10 @@ data class PlayerEntity(
     val user: User,
     @ColumnInfo(name = "Team")
     val teamId: Int,
-    /*
+
     @ColumnInfo(name = "Positions")
     val positions: MutableList<PlayerPositions> = mutableListOf(),
-     */
+
     @ColumnInfo(name = "Category")
     val categories: Categories
 )

@@ -2,6 +2,7 @@ package com.example.basket4all.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.basket4all.data.local.entities.ClubEntity
 import com.example.basket4all.data.local.entities.CoachEntity
 import com.example.basket4all.data.local.entities.MatchEntity
@@ -17,5 +18,6 @@ import com.example.basket4all.data.local.entities.TeamStats
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 }

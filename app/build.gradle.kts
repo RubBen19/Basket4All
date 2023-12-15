@@ -73,7 +73,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     /** FIREBASE DEPENDENCIES **/
-    implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
@@ -111,4 +111,7 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$room_version")
+
+    // implementation of Gson library to convert Java objects into their JSON representation
+    implementation("com.google.code.gson:gson:2.9.0")
 }
