@@ -17,6 +17,7 @@ import com.example.basket4all.data.local.daos.TeamDao
 import com.example.basket4all.data.local.daos.TeamStatsDao
 import com.example.basket4all.data.local.entities.ClubEntity
 import com.example.basket4all.data.local.entities.CoachEntity
+import com.example.basket4all.data.local.entities.CoachTeamCrossRef
 import com.example.basket4all.data.local.entities.MatchEntity
 import com.example.basket4all.data.local.entities.MatchStats
 import com.example.basket4all.data.local.entities.PlayerEntity
@@ -32,7 +33,8 @@ import java.time.LocalDate
 
 @Database(
     entities = [PlayerEntity::class, CoachEntity::class, TeamEntity::class, ClubEntity::class,
-        MatchEntity::class, PlayerStats::class, MatchStats::class, TeamStats::class],
+        MatchEntity::class, PlayerStats::class, MatchStats::class, TeamStats::class,
+        CoachTeamCrossRef::class],
     version = 1,
     exportSchema = false
 )
@@ -158,7 +160,7 @@ abstract class AppDatabase : RoomDatabase() {
             for (user in users) {
                 val player = PlayerEntity (
                     user = user,
-                    teamId = team.id
+                    teamId = team.teamId
                 )
                 INSTANCE?.playerDao()?.insert(player)
             }
@@ -168,7 +170,7 @@ abstract class AppDatabase : RoomDatabase() {
             for (user in users) {
                 val coach = CoachEntity (
                     user = user,
-                    teamId = listOf(team.id)
+                    teamId = listOf(team.teamId)
                 )
                 INSTANCE?.coachDao()?.insert(coach)
             }

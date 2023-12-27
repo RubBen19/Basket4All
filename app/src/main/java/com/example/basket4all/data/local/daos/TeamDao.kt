@@ -30,7 +30,7 @@ interface TeamDao {
     @Query("SELECT * FROM teams_table")
     fun getAll(): Flow<List<TeamEntity>>
 
-    @Query("SELECT * FROM teams_table WHERE id = :id")
+    @Query("SELECT * FROM teams_table WHERE teamId = :id")
     fun getByID(id: Int): Flow<TeamEntity>
 
     @Query("SELECT * FROM teams_table WHERE Name LIKE :name")

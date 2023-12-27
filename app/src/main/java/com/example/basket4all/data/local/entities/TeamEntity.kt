@@ -12,7 +12,7 @@ import com.example.basket4all.common.enums.Categories
 @Entity(tableName = "teams_table")
 data class TeamEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val teamId: Int = 0,
     @ColumnInfo(name = "Club")
     val clubId: Int,
     @ColumnInfo(name = "Name")

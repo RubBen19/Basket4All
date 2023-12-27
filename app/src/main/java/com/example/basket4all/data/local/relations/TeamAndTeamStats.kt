@@ -11,8 +11,8 @@ import com.example.basket4all.data.local.entities.TeamStats
 data class TeamAndTeamStats(
     @Embedded val team: TeamEntity,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "teamId"
+        parentColumn = "teamId",
+        entityColumn = "Team"
     )
     val stats: TeamStats
 )

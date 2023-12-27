@@ -2,13 +2,13 @@ package com.example.basket4all.data.local.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 
 @Entity(
     tableName = "coach_team_table",
-    primaryKeys = ["coachId", "teamId"])
+    primaryKeys = ["coachId", "teamId"],
+    indices = [Index("teamId")])
 data class CoachTeamCrossRef(
-    @ColumnInfo("Coach")
     val coachId: Int,
-    @ColumnInfo("Team")
     val teamId: Int
 )
