@@ -10,5 +10,5 @@ data class User(
     @ColumnInfo(name = "First Surname") val surname1: String,
     @ColumnInfo(name = "Second Surname") val surname2: String?,
     @ColumnInfo(name = "Date of birth") val birthdate: LocalDate,
-    @ColumnInfo(name = "Picture") val picture: Int
+    @ColumnInfo(name = "Picture") val picture: Int?
 )

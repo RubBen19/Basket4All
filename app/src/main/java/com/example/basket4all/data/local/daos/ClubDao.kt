@@ -29,7 +29,7 @@ interface ClubDao {
     @Query("SELECT * FROM clubs_table WHERE id = :id")
     fun getByID(id: Int): Flow<ClubEntity>
 
-    @Query("SELECT * FROM clubs_table WHERE name LIKE :clubName")
+    @Query("SELECT * FROM clubs_table WHERE name LIKE :clubName || '%' ")
     fun getByName(clubName: String): Flow<List<ClubEntity>>
 
     @Transaction

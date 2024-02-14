@@ -1,6 +1,7 @@
 package com.example.basket4all.data.local
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -9,6 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.data.local.daos.ClubDao
 import com.example.basket4all.data.local.daos.CoachDao
+import com.example.basket4all.data.local.daos.CoachTeamCrossRefDao
 import com.example.basket4all.data.local.daos.MatchDao
 import com.example.basket4all.data.local.daos.MatchStatsDao
 import com.example.basket4all.data.local.daos.PlayerDao
@@ -50,13 +52,17 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun teamDao(): TeamDao
     abstract fun teamStatsDao(): TeamStatsDao
 
+    abstract fun coachTeamCrossRef(): CoachTeamCrossRefDao
+
     companion object {
         // Constructor Singleton para evitar múltiples instancias de la base de datos
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {
+            Log.d("DB", "Getting database")
             return INSTANCE ?: synchronized(this) {
+                Log.d("DB", "Building database")
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
@@ -64,6 +70,7 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                     .addCallback(appCallback)
                     .build()
+                Log.d("DB", "Database built")
                 INSTANCE = instance
                 return instance
             }
@@ -169,8 +176,7 @@ abstract class AppDatabase : RoomDatabase() {
         private suspend fun insertCoaches(users: List<User>, team: TeamEntity) {
             for (user in users) {
                 val coach = CoachEntity (
-                    user = user,
-                    teamId = listOf(team.teamId)
+                    user = user
                 )
                 INSTANCE?.coachDao()?.insert(coach)
             }

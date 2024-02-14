@@ -10,7 +10,7 @@ import java.time.LocalDate
 @Entity(tableName = "matches_tables")
 data class MatchEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo("Local")
     val localTeamId: Int,
     @ColumnInfo("Visitor")

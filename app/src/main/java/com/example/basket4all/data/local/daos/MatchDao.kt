@@ -36,6 +36,7 @@ interface MatchDao {
     fun getByDate(date: String): Flow<List<MatchEntity>>
 
     @Transaction
-    @Query("SELECT * FROM matches_tables")
+    @Query("SELECT * FROM matches_tables WHERE id IN " +
+            "(SELECT DISTINCT `Match` FROM matches_stats_table)")
     fun getMatchesWithStats(): Flow<List<MatchWithMatchStats>>
 }

@@ -17,8 +17,6 @@ data class CoachEntity(
     val coachId: Int = 0,
     @Embedded
     val user: User,
-    @ColumnInfo(name = "Team")
-    val teamId: List<Int>,
     @ColumnInfo(name = "Roles")
     val coachroles: MutableList<CoachRoles> = mutableListOf()
 
