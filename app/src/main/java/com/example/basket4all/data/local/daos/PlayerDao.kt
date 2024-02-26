@@ -39,7 +39,7 @@ interface PlayerDao {
     fun getByName(name: String, surname1: String, surname2: String): Flow<PlayerEntity>
 
     @Query("SELECT * FROM players_table WHERE Category LIKE :category")
-    fun getByCategory(category: Categories): Flow<PlayerEntity>
+    fun getByCategory(category: Categories): Flow<List<PlayerEntity>>
 
     @Transaction
     @Query("SELECT * FROM players_table")
