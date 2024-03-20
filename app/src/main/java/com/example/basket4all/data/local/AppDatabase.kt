@@ -52,7 +52,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun teamDao(): TeamDao
     abstract fun teamStatsDao(): TeamStatsDao
 
-    abstract fun coachTeamCrossRef(): CoachTeamCrossRefDao
+    abstract fun coachTeamCrossRefDao(): CoachTeamCrossRefDao
 
     companion object {
         // Constructor Singleton para evitar múltiples instancias de la base de datos

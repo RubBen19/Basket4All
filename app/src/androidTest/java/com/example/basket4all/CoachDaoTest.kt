@@ -145,29 +145,29 @@ class CoachDaoTest {
         val coachATeam1CrossRef = CoachTeamCrossRef(
             coachId = coachA.coachId,
             teamId = team1.teamId,
-            rol = CoachRoles.MAIN
+            role = CoachRoles.MAIN
         )
         val coachBTeam1CrossRef = CoachTeamCrossRef(
             coachId = coachB.coachId,
             teamId = team1.teamId,
-            rol = CoachRoles.SECOND
+            role = CoachRoles.SECOND
         )
         val coachATeam2CrossRef = CoachTeamCrossRef(
             coachId = coachA.coachId,
             teamId = team2.teamId,
-            rol = CoachRoles.ESPECIALIST
+            role = CoachRoles.ESPECIALIST
         )
         val coachBTeam2CrossRef = CoachTeamCrossRef(
             coachId = coachB.coachId,
             teamId = team2.teamId,
-            rol = CoachRoles.MAIN
+            role = CoachRoles.MAIN
         )
 
         // Se insertan las referencias cruzadas
-        appDatabase.coachTeamCrossRef().insert(coachATeam1CrossRef)
-        appDatabase.coachTeamCrossRef().insert(coachATeam2CrossRef)
-        appDatabase.coachTeamCrossRef().insert(coachBTeam1CrossRef)
-        appDatabase.coachTeamCrossRef().insert(coachBTeam2CrossRef)
+        appDatabase.coachTeamCrossRefDao().insert(coachATeam1CrossRef)
+        appDatabase.coachTeamCrossRefDao().insert(coachATeam2CrossRef)
+        appDatabase.coachTeamCrossRefDao().insert(coachBTeam1CrossRef)
+        appDatabase.coachTeamCrossRefDao().insert(coachBTeam2CrossRef)
 
         // Se comprueba que hayan dos entrenadores con equipos
         val coachesWithTeams = coachDao.getCoachesWithTeams().first()

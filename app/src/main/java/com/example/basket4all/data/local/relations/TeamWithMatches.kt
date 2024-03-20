@@ -9,7 +9,7 @@ import com.example.basket4all.data.local.entities.TeamEntity
  * Definición de la relación 1:N entre [TeamEntity] y [MatchEntity]
  */
 data class TeamWithMatches(
-    @Embedded val localTeam: TeamEntity,
+    @Embedded val team: TeamEntity,
     @Relation(
         parentColumn = "teamId",
         entityColumn = "Local"

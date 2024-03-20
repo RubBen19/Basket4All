@@ -43,18 +43,31 @@ interface TeamDao {
     fun getByLeague(league: String): Flow<List<TeamEntity>>
 
     @Transaction
-    @Query("SELECT * FROM teams_table")
+    @Query("SELECT * " +
+            "FROM teams_table " +
+            "INNER JOIN teams_stats_table ON teams_table.teamId = teams_stats_table.Team")
     fun getTeamsAndStats(): Flow<List<TeamAndTeamStats>>
 
     @Transaction
-    @Query("SELECT * FROM teams_table")
+    @Query("SELECT * FROM teams_table " +
+            "INNER JOIN (SELECT DISTINCT Team FROM players_table) " +
+            "AS teams ON teams_table.teamId = teams.Team")
     fun getTeamsWithPlayers(): Flow<List<TeamWithPlayers>>
 
     @Transaction
-    @Query("SELECT * FROM teams_table")
+    @Query("SELECT * FROM teams_table " +
+            "INNER JOIN (" +
+            "SELECT DISTINCT Local AS team FROM matches_tables " +
+            "UNION " +
+            "SELECT DISTINCT Visitor AS team FROM matches_tables " +
+            ") AS teams " +
+            "ON teams_table.teamId = teams.team")
     fun getTeamsWithMatches(): Flow<List<TeamWithMatches>>
 
     @Transaction
-    @Query("SELECT * FROM teams_table")
+    @Query("SELECT * FROM teams_table " +
+            "INNER JOIN (" +
+            "SELECT DISTINCT teamId FROM coach_team_table) " +
+            "AS teams ON teams_table.teamId = teams.teamId")
     fun getTeamsWithCoaches(): Flow<List<TeamWithCoaches>>
 }

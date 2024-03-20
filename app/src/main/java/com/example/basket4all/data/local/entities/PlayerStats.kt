@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "players_stats_table")
 data class PlayerStats(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "Player")
     val playerId: Int
 )

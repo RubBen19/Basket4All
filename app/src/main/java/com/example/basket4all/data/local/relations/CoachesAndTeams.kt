@@ -20,6 +20,7 @@ data class CoachWithTeam(
         associateBy = Junction(CoachTeamCrossRef::class)
     )
     val teams: List<TeamEntity>,
+    val role: CoachRoles
 )
 
 data class TeamWithCoaches(

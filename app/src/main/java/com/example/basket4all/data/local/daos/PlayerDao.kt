@@ -42,11 +42,15 @@ interface PlayerDao {
     fun getByCategory(category: Categories): Flow<List<PlayerEntity>>
 
     @Transaction
-    @Query("SELECT * FROM players_table")
+    @Query("SELECT * " +
+            "FROM players_table " +
+            "INNER JOIN players_stats_table ON players_table.id = players_stats_table.Player")
     fun getPlayersAndStats(): Flow<List<PlayerAndPlayerStats>>
 
     @Transaction
-    @Query("SELECT * FROM players_table")
+    @Query("SELECT * " +
+            "FROM players_table " +
+            "INNER JOIN matches_stats_table ON players_table.id = matches_stats_table.Player")
     fun getPlayersWithMatchStats(): Flow<List<PlayerWithMatchStats>>
 
 }

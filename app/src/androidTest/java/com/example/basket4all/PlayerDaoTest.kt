@@ -6,12 +6,15 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.data.local.AppDatabase
 import com.example.basket4all.data.local.daos.PlayerDao
+import com.example.basket4all.data.local.entities.MatchStats
 import com.example.basket4all.data.local.entities.PlayerEntity
+import com.example.basket4all.data.local.entities.PlayerStats
 import com.example.basket4all.data.local.entities.User
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -89,6 +92,7 @@ class PlayerDaoTest {
         assertEquals("0 PLAYERS IN DB ERROR", 0, playerDao.getAll().first().size)
         playerDao.insert(player)
         assertEquals("INSERT PLAYER FAILED", 1, playerDao.getAll().first().size)
+        assertEquals("UNKNOWN PLAYER ERROR", player, playerDao.getAll().first().first())
     }
 
     @Test
@@ -187,12 +191,75 @@ class PlayerDaoTest {
     @Test
     @Throws(Exception::class)
     fun getPlayersAndStats() = runBlocking {
+        val player = PlayerEntity(
+            1,
+            user = userExample,
+            teamId = 1
+        )
+        val player2 = PlayerEntity(
+            2,
+            user = userExample2,
+            teamId = 1
+        )
+        val player3 = PlayerEntity(
+            3,
+            user = userExample2,
+            teamId = 1
+        )
 
+        playerDao.insert(player)
+        playerDao.insert(player2)
+        playerDao.insert(player3)
+
+        val stats1 = PlayerStats(1,1)
+        val stats2 = PlayerStats(2,2)
+
+        database.playerStatsDao().insert(stats1)
+        database.playerStatsDao().insert(stats2)
+
+        val playerWithStats = playerDao.getPlayersAndStats().first()
+
+        assertEquals(2, playerWithStats.size)
+        assertNotNull(playerWithStats.firstOrNull{ it.player == player })
+        assertNotNull(playerWithStats.firstOrNull{ it.player == player2 })
+        assertNull(playerWithStats.firstOrNull{ it.player == player3 })
     }
 
     @Test
     @Throws(Exception::class)
     fun getPlayerWithMatchStats() = runBlocking {
+        val player = PlayerEntity(
+            1,
+            user = userExample,
+            teamId = 1
+        )
+        val player2 = PlayerEntity(
+            2,
+            user = userExample2,
+            teamId = 1
+        )
+        val player3 = PlayerEntity(
+            3,
+            user = userExample2,
+            teamId = 1
+        )
 
+        playerDao.insert(player)
+        playerDao.insert(player2)
+        playerDao.insert(player3)
+
+        val stats1 = MatchStats(1,1,1)
+        val stats2 = MatchStats(2,1,2)
+        val stats3 = MatchStats(3,2,1)
+
+        database.matchStatsDao().insert(stats1)
+        database.matchStatsDao().insert(stats2)
+        database.matchStatsDao().insert(stats3)
+
+        val playerWithMatchStats = playerDao.getPlayersWithMatchStats().first()
+        assertEquals(3, playerWithMatchStats.size)
+        assertEquals(2, playerWithMatchStats.firstOrNull{ it.player == player }?.matchStats?.size ?: 0)
+        assertEquals(1, playerWithMatchStats.firstOrNull{ it.player == player2 }?.matchStats?.size ?: 0)
+        assertNull(playerWithMatchStats.firstOrNull{ it.player == player3 })
     }
 }

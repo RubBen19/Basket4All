@@ -12,5 +12,5 @@ import com.example.basket4all.common.enums.CoachRoles
 data class CoachTeamCrossRef(
     val coachId: Int,
     val teamId: Int,
-    val rol: CoachRoles
+    val role: CoachRoles
 )
