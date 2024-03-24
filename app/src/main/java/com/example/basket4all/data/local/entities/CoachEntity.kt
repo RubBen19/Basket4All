@@ -19,5 +19,4 @@ data class CoachEntity(
     val user: User,
     @ColumnInfo(name = "Roles")
     val coachroles: MutableList<CoachRoles> = mutableListOf()
-
 )

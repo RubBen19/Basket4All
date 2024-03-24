@@ -137,7 +137,14 @@ class MatchStatsDaoTest {
     @Test
     @Throws(Exception::class)
     fun getByMatch() = runBlocking {
-
+        //Se insertan dos estadísticas
+        val matchStats = MatchStats(1, 1, 2)
+        val matchStats2 = MatchStats(2, 3, 1)
+        matchStatsDaoTest.insert(matchStats)
+        matchStatsDaoTest.insert(matchStats2)
+        //Se obtienen y se comprueban
+        assertEquals(matchStats, matchStatsDaoTest.getByMatch(1).first())
+        assertEquals(matchStats2, matchStatsDaoTest.getByMatch(3).first())
     }
 
     @Test

@@ -33,7 +33,11 @@ interface ClubDao {
     fun getByName(clubName: String): Flow<List<ClubEntity>>
 
     @Transaction
-    @Query("SELECT * FROM clubs_table")
+    @Query("SELECT * " +
+            "FROM clubs_table " +
+            "INNER JOIN (" +
+            "SELECT DISTINCT Club FROM teams_table) AS coaches " +
+            "ON clubs_table.id = coaches.Club")
     fun getClubsWithTeams(): Flow<List<ClubWithTeams>>
 
 }

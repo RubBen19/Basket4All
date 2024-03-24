@@ -37,9 +37,10 @@ interface CoachDao {
     fun getByName(coachName: String): Flow<List<CoachEntity>>
 
     @Transaction
-    @Query("SELECT coaches_table.*, teams_table.*, coach_team_table.role AS role " +
-        "FROM coaches_table " +
-        "INNER JOIN coach_team_table ON coaches_table.coachId = coach_team_table.coachId " +
-        "INNER JOIN teams_table ON coach_team_table.teamId = teams_table.teamId")
+    @Query("SELECT * " +
+            "FROM coaches_table " +
+            "INNER JOIN (" +
+            "SELECT DISTINCT coachId FROM coach_team_table) " +
+            "AS coaches ON coaches_table.coachId = coaches.coachId")
     fun getCoachesWithTeams(): Flow<List<CoachWithTeam>>
 }

@@ -23,9 +23,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDate
 
+/**
+ * Clase de pruebas de [CoachDao], se realizarán tests para las siguientes funciones:
+ *      - Insert
+ *      - Update
+ *      - Delete
+ *      - GetAll
+ *      - GetById
+ *      - GetByName x2
+ *      - GetCoachesWithTeams
+ */
 @RunWith(AndroidJUnit4::class)
 class CoachDaoTest {
-
+    //Declaración de variables
     private lateinit var coachDao: CoachDao
     private lateinit var appDatabase: AppDatabase
     private lateinit var user1: User
@@ -33,13 +43,15 @@ class CoachDaoTest {
 
     @Before
     fun setup() {
+        //Se obtiene el contexto
         val context = InstrumentationRegistry.getInstrumentation().targetContext
+        //Construcción de la base de datos
         appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-
+        //Inicio de la variable coachDao con el Dao de Coach
         coachDao = appDatabase.coachDao()
-        // Creo dos datos de usuario para las pruebas
+        //Creación de dos datos de usuario para las pruebas
         user1 = User(
             email = "mail@mail.com",
             password = "password",
@@ -49,7 +61,6 @@ class CoachDaoTest {
             birthdate = LocalDate.of(2001, 1, 9),
             picture = 0
         )
-
         user2 = User(
             email = "mail@mail.com",
             password = "password",
@@ -59,11 +70,11 @@ class CoachDaoTest {
             birthdate = LocalDate.of(2002, 2, 10),
             picture = 1
         )
-
     }
 
     @After
     fun tearDown() {
+        //Cierre de la base de datos de las pruebas
         appDatabase.close()
     }
 
@@ -126,9 +137,9 @@ class CoachDaoTest {
     @Test
     fun getCoachesWithTeams() = runBlocking {
         // Se crean un par de equipos
-        val team1 = TeamEntity(clubId = 1, name = "Team A", category = Categories.CADETE,
+        val team1 = TeamEntity(teamId = 1, clubId = 1, name = "Team A", category = Categories.CADETE,
             league = "1ª Oro")
-        val team2 = TeamEntity(clubId = 1, name = "Team B", category = Categories.JUNIOR,
+        val team2 = TeamEntity(teamId = 2, clubId = 1, name = "Team B", category = Categories.JUNIOR,
             league = "2ª Plata")
         // Pondremos a los coaches a cargo de los equipos
         val coachA = CoachEntity(coachId = 1, user = user1)
@@ -157,29 +168,23 @@ class CoachDaoTest {
             teamId = team2.teamId,
             role = CoachRoles.ESPECIALIST
         )
-        val coachBTeam2CrossRef = CoachTeamCrossRef(
-            coachId = coachB.coachId,
-            teamId = team2.teamId,
-            role = CoachRoles.MAIN
-        )
 
         // Se insertan las referencias cruzadas
         appDatabase.coachTeamCrossRefDao().insert(coachATeam1CrossRef)
         appDatabase.coachTeamCrossRefDao().insert(coachATeam2CrossRef)
         appDatabase.coachTeamCrossRefDao().insert(coachBTeam1CrossRef)
-        appDatabase.coachTeamCrossRefDao().insert(coachBTeam2CrossRef)
 
         // Se comprueba que hayan dos entrenadores con equipos
         val coachesWithTeams = coachDao.getCoachesWithTeams().first()
         assertEquals(2, coachesWithTeams.size)
 
         // Se comprueba que el coach A tiene una relación como entrenador con los equipos
-        /*
-        val coachWithTeamsA = coachesWithTeams.first { it.coach == coachA }
-        assertEquals(2, coachWithTeamsA.teams.size)
-        assertTrue(coachWithTeamsA.teams.contains(team1))
-        assertTrue(coachWithTeamsA.teams.contains(team2))
-        */
+        val coachWithTeamsA = coachesWithTeams.firstOrNull { it.coach == coachA }
+        assertEquals(2, coachWithTeamsA?.teams?.size)
+        coachWithTeamsA?.teams?.let { assertTrue(it.contains(team1)) }
+        coachWithTeamsA?.teams?.let { assertTrue(it.contains(team2)) }
+
+        // Se comprueba que el coach B tiene una relación como entrenador con los equipos
         val coachWithTeamsB = coachesWithTeams.first { it.coach == coachB }
         assertEquals(1, coachWithTeamsB.teams.size)
         assertTrue(coachWithTeamsB.teams.contains(team1))
