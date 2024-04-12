@@ -29,6 +29,9 @@ interface CoachDao {
     @Query("SELECT * FROM coaches_table WHERE coachId = :id")
     fun getByID(id: Int): Flow<CoachEntity>
 
+    @Query("SELECT * FROM coaches_table WHERE email = :email")
+    fun getByEmail(email: String): Flow<CoachEntity>
+
     @Query("SELECT * FROM coaches_table WHERE name LIKE :cName AND + " +
             "`First Surname` LIKE :cSurname1 AND `Second Surname` LIKE :cSurname2 LIMIT 1")
     fun getByName(cName: String, cSurname1: String, cSurname2: String): Flow<CoachEntity>

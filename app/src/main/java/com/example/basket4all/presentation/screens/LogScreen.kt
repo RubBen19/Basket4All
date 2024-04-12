@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,16 +42,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.basket4all.R
 import com.example.basket4all.presentation.navigation.AppScreens
 import com.example.basket4all.presentation.viewmodels.LoginViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 /**
  * ARCHIVO: LogScreen.kt
@@ -156,6 +152,8 @@ private fun LogInFormulary(navController: NavHostController, loginViewModel: Log
                            modifier: Modifier = Modifier) {
     // Variable para ocultar la contraseña
     var hidden by remember { mutableStateOf(true) }
+    var email: String by remember { mutableStateOf("") }
+    var password: String by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier,
@@ -164,8 +162,8 @@ private fun LogInFormulary(navController: NavHostController, loginViewModel: Log
     ) {
         // Campo de texto para pedir el e-mail
         OutlinedTextField(
-            value = loginViewModel.email,
-            onValueChange = { loginViewModel.email = it },
+            value = email,
+            onValueChange = { email = it },
             label = {
                 Text(
                     text = "E-Mail"
@@ -175,12 +173,13 @@ private fun LogInFormulary(navController: NavHostController, loginViewModel: Log
                 .padding(top = 4.dp)
                 .align(Alignment.CenterHorizontally)
                 .size(height = 60.dp, width = 232.dp),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground)
         )
         // Campo de texto para pedir la contraseña
         OutlinedTextField(
-            value = loginViewModel.password,
-            onValueChange = { loginViewModel.password = it },
+            value = password,
+            onValueChange = { password = it },
             label = {
                 Text(
                     text = "Contraseña"
@@ -191,6 +190,7 @@ private fun LogInFormulary(navController: NavHostController, loginViewModel: Log
 
             ),
             singleLine = true,
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
             // Trasnformacion del campo para visualizar el texto introducido
             visualTransformation = if(hidden) PasswordVisualTransformation ()
             else VisualTransformation.None,
@@ -216,7 +216,7 @@ private fun LogInFormulary(navController: NavHostController, loginViewModel: Log
         LogInButton(
             text = "Iniciar Sesión",
             click = {
-                if (loginViewModel.userLogin()) {
+                if (loginViewModel.userLogin(email, password)) {
                     navController.navigate(route = AppScreens.FirstScreen.route)
                 }
             },

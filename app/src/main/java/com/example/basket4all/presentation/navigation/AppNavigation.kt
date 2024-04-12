@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.basket4all.common.elements.B4AllNavigationBar
+import com.example.basket4all.data.local.AppDatabase
 import com.example.basket4all.presentation.screens.CalendarScreen
 import com.example.basket4all.presentation.screens.ExerciseScreen
 import com.example.basket4all.presentation.screens.FirstScreen
@@ -25,6 +27,7 @@ import com.example.basket4all.presentation.screens.SplashScreen
 import com.example.basket4all.presentation.screens.TacticsScreen
 import com.example.basket4all.presentation.screens.TeamScreen
 import com.example.basket4all.presentation.viewmodels.LoginViewModel
+import com.example.basket4all.presentation.viewmodels.LoginViewModelFactory
 
 /**
  * ARCHIVO: AppNavigation.kt
@@ -37,6 +40,14 @@ fun AppNavigation() {
     
     // Esta variable indicará si la barra de navegación tiene que mostrarse o no en la screen
     var navIsVisible by remember {mutableStateOf (false)}
+
+    //Room y DAO
+    val appDatabase = AppDatabase.getDatabase(context = LocalContext.current.applicationContext)
+    val playerDao = appDatabase.playerDao()
+    val coachDao = appDatabase.coachDao()
+
+    //ViewModels
+    val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(playerDao, coachDao))
 
     //Con NavHost almaceno y gestiono las pantallas
     NavHost(navController= navController, startDestination = AppScreens.SplashScreen.route){
@@ -53,7 +64,6 @@ fun AppNavigation() {
         }
         composable(route = AppScreens.LogScreen.route){
             navIsVisible = false
-            val loginViewModel: LoginViewModel = viewModel()
             LogScreen(navController, loginViewModel)
         }
         composable(route = AppScreens.SplashScreen.route){

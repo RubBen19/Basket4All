@@ -41,6 +41,9 @@ interface PlayerDao {
     @Query("SELECT * FROM players_table WHERE Category LIKE :category")
     fun getByCategory(category: Categories): Flow<List<PlayerEntity>>
 
+    @Query("SELECT * FROM players_table WHERE email = :email")
+    fun getByEmail(email: String) : Flow<PlayerEntity>
+
     @Transaction
     @Query("SELECT * " +
             "FROM players_table " +

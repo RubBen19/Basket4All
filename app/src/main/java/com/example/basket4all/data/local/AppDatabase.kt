@@ -37,7 +37,7 @@ import java.time.LocalDate
     entities = [PlayerEntity::class, CoachEntity::class, TeamEntity::class, ClubEntity::class,
         MatchEntity::class, PlayerStats::class, MatchStats::class, TeamStats::class,
         CoachTeamCrossRef::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -80,9 +80,11 @@ abstract class AppDatabase : RoomDatabase() {
         private val appCallback = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
+                Log.d("DB", "Insert initial data starting")
                 GlobalScope.launch(Dispatchers.IO) {
                     insertInitialData()
                 }
+                Log.d("DB", "Insert initial data finished")
             }
         }
 
@@ -160,7 +162,6 @@ abstract class AppDatabase : RoomDatabase() {
             // Insercción de los jugadores y entrenadores del team1
             insertPlayers(players, team1)
             insertCoaches(coaches, team1)
-
         }
 
         private suspend fun insertPlayers(users: List<User>, team: TeamEntity) {
