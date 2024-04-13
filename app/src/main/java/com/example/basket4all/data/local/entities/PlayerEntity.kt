@@ -3,9 +3,8 @@ package com.example.basket4all.data.local.entities
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.basket4all.common.classes.PlayerClass
 import com.example.basket4all.common.elements.categoryAssigner
 import com.example.basket4all.common.enums.PlayerPositions
 import com.example.basket4all.common.enums.Categories
@@ -25,4 +24,9 @@ data class PlayerEntity(
     val positions: MutableList<PlayerPositions> = mutableListOf(),
     @ColumnInfo(name = "Category")
     val categories: Categories = categoryAssigner(user.birthdate)
-)
+) {
+    fun toPlayerClass(): PlayerClass {
+        return PlayerClass(id, user.email, user.name, user.surname1, user.surname2,
+            user.birthdate, user.picture, teamId, positions, categories)
+    }
+}

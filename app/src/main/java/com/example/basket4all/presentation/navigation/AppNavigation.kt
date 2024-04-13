@@ -26,8 +26,10 @@ import com.example.basket4all.presentation.screens.SecondScreen
 import com.example.basket4all.presentation.screens.SplashScreen
 import com.example.basket4all.presentation.screens.TacticsScreen
 import com.example.basket4all.presentation.screens.TeamScreen
-import com.example.basket4all.presentation.viewmodels.LoginViewModel
-import com.example.basket4all.presentation.viewmodels.LoginViewModelFactory
+import com.example.basket4all.presentation.viewmodels.CoachesViewModel
+import com.example.basket4all.presentation.viewmodels.CoachesViewModelFactory
+import com.example.basket4all.presentation.viewmodels.PlayersViewModel
+import com.example.basket4all.presentation.viewmodels.PlayersViewModelFactory
 
 /**
  * ARCHIVO: AppNavigation.kt
@@ -46,8 +48,12 @@ fun AppNavigation() {
     val playerDao = appDatabase.playerDao()
     val coachDao = appDatabase.coachDao()
 
-    //ViewModels
-    val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(playerDao, coachDao))
+    //ViewModels relacionados con la base de datos
+    val playersViewModel: PlayersViewModel = viewModel(factory = PlayersViewModelFactory(playerDao))
+    val coachesViewModel: CoachesViewModel = viewModel(factory = CoachesViewModelFactory(coachDao))
+
+    //ViewModels relacionados con screens
+
 
     //Con NavHost almaceno y gestiono las pantallas
     NavHost(navController= navController, startDestination = AppScreens.SplashScreen.route){
@@ -64,7 +70,7 @@ fun AppNavigation() {
         }
         composable(route = AppScreens.LogScreen.route){
             navIsVisible = false
-            LogScreen(navController, loginViewModel)
+            LogScreen(navController, playersViewModel, coachesViewModel)
         }
         composable(route = AppScreens.SplashScreen.route){
             navIsVisible = false
@@ -76,7 +82,7 @@ fun AppNavigation() {
         }
         composable(route = AppScreens.ProfileScreen.route) {
             navIsVisible = true
-            ProfileScreen(navController)
+            ProfileScreen()
         }
         composable(route = AppScreens.CalendarScreen.route) {
             navIsVisible = true

@@ -22,9 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,8 +44,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.basket4all.R
+import com.example.basket4all.data.local.entities.CoachEntity
+import com.example.basket4all.data.local.entities.PlayerEntity
 import com.example.basket4all.presentation.navigation.AppScreens
+import com.example.basket4all.presentation.viewmodels.CoachesViewModel
 import com.example.basket4all.presentation.viewmodels.LoginViewModel
+import com.example.basket4all.presentation.viewmodels.PlayersViewModel
 
 /**
  * ARCHIVO: LogScreen.kt
@@ -59,7 +63,11 @@ private const val FONT_SIZE: Int = 16
  * Función composable principal de la pantalla de inicio de sesión
  */
 @Composable
-fun LogScreen(navController: NavHostController, loginViewModel: LoginViewModel) {
+fun LogScreen(
+    navController: NavHostController,
+    playersViewModel: PlayersViewModel,
+    coachesViewModel: CoachesViewModel
+) {
     // Se ocupa toda la pantalla y se establece el fondo
     Box(
         modifier = Modifier
@@ -69,7 +77,8 @@ fun LogScreen(navController: NavHostController, loginViewModel: LoginViewModel) 
         // Se muestra el contenido de la pantalla
         LogContent (
             navController = navController,
-            loginViewModel = loginViewModel,
+            playersViewModel = playersViewModel,
+            coachesViewModel = coachesViewModel,
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.TopCenter)
@@ -84,8 +93,8 @@ fun LogScreen(navController: NavHostController, loginViewModel: LoginViewModel) 
  * Mediante su agrupación y gestión se logra el funcionamiento deseado para la screen.
  **/
 @Composable
-private fun LogContent(navController: NavHostController, loginViewModel: LoginViewModel,
-                       modifier: Modifier = Modifier) {
+private fun LogContent(navController: NavHostController, playersViewModel: PlayersViewModel,
+                       coachesViewModel: CoachesViewModel, modifier: Modifier = Modifier) {
     // IDs de las imágenes que se utilizarán como logo de la app
     val lightLogoID = R.drawable.white_removebg_preview
     val darkLogoID = R.drawable.black_removebg_preview
@@ -104,7 +113,8 @@ private fun LogContent(navController: NavHostController, loginViewModel: LoginVi
         // Formulario para el inicio de sesión
         LogInFormulary(
             navController = navController,
-            loginViewModel = loginViewModel,
+            playersViewModel = playersViewModel,
+            coachesViewModel = coachesViewModel,
             modifier = Modifier
                 .padding(top = 72.dp)
                 .align(Alignment.CenterHorizontally)
@@ -148,12 +158,15 @@ private fun LogContent(navController: NavHostController, loginViewModel: LoginVi
  **/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LogInFormulary(navController: NavHostController, loginViewModel: LoginViewModel,
-                           modifier: Modifier = Modifier) {
+private fun LogInFormulary(navController: NavHostController, playersViewModel: PlayersViewModel,
+                           coachesViewModel: CoachesViewModel, modifier: Modifier = Modifier) {
     // Variable para ocultar la contraseña
     var hidden by remember { mutableStateOf(true) }
     var email: String by remember { mutableStateOf("") }
     var password: String by remember { mutableStateOf("") }
+    // Observa el LiveData para el jugador con el correo electrónico dado
+    val playerLiveData = playersViewModel.getByEmail(email)
+    val playerState by playerLiveData.observeAsState(initial = null)
 
     Column(
         modifier = modifier,
@@ -216,8 +229,13 @@ private fun LogInFormulary(navController: NavHostController, loginViewModel: Log
         LogInButton(
             text = "Iniciar Sesión",
             click = {
-                if (loginViewModel.userLogin(email, password)) {
-                    navController.navigate(route = AppScreens.FirstScreen.route)
+                val player = playerLiveData.value
+                val coach = coachesViewModel.getByEmail(email)
+                if(player != null && player.user.password == password) {
+                    navController.navigate(AppScreens.FirstScreen.route)
+                }
+                else if(coach != null && coach.user.password == password) {
+                    navController.navigate(AppScreens.FirstScreen.route)
                 }
             },
             fontSize = FONT_SIZE,

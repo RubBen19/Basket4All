@@ -20,7 +20,6 @@ fun FirstScreen (navController: NavController) {
 
 @Composable
 private fun BodyContent(navController: NavController) {
-
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = CenterHorizontally,

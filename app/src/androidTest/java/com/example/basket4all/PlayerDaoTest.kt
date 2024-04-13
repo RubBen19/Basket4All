@@ -65,7 +65,7 @@ class PlayerDaoTest {
         )
 
         userExample2 = User(
-            email = "user@mail.com",
+            email = "user2@mail.com",
             password = "password",
             name = "User",
             surname1 = "Usurname",
@@ -150,6 +150,28 @@ class PlayerDaoTest {
         assertEquals("PLAYER OBTAINED BY NAME FAILED", player, playersObtained)
         val playerObtained = playerDao.getByName("Rubén", "Vicente", "Benito").first()
         assertEquals("PLAYER OBTAINED BY FULL NAME FAILED", player, playerObtained)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun getByEmail() = runBlocking {
+        val player = PlayerEntity(
+            1,
+            user = userExample,
+            teamId = 1
+        )
+        val player2 = PlayerEntity(
+            2,
+            user = userExample2,
+            teamId = 1
+        )
+        playerDao.insert(player)
+        playerDao.insert(player2)
+
+        val player1Obtained = playerDao.getByEmail(userExample.email).first()
+        assertEquals(player, player1Obtained)
+        val player2Obtained = playerDao.getByEmail(userExample2.email).first()
+        assertEquals(player2, player2Obtained)
     }
 
     @Test
