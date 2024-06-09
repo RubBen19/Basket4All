@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.example.basket4all.R
 import com.example.basket4all.common.enums.Categories
 
 /**
@@ -15,6 +16,8 @@ data class TeamEntity(
     val teamId: Int = 0,
     @ColumnInfo(name = "Club")
     val clubId: Int,
+    @ColumnInfo(name = "Logo")
+    val picture: String = "",
     @ColumnInfo(name = "Name")
     val name: String,
     @ColumnInfo(name = "Category")

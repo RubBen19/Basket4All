@@ -25,4 +25,10 @@ data class CoachEntity(
         return CoachClass(coachId, user.email, user.name, user.surname1, user.surname2,
             user.birthdate, user.picture, coachroles)
     }
+
+    fun getCoachRoles(): List<String> {
+        val list = mutableListOf<String>()
+        this.coachroles.forEach { list.add(it.name) }
+        return list
+    }
 }

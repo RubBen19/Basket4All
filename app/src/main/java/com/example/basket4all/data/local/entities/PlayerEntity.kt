@@ -23,10 +23,18 @@ data class PlayerEntity(
     @ColumnInfo(name = "Positions")
     val positions: MutableList<PlayerPositions> = mutableListOf(),
     @ColumnInfo(name = "Category")
-    val categories: Categories = categoryAssigner(user.birthdate)
+    val categories: Categories = categoryAssigner(user.birthdate),
+    @ColumnInfo(name = "Number")
+    var number: Int = (-1)
 ) {
     fun toPlayerClass(): PlayerClass {
         return PlayerClass(id, user.email, user.name, user.surname1, user.surname2,
             user.birthdate, user.picture, teamId, positions, categories)
+    }
+
+    fun getPositionsName(): List<String> {
+        val list = mutableListOf<String>()
+        this.positions.forEach { list.add(it.name) }
+        return list
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,12 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.basket4all.R
-import com.example.basket4all.data.local.entities.CoachEntity
-import com.example.basket4all.data.local.entities.PlayerEntity
 import com.example.basket4all.presentation.navigation.AppScreens
-import com.example.basket4all.presentation.viewmodels.CoachesViewModel
-import com.example.basket4all.presentation.viewmodels.LoginViewModel
-import com.example.basket4all.presentation.viewmodels.PlayersViewModel
+import com.example.basket4all.presentation.viewmodels.screens.LoginViewModel
 
 /**
  * ARCHIVO: LogScreen.kt
@@ -65,8 +62,7 @@ private const val FONT_SIZE: Int = 16
 @Composable
 fun LogScreen(
     navController: NavHostController,
-    playersViewModel: PlayersViewModel,
-    coachesViewModel: CoachesViewModel
+    loginViewModel: LoginViewModel
 ) {
     // Se ocupa toda la pantalla y se establece el fondo
     Box(
@@ -77,8 +73,7 @@ fun LogScreen(
         // Se muestra el contenido de la pantalla
         LogContent (
             navController = navController,
-            playersViewModel = playersViewModel,
-            coachesViewModel = coachesViewModel,
+            loginViewModel = loginViewModel,
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.TopCenter)
@@ -93,8 +88,11 @@ fun LogScreen(
  * Mediante su agrupación y gestión se logra el funcionamiento deseado para la screen.
  **/
 @Composable
-private fun LogContent(navController: NavHostController, playersViewModel: PlayersViewModel,
-                       coachesViewModel: CoachesViewModel, modifier: Modifier = Modifier) {
+private fun LogContent(
+    navController: NavHostController,
+    loginViewModel: LoginViewModel,
+    modifier: Modifier = Modifier
+) {
     // IDs de las imágenes que se utilizarán como logo de la app
     val lightLogoID = R.drawable.white_removebg_preview
     val darkLogoID = R.drawable.black_removebg_preview
@@ -113,13 +111,12 @@ private fun LogContent(navController: NavHostController, playersViewModel: Playe
         // Formulario para el inicio de sesión
         LogInFormulary(
             navController = navController,
-            playersViewModel = playersViewModel,
-            coachesViewModel = coachesViewModel,
+            loginViewModel = loginViewModel,
             modifier = Modifier
-                .padding(top = 72.dp)
+                .padding(top = 60.dp)
                 .align(Alignment.CenterHorizontally)
                 .background(MaterialTheme.colorScheme.background)
-                .size(272.dp)
+                .size(height = 312.dp, width = 280.dp)
                 .border(
                     width = 4.dp,
                     brush = Brush.verticalGradient(
@@ -158,15 +155,22 @@ private fun LogContent(navController: NavHostController, playersViewModel: Playe
  **/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LogInFormulary(navController: NavHostController, playersViewModel: PlayersViewModel,
-                           coachesViewModel: CoachesViewModel, modifier: Modifier = Modifier) {
+private fun LogInFormulary(
+    navController: NavHostController,
+    loginViewModel: LoginViewModel,
+    modifier: Modifier = Modifier
+) {
+    // Cierre de sesión al inicio
+    //SessionManager.getInstance().logOut()
+
     // Variable para ocultar la contraseña
     var hidden by remember { mutableStateOf(true) }
-    var email: String by remember { mutableStateOf("") }
-    var password: String by remember { mutableStateOf("") }
-    // Observa el LiveData para el jugador con el correo electrónico dado
-    val playerLiveData = playersViewModel.getByEmail(email)
-    val playerState by playerLiveData.observeAsState(initial = null)
+    val email by loginViewModel.email.observeAsState("")
+    val password by loginViewModel.password.observeAsState("")
+    // Estado para almacenar la opción seleccionada
+    val selectedOption by loginViewModel.option.observeAsState("")
+    //Estado del login
+    val loginSuccessful by loginViewModel.login.observeAsState(null)
 
     Column(
         modifier = modifier,
@@ -176,14 +180,14 @@ private fun LogInFormulary(navController: NavHostController, playersViewModel: P
         // Campo de texto para pedir el e-mail
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { loginViewModel.changeEmail(it) },
             label = {
                 Text(
                     text = "E-Mail"
                 ) },
             singleLine = true,
             modifier = Modifier
-                .padding(top = 4.dp)
+                .padding(top = 8.dp)
                 .align(Alignment.CenterHorizontally)
                 .size(height = 60.dp, width = 232.dp),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -192,7 +196,7 @@ private fun LogInFormulary(navController: NavHostController, playersViewModel: P
         // Campo de texto para pedir la contraseña
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { loginViewModel.changePassword(it) },
             label = {
                 Text(
                     text = "Contraseña"
@@ -200,7 +204,6 @@ private fun LogInFormulary(navController: NavHostController, playersViewModel: P
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done,
-
             ),
             singleLine = true,
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
@@ -225,19 +228,30 @@ private fun LogInFormulary(navController: NavHostController, playersViewModel: P
                 .align(Alignment.CenterHorizontally)
                 .size(height = 60.dp, width = 232.dp)
         )
+        // Radio buttons para elegir opciónd e inicio de sesión
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, start = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            RadioButton(
+                selected = selectedOption == "Jugador",
+                onClick = { loginViewModel.changeOption("Jugador") }
+            )
+            Text(text = "Jugador")
+            RadioButton(
+                selected = selectedOption == "Entrenador",
+                onClick = { loginViewModel.changeOption("Entrenador") }
+            )
+            Text(text = "Entrenador")
+        }
+
         // Botón de iniciar sesión
         LogInButton(
             text = "Iniciar Sesión",
-            click = {
-                val player = playerLiveData.value
-                val coach = coachesViewModel.getByEmail(email)
-                if(player != null && player.user.password == password) {
-                    navController.navigate(AppScreens.FirstScreen.route)
-                }
-                else if(coach != null && coach.user.password == password) {
-                    navController.navigate(AppScreens.FirstScreen.route)
-                }
-            },
+            click = { loginViewModel.login() },
             fontSize = FONT_SIZE,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
@@ -258,7 +272,6 @@ private fun LogInFormulary(navController: NavHostController, playersViewModel: P
                     shape = RoundedCornerShape(16.dp)
                 )
         )
-
         // Botón para ir al campo de contraseña olvidada
         TextWithButtonText(
             text = "",
@@ -268,6 +281,14 @@ private fun LogInFormulary(navController: NavHostController, playersViewModel: P
             color = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier.padding(top = 4.dp)
         )
+        if (loginSuccessful == true) {
+            navController.navigate(AppScreens.FirstScreen.route)
+            loginViewModel.resetLogin()
+        }
+        else if (loginSuccessful == false){
+            LogInError()
+        }
+
     }
 }
 
@@ -279,13 +300,12 @@ private fun LogInError(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(top = 4.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(
-                text = "Usuario o contraseña incorrecto\n" +
-                        "Prueba otra vez o crea una cuenta",
+                text = "Usuario, contraseña o rol incorrecto",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.error
             )

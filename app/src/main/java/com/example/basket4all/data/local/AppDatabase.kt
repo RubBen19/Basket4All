@@ -7,7 +7,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.enums.Categories
+import com.example.basket4all.common.enums.CoachRoles
+import com.example.basket4all.common.enums.PlayerPositions
 import com.example.basket4all.data.local.daos.ClubDao
 import com.example.basket4all.data.local.daos.CoachDao
 import com.example.basket4all.data.local.daos.CoachTeamCrossRefDao
@@ -30,6 +33,7 @@ import com.example.basket4all.data.local.entities.User
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -90,17 +94,156 @@ abstract class AppDatabase : RoomDatabase() {
 
         private suspend fun insertInitialData() {
             // Creación de clubes
-            val club1 = ClubEntity(
-                name = "Club 1",
-                description = "Club 1"
+            val clubesNames: Array<String> = arrayOf(
+                "BASKET HOLOS SALESIANOS",
+                "MEJORADA 2012",
+                "SPARTAN SF C.D.E.",
+                "REFORDOMUS GRIÑON",
+                "PUREZA DE MARÍA",
+                "CB VILLA DE LEGANÉS",
             )
-            // Creación de equipos
-            val team1 = TeamEntity(
-                clubId = club1.id,
-                name = "Team 1",
-                category = Categories.SENIOR,
-                league = "2ª Oro"
+            val clubes: MutableList<ClubEntity> = mutableListOf()
+            var id = 1
+
+            for (names in clubesNames) {
+                clubes.add(ClubEntity(id, names, ""))
+                id++
+            }
+
+            // Creación de equipos (2ª Autonómica ORO)
+            val teamsNames: Array<String> = arrayOf(
+                "CB VILLA DE LEGANÉS",
+                "BASKET HOLOS SALESIANOS",
+                "MEJORADA 2012",
+                "SPARTAN SF C.D.E.",
+                "REFORDOMUS GRIÑON",
+                "PUREZA DE MARÍA"
             )
+            val teams: MutableList<TeamEntity> = mutableListOf()
+            id = 1
+            for (name in teamsNames) {
+                teams.add(
+                    TeamEntity(
+                        clubId = id,
+                        teamId = id,
+                        name =  name,
+                        category = Categories.SENIOR,
+                        league = "2ª Autonómica ORO"
+                    )
+                )
+                id++
+            }
+
+            // Insercción de partidos
+            val matches: MutableList<MatchEntity> = mutableListOf()
+            val match1 = MatchEntity(
+                1,
+                6,
+                1,
+                LocalDate.of(2023, 10, 8),
+                Score(67, 47)
+            )
+            matches.add(match1)
+
+            val match2 = MatchEntity(
+                2,
+                1,
+                5,
+                LocalDate.of(2023, 10, 15),
+                Score(68, 65)
+            )
+            matches.add(match2)
+
+            val match3 = MatchEntity(
+                3,
+                4,
+                1,
+                LocalDate.of(2023, 10, 22),
+                Score(85, 80)
+            )
+            matches.add(match3)
+
+            val match4 = MatchEntity(
+                4,
+                1,
+                3,
+                LocalDate.of(2023, 10, 29),
+                Score(48, 65)
+            )
+            matches.add(match4)
+
+            val match5 = MatchEntity(
+                5,
+                5,
+                4,
+                LocalDate.of(2023, 10, 29),
+                Score(51, 73)
+            )
+            matches.add(match5)
+
+            val match6 = MatchEntity(
+                6,
+                3,
+                5,
+                LocalDate.of(2023, 11, 5),
+                Score(68, 58)
+            )
+            matches.add(match6)
+
+            val match7 = MatchEntity(
+                7,
+                6,
+                4,
+                LocalDate.of(2023, 11, 5),
+                Score(64, 76)
+            )
+            matches.add(match7)
+
+            val match8 = MatchEntity(
+                8,
+                2,
+                1,
+                LocalDate.of(2023, 11, 5),
+                Score(69, 53)
+            )
+            matches.add(match8)
+
+            val match9 = MatchEntity(
+                9,
+                4,
+                3,
+                LocalDate.of(2023, 11, 12),
+                Score(74, 57)
+            )
+            matches.add(match9)
+
+            val match10 = MatchEntity(
+                10,
+                5,
+                2,
+                LocalDate.of(2023, 11, 12),
+                Score(66, 70)
+            )
+            matches.add(match10)
+
+            val match11 = MatchEntity(
+                11,
+                6,
+                3,
+                LocalDate.of(2023, 11, 19),
+                Score(80, 55)
+            )
+            matches.add(match11)
+
+            val match12 = MatchEntity(
+                12,
+                2,
+                4,
+                LocalDate.of(2023, 11, 19),
+                Score(63, 73)
+            )
+            matches.add(match12)
+
             // Some players insertion
             val user1 = User(
                 email = "vicentebenitoruben@gmail.com",
@@ -152,34 +295,69 @@ abstract class AppDatabase : RoomDatabase() {
                 picture = 4
             )
             // Agrupación en listas de los distintos elementos
-            val clubs = listOf(club1)
-            val teams = listOf(team1)
             val players = listOf(user1, user2, user3, user4, user5)
             val coaches = listOf(user1)
             // Insercción de clubes y equipos
-            insertClubs(clubs)
+            insertClubs(clubes)
             insertTeams(teams)
-            // Insercción de los jugadores y entrenadores del team1
-            insertPlayers(players, team1)
-            insertCoaches(coaches, team1)
+            // Insercción de partidos
+            insertMatches(matches)
+            // Insercción de los jugadores y entrenadores del villa de leganés
+            insertPlayers(players, teams[0])
+            insertCoaches(coaches, teams[0])
+        }
+
+        private suspend fun insertMatches(matches: List<MatchEntity>) {
+            for (match in matches) {
+                INSTANCE?.matchDao()?.insert(match)
+
+                val localT = INSTANCE?.teamStatsDao()?.getByTeam(match.localTeamId)?.first()
+                localT?.matchPlayed = localT?.matchPlayed!! + 1
+                if (match.score.getLocalScore() > match.score.getVisitorScore()) localT.wins += 1
+                localT.points += match.score.getLocalScore()
+                val visitorT = INSTANCE?.teamStatsDao()?.getByTeam(match.visitorTeamId)?.first()
+                visitorT?.matchPlayed = visitorT?.matchPlayed!! + 1
+                if (match.score.getLocalScore() < match.score.getVisitorScore()) visitorT.wins += 1
+                visitorT.points += match.score.getVisitorScore()
+
+                INSTANCE?.teamStatsDao()?.update(localT)
+                INSTANCE?.teamStatsDao()?.update(visitorT)
+            }
         }
 
         private suspend fun insertPlayers(users: List<User>, team: TeamEntity) {
+            val list = mutableListOf(PlayerPositions.PIVOT, PlayerPositions.ALAPIVOT)
+            var id = 1
             for (user in users) {
                 val player = PlayerEntity (
+                    id = id,
                     user = user,
-                    teamId = team.teamId
+                    teamId = team.teamId,
+                    number = if (user.name == "Rubén") 91 else 1,
+                    positions =  if (user.name == "Rubén") list else mutableListOf()
+                )
+                val stats = PlayerStats(
+                    playerId = player.id,
                 )
                 INSTANCE?.playerDao()?.insert(player)
+                INSTANCE?.playerStatsDao()?.insert(stats)
+                id++
             }
         }
 
         private suspend fun insertCoaches(users: List<User>, team: TeamEntity) {
             for (user in users) {
                 val coach = CoachEntity (
+                    coachId = 1,
                     user = user
                 )
+                val coachTeamCrossRef = CoachTeamCrossRef(
+                    coachId = coach.coachId,
+                    teamId = team.teamId,
+                    role = CoachRoles.MAIN
+                )
                 INSTANCE?.coachDao()?.insert(coach)
+                INSTANCE?.coachTeamCrossRefDao()?.insert(coachTeamCrossRef)
             }
         }
 
@@ -192,6 +370,9 @@ abstract class AppDatabase : RoomDatabase() {
         private suspend fun insertTeams(teams: List<TeamEntity>) {
             for (team in teams) {
                 INSTANCE?.teamDao()?.insert(team)
+                INSTANCE?.teamStatsDao()?.insert(
+                    TeamStats(teamId = team.teamId)
+                )
             }
         }
     }

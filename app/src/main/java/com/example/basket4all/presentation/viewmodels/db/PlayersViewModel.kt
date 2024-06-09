@@ -1,17 +1,26 @@
-package com.example.basket4all.presentation.viewmodels
+package com.example.basket4all.presentation.viewmodels.db
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.basket4all.data.local.daos.PlayerDao
 import com.example.basket4all.data.local.entities.PlayerEntity
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class PlayersViewModel(private val playerDao: PlayerDao): ViewModel() {
-    val allPlayers: LiveData<List<PlayerEntity>> = playerDao.getAll().asLiveData()
 
-    fun getByEmail(email: String): LiveData<PlayerEntity?> {
-        return playerDao.getByEmail(email).asLiveData()
+    init {
+        viewModelScope.launch {
+            val player: PlayerEntity = playerDao.getByID(1).first()
+        }
+    }
+    suspend fun getByEmail(email: String): PlayerEntity {
+        return playerDao.getByEmail(email).first()
+    }
+
+    suspend fun getById(id: Int): PlayerEntity {
+        return playerDao.getByID(id).first()
     }
 }
 

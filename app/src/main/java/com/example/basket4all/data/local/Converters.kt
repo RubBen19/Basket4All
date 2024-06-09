@@ -1,6 +1,7 @@
 package com.example.basket4all.data.local
 
 import androidx.room.TypeConverter
+import com.example.basket4all.common.classes.PlayerStatsClass
 import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.enums.CoachRoles
 import com.example.basket4all.common.enums.PlayerPositions
@@ -87,4 +88,17 @@ class Converters {
     fun toJsonFromCoachRoles(list: MutableList<CoachRoles>): String {
         return gson.toJson(list)
     }
+
+    /** Convertidores para las estadísticas de un jugador en [String] con [Gson] y viceversa **/
+    @TypeConverter
+    fun fromPlayerStats(playerStats: PlayerStatsClass): String {
+        return Gson().toJson(playerStats)
+    }
+
+    @TypeConverter
+    fun toPlayerStats(playerStatsString: String): PlayerStatsClass {
+        val type = object : TypeToken<PlayerStatsClass>() {}.type
+        return Gson().fromJson(playerStatsString, type)
+    }
+
 }

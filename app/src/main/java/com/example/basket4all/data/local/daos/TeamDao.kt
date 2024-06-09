@@ -42,6 +42,9 @@ interface TeamDao {
     @Query("SELECT * FROM teams_table WHERE League LIKE :league")
     fun getByLeague(league: String): Flow<List<TeamEntity>>
 
+    @Query("SELECT * FROM teams_table WHERE League LIKE :league AND Category = :category")
+    fun geyByCategoryAndLeague(category: Categories, league: String): Flow<List<TeamEntity>>
+
     @Transaction
     @Query("SELECT * " +
             "FROM teams_table " +
