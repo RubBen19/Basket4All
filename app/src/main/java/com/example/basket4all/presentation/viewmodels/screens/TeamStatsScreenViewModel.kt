@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.basket4all.data.local.entities.TeamStats
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TeamStatsScreenViewModel(
@@ -29,6 +30,7 @@ class TeamStatsScreenViewModel(
         _loading.value = true
         viewModelScope.launch {
             _stats.value = teamStatsVM.getByTeamId(teamId)
+            delay(800)
             _loading.value = false
             Log.d("TeamScreenViewModel", "Estadísticas encontradas")
         }

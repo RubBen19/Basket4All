@@ -11,6 +11,7 @@ import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.common.enums.CoachRoles
 import com.example.basket4all.common.enums.PlayerPositions
+import com.example.basket4all.data.local.daos.CalendarEventDao
 import com.example.basket4all.data.local.daos.ClubDao
 import com.example.basket4all.data.local.daos.CoachDao
 import com.example.basket4all.data.local.daos.CoachTeamCrossRefDao
@@ -20,6 +21,7 @@ import com.example.basket4all.data.local.daos.PlayerDao
 import com.example.basket4all.data.local.daos.PlayerStatsDao
 import com.example.basket4all.data.local.daos.TeamDao
 import com.example.basket4all.data.local.daos.TeamStatsDao
+import com.example.basket4all.data.local.entities.CalendarEventEntity
 import com.example.basket4all.data.local.entities.ClubEntity
 import com.example.basket4all.data.local.entities.CoachEntity
 import com.example.basket4all.data.local.entities.CoachTeamCrossRef
@@ -40,7 +42,7 @@ import java.time.LocalDate
 @Database(
     entities = [PlayerEntity::class, CoachEntity::class, TeamEntity::class, ClubEntity::class,
         MatchEntity::class, PlayerStats::class, MatchStats::class, TeamStats::class,
-        CoachTeamCrossRef::class],
+        CoachTeamCrossRef::class, CalendarEventEntity::class],
     version = 2,
     exportSchema = false
 )
@@ -55,6 +57,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun playerStatsDao(): PlayerStatsDao
     abstract fun teamDao(): TeamDao
     abstract fun teamStatsDao(): TeamStatsDao
+    abstract fun calendarEventDao(): CalendarEventDao
 
     abstract fun coachTeamCrossRefDao(): CoachTeamCrossRefDao
 

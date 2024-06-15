@@ -33,6 +33,8 @@ import com.example.basket4all.presentation.screens.SplashScreen
 import com.example.basket4all.presentation.screens.TacticsScreen
 import com.example.basket4all.presentation.screens.TeamScreen
 import com.example.basket4all.presentation.screens.TeamStatsScreen
+import com.example.basket4all.presentation.viewmodels.db.CalendarEventViewModel
+import com.example.basket4all.presentation.viewmodels.db.CalendarEventViewModelFactory
 import com.example.basket4all.presentation.viewmodels.db.CoachesViewModel
 import com.example.basket4all.presentation.viewmodels.db.CoachesViewModelFactory
 import com.example.basket4all.presentation.viewmodels.db.MatchesViewModel
@@ -71,6 +73,7 @@ fun AppNavigation() {
     val teamStatsDao = appDatabase.teamStatsDao()
     val matchDao = appDatabase.matchDao()
     val playerStatsDao = appDatabase.playerStatsDao()
+    val calendarEventDao = appDatabase.calendarEventDao()
 
     //ViewModels relacionados con la base de datos
     val playersViewModel: PlayersViewModel = viewModel(factory = PlayersViewModelFactory(playerDao))
@@ -82,6 +85,9 @@ fun AppNavigation() {
     val matchesViewModel: MatchesViewModel = viewModel(factory = MatchesViewModelFactory(matchDao))
     val playerStatsViewModel: PlayerStatsViewModel = viewModel(
         factory = PlayerStatsViewModelFactory(playerStatsDao)
+    )
+    val calendarEventViewModel: CalendarEventViewModel = viewModel(
+        factory = CalendarEventViewModelFactory(calendarEventDao)
     )
 
     //ViewModels relacionados con screens
@@ -130,7 +136,7 @@ fun AppNavigation() {
         }
         composable(route = AppScreens.CalendarScreen.route) {
             navIsVisible = true
-            CalendarScreen(navController)
+            CalendarScreen(calendarEventViewModel)
         }
         composable(route = AppScreens.TeamScreen.route + "/{id}",
             arguments = listOf(navArgument("id") { type = NavType.IntType })

@@ -13,6 +13,7 @@ import com.example.basket4all.presentation.viewmodels.db.MatchesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class NewMatchScreenViewModel(
@@ -59,6 +60,7 @@ class NewMatchScreenViewModel(
             myTeam = teamVM.getById(session.getTeamId())
             searchOtherTeams()
             loadPlayers()
+            delay(800)
             _loading.value = false
         }
     }

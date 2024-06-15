@@ -11,6 +11,7 @@ import com.example.basket4all.data.local.entities.PlayerEntity
 import com.example.basket4all.data.local.entities.TeamEntity
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TeamScreenViewModel(
@@ -50,6 +51,7 @@ class TeamScreenViewModel(
             _defeats.value = stats.matchPlayed - _wins.value!!
             _points.value = stats.points.toDouble() / stats.matchPlayed
 
+            delay(800)
             _loading.value = false
             Log.d("TeamScreenViewModel", "Equipo encontrado")
         }

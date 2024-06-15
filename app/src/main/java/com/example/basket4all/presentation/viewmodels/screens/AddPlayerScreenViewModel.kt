@@ -9,6 +9,7 @@ import com.example.basket4all.common.classes.PlayerStatsClass
 import com.example.basket4all.common.messengers.NewMatchCourier
 import com.example.basket4all.data.local.entities.MatchStats
 import com.example.basket4all.presentation.viewmodels.db.PlayersViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddPlayerScreenViewModel(
@@ -61,6 +62,7 @@ class AddPlayerScreenViewModel(
             _name.value = player.user.name
             _surname.value = player.user.surname1
             _surname2.value = player.user.surname2.toString()
+            delay(800)
             _loading.value = false
         }
     }

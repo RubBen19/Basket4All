@@ -8,6 +8,7 @@ import com.example.basket4all.common.enums.PlayerPositions
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 /**
@@ -20,6 +21,8 @@ class Converters {
 
     // Formato para las fechas
     private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+    // Formato para las horas
+    private val hourFormatter = DateTimeFormatter.ofPattern("HH:mm")
     // Gson para las conversiones Json
     private val gson = Gson()
 
@@ -31,6 +34,16 @@ class Converters {
     @TypeConverter
     fun toLocalDate(date: LocalDate?): String? {
         return date?.format(dateFormatter)
+    }
+
+    @TypeConverter
+    fun fromLocalTime(value: String?): LocalTime? {
+        return value?.let { LocalTime.parse(value, hourFormatter) }
+    }
+
+    @TypeConverter
+    fun toLocalTime(time: LocalTime?): String? {
+        return time?.format(hourFormatter)
     }
 
     /** Convertidores para listas [PlayerPositions] en [String] con [Gson] y viceversa **/

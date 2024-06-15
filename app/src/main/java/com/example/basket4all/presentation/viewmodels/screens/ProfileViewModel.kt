@@ -12,6 +12,7 @@ import com.example.basket4all.presentation.viewmodels.db.CoachesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayersViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
@@ -71,6 +72,7 @@ class ProfileViewModel(
                 }
                 else -> throw Exception("No se ha iniciado sesión correctamente")
             }
+            delay(800)
             _loading.value = false
             Log.d("Search", "Usuario encontrado")
         }
