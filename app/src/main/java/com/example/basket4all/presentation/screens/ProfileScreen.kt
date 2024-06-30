@@ -302,7 +302,7 @@ private fun PositionsCard(positions: List<String>) {
             itemsIndexed(positions.sorted()) { i, position ->
                 //Nombre de la posición
                 Text(
-                    text = position.toString(),
+                    text = position,
                     fontWeight = FontWeight.Bold,
                     color = if (i%2 == 0)MaterialTheme.colorScheme.onBackground
                     else MaterialTheme.colorScheme.primary,

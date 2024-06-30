@@ -282,7 +282,7 @@ private fun LogInFormulary(
             modifier = Modifier.padding(top = 4.dp)
         )
         if (loginSuccessful == true) {
-            navController.navigate(AppScreens.FirstScreen.route)
+            navController.navigate(AppScreens.HomeScreen.route)
             loginViewModel.resetLogin()
         }
         else if (loginSuccessful == false){

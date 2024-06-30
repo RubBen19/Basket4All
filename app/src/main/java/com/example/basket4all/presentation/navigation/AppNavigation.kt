@@ -22,7 +22,7 @@ import com.example.basket4all.presentation.screens.AddPlayerStatsScreen
 import com.example.basket4all.presentation.screens.CalendarScreen
 import com.example.basket4all.presentation.screens.CoachModeScreen
 import com.example.basket4all.presentation.screens.ExerciseScreen
-import com.example.basket4all.presentation.screens.FirstScreen
+import com.example.basket4all.presentation.screens.HomeScreen
 import com.example.basket4all.presentation.screens.LogScreen
 import com.example.basket4all.presentation.screens.MatchesScreen
 import com.example.basket4all.presentation.screens.NewMatchScreen
@@ -97,9 +97,16 @@ fun AppNavigation() {
 
     //Con NavHost almaceno y gestiono las pantallas
     NavHost(navController= navController, startDestination = AppScreens.SplashScreen.route){
-        composable(route = AppScreens.FirstScreen.route){
+        composable(route = AppScreens.HomeScreen.route){
             navIsVisible = true
-            FirstScreen(navController)
+            HomeScreen(
+                playersViewModel,
+                coachesViewModel,
+                calendarEventViewModel,
+                matchesViewModel,
+                teamsViewModel,
+                navController
+            )
         }
         composable(route = AppScreens.SecondScreen.route + "/{text}",
             listOf(navArgument(name = "text"){
@@ -136,7 +143,7 @@ fun AppNavigation() {
         }
         composable(route = AppScreens.CalendarScreen.route) {
             navIsVisible = true
-            CalendarScreen(calendarEventViewModel)
+            CalendarScreen(calendarEventViewModel, teamsViewModel)
         }
         composable(route = AppScreens.TeamScreen.route + "/{id}",
             arguments = listOf(navArgument("id") { type = NavType.IntType })

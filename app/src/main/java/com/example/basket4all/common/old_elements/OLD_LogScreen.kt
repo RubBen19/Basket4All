@@ -164,7 +164,7 @@ private fun Formulary (navController: NavHostController) {
             text = "Iniciar Sesión",
             click = {
                 navController.popBackStack()
-                navController.navigate(route = AppScreens.FirstScreen.route) },
+                navController.navigate(route = AppScreens.HomeScreen.route) },
             Alignment.CenterHorizontally
         )
     }

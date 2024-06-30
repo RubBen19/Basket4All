@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,16 +17,13 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,54 +32,44 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.basket4all.common.elements.LoadScreen
+import com.example.basket4all.common.elements.getDaysOfWeek
+import com.example.basket4all.common.elements.getMonth
 import com.example.basket4all.presentation.popup.CalendarEvent
 import com.example.basket4all.presentation.popup.RemoveConfirm
 import com.example.basket4all.presentation.popup.ShowDayEvents
 import com.example.basket4all.presentation.popup.ShowEvent
+import com.example.basket4all.presentation.uistate.CalendarScreenUiState
 import com.example.basket4all.presentation.viewmodels.db.CalendarEventViewModel
+import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.screens.CalendarScreenViewModel
 import com.example.basket4all.presentation.viewmodels.screens.CalendarScreenViewModelFactory
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
-import java.time.format.TextStyle
-import java.util.Locale
 
 @Composable
-fun CalendarScreen(calendarEventViewModel: CalendarEventViewModel) {
+fun CalendarScreen(calendarEventViewModel: CalendarEventViewModel, teamViewModel: TeamViewModel) {
     val viewModel: CalendarScreenViewModel = viewModel(
-        factory = CalendarScreenViewModelFactory(calendarEventViewModel)
+        factory = CalendarScreenViewModelFactory(calendarEventViewModel, teamViewModel)
     )
-    val loading by viewModel.loading.observeAsState(false)
+    val screenUiState by viewModel.uiState.collectAsState()
 
-    if (loading) LoadScreen()
+    if (screenUiState.loading) LoadScreen()
     else {
-        val year by viewModel.year.observeAsState(LocalDate.now().year)
-        val month by viewModel.month.observeAsState(LocalDate.now().month)
-        val showNewEvent by viewModel.showNewEventPopUp.observeAsState(false)
-        val showEvent by viewModel.showEventPopUp.observeAsState(false)
-        val showConfirm by viewModel.showConfirm.observeAsState(false)
-        val showDay by viewModel.showDayEvents.observeAsState(false)
-
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Header(year, month, viewModel)
-            DaysGrid(viewModel, year, month)
-            Events(viewModel)
+            Header(screenUiState.year, screenUiState.month, viewModel)
+            DaysGrid(viewModel, screenUiState)
+            Events(viewModel, screenUiState)
         }
-        if (showNewEvent) CalendarEvent(viewModel)
-        if (showEvent) ShowEvent(viewModel)
-        if (showConfirm) RemoveConfirm(viewModel)
-        if (showDay) ShowDayEvents(viewModel)
+        if (screenUiState.showNewEventPopUp) CalendarEvent(viewModel, screenUiState)
+        if (screenUiState.showEventPopUp) ShowEvent(viewModel, screenUiState)
+        if (screenUiState.showConfirm) RemoveConfirm(viewModel, screenUiState)
+        if (screenUiState.showDayEvents) ShowDayEvents(viewModel, screenUiState)
     }
-
 }
 
-private fun getMonth(month: Month?): String {
-    return month?.getDisplayName(TextStyle.FULL, Locale.getDefault()).orEmpty().uppercase()
-}
 @Composable
 fun Header(year: Int?, month: Month?, viewModel: CalendarScreenViewModel) {
     Row(
@@ -126,17 +112,12 @@ fun Header(year: Int?, month: Month?, viewModel: CalendarScreenViewModel) {
     }
 }
 
-private fun getDaysOfWeek(): List<String> {
-    return DayOfWeek.entries.map {
-        it.getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase()
-    }
-}
 @Composable
-fun DaysGrid(viewModel: CalendarScreenViewModel, year: Int, month: Month) {
-    val days = YearMonth.of(year, month).lengthOfMonth()
+fun DaysGrid(viewModel: CalendarScreenViewModel, screenUiState: CalendarScreenUiState) {
+    val days = YearMonth.of(screenUiState.year, screenUiState.month).lengthOfMonth()
     val daysOfWeek = getDaysOfWeek()
     var dayNumber = 1
-    val events = viewModel.eventsList.observeAsState(listOf())
+    val events = screenUiState.eventsList
 
     Column {
         Row(
@@ -164,21 +145,21 @@ fun DaysGrid(viewModel: CalendarScreenViewModel, year: Int, month: Month) {
                 var i = 0
                 while (i < daysOfWeek.size){
                     if (dayNumber <= days) {
-                        val date = LocalDate.of(year, month, dayNumber)
+                        val date = LocalDate.of(screenUiState.year, screenUiState.month, dayNumber)
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(16.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    if (events.value.any { it.date == date }) {
+                                    if (events.any { it.date == date }) {
                                         viewModel.showDayEvents(date)
                                     } else viewModel.showAddPopUp(date)
                                 },
                             contentAlignment = Alignment.Center
                         ) {
                             var color = MaterialTheme.colorScheme.onBackground
-                            if (events.value.any { it.date == date }) {
+                            if (events.any { it.date == date }) {
                                 color = MaterialTheme.colorScheme.primary
                             }
                             Text(
@@ -204,8 +185,7 @@ fun DaysGrid(viewModel: CalendarScreenViewModel, year: Int, month: Month) {
 }
 
 @Composable
-fun Events(viewModel: CalendarScreenViewModel) {
-    val events = viewModel.eventsList.observeAsState(listOf())
+fun Events(viewModel: CalendarScreenViewModel, screenUiState: CalendarScreenUiState) {
     Text(
         text = "PROXIMOS EVENTOS",
         fontSize = 20.sp,
@@ -216,7 +196,7 @@ fun Events(viewModel: CalendarScreenViewModel) {
     LazyColumn(
         modifier = Modifier.padding(bottom = 52.dp)
     ) {
-        items(events.value) { e ->
+        items(screenUiState.eventsList) { e ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

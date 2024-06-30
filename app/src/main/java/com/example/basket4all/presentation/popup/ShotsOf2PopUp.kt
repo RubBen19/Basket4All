@@ -37,10 +37,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.basket4all.presentation.uistate.AddPlayerScreenUiState
 import com.example.basket4all.presentation.viewmodels.screens.AddPlayerScreenViewModel
 
 @Composable
-fun ShotsOf2PopUp(viewModel: AddPlayerScreenViewModel) {
+fun ShotsOf2PopUp(viewModel: AddPlayerScreenViewModel, screenUiState: AddPlayerScreenUiState) {
     // Inputs desde la esquina
     val successCL = remember { mutableStateOf("") }
     val failedCL = remember { mutableStateOf("") }
@@ -64,49 +65,49 @@ fun ShotsOf2PopUp(viewModel: AddPlayerScreenViewModel) {
 
     AlertDialog(
         modifier = Modifier.padding(top = 20.dp, bottom = 32.dp),
-        onDismissRequest = { viewModel.hide("Tiros de 2") },
+        onDismissRequest = { viewModel.show("Tiros de 2") },
         confirmButton = {
             IconButton(
                 onClick = {
-                    val shots45 = viewModel.matchStats.value?.shots?.get2Shots()
-                    val cornerShots = viewModel.matchStats.value?.shots?.get2Shots()
-                    val centerShots = viewModel.matchStats.value?.shots?.get2Shots()
-                    val zoneShots = viewModel.matchStats.value?.shots?.getZoneShots()
+                    val shots45 = screenUiState.matchStats.shots.get2Shots()
+                    val cornerShots = screenUiState.matchStats.shots.get2Shots()
+                    val centerShots = screenUiState.matchStats.shots.get2Shots()
+                    val zoneShots = screenUiState.matchStats.shots.getZoneShots()
 
-                    cornerShots?.setCornerL(
+                    cornerShots.setCornerL(
                         successCL.value.toIntOrNull() ?: 0,
                         failedCL.value.toIntOrNull() ?: 0
                     )
-                    cornerShots?.setCornerR(
+                    cornerShots.setCornerR(
                         successCR.value.toIntOrNull() ?: 0,
                         failedCR.value.toIntOrNull() ?: 0
                     )
-                    shots45?.setForty5L(
+                    shots45.setForty5L(
                         success45L.value.toIntOrNull() ?: 0,
                         failed45L.value.toIntOrNull() ?: 0
                     )
-                    shots45?.setForty5R(
+                    shots45.setForty5R(
                         success45R.value.toIntOrNull() ?: 0,
                         failed45R.value.toIntOrNull() ?: 0
                     )
-                    centerShots?.setCenter(
+                    centerShots.setCenter(
                         successCenter.value.toIntOrNull() ?: 0,
                         failedCenter.value.toIntOrNull() ?: 0
                     )
-                    zoneShots?.setLeft(
+                    zoneShots.setLeft(
                         successZL.value.toIntOrNull() ?: 0,
                         failedZL.value.toIntOrNull() ?: 0
                     )
-                    zoneShots?.setRight(
+                    zoneShots.setRight(
                         successZR.value.toIntOrNull() ?: 0,
                         failedZR.value.toIntOrNull() ?: 0
                     )
-                    zoneShots?.setCenter(
+                    zoneShots.setCenter(
                         successZC.value.toIntOrNull() ?: 0,
                         failedZC.value.toIntOrNull() ?: 0
                     )
 
-                    viewModel.hide("Tiros de 2")
+                    viewModel.show("Tiros de 2")
                 }
             ) {
                 Icon(

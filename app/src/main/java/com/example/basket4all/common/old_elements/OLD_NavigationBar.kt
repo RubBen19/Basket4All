@@ -69,7 +69,7 @@ fun NavigationBar(navController: NavController, modifier: Modifier = Modifier) {
                 ) {
                     navController.navigate(screen.route) {
                         navController.popBackStack(
-                            route = AppScreens.FirstScreen.route,
+                            route = AppScreens.HomeScreen.route,
                             inclusive = false,
                             saveState = true
                         )

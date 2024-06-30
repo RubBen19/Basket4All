@@ -1,57 +1,39 @@
 package com.example.basket4all.presentation.viewmodels.screens
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.basket4all.common.messengers.SessionManager
 import com.example.basket4all.data.local.entities.CalendarEventEntity
+import com.example.basket4all.data.local.entities.TeamEntity
+import com.example.basket4all.presentation.uistate.CalendarScreenUiState
 import com.example.basket4all.presentation.viewmodels.db.CalendarEventViewModel
+import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Month
-import java.time.format.TextStyle
-import java.util.Locale
-import kotlin.time.Duration.Companion.days
 
 class CalendarScreenViewModel(
-    private val calendarEventVM: CalendarEventViewModel
+    private val calendarEventVM: CalendarEventViewModel,
+    private val teamVM: TeamViewModel
 ): ViewModel() {
-    // Variables utilizadas en la pantalla de calendario
-    private val actualDay = LocalDate.now()
-    private val _month = MutableLiveData(actualDay.month)
-    val month: LiveData<Month> = _month
-    private val _year = MutableLiveData(actualDay.year)
-    val year: LiveData<Int> = _year
-    private val _showEventPopUp = MutableLiveData(false)
-    val showEventPopUp: LiveData<Boolean> = _showEventPopUp
-    private val _showNewEventPopUp = MutableLiveData(false)
-    val showNewEventPopUp: LiveData<Boolean> = _showNewEventPopUp
-    private val _showConfirm = MutableLiveData(false)
-    val showConfirm: LiveData<Boolean> = _showConfirm
-    private val _showDayEvents = MutableLiveData(false)
-    val showDayEvents: LiveData<Boolean> = _showDayEvents
+    // Screen UI state
+    private val _uiState = MutableStateFlow(CalendarScreenUiState())
+    val uiState: StateFlow<CalendarScreenUiState> = _uiState.asStateFlow()
 
-    //Variable para la carga de la screen
-    private val _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
-
-    //Lista de eventos
-    private val _eventsList = MutableLiveData<List<CalendarEventEntity>>(mutableListOf())
-    val eventsList: LiveData<List<CalendarEventEntity>> = _eventsList
-    //Lista de eventos diarios
-    private val _dailyList = MutableLiveData<List<CalendarEventEntity>>(mutableListOf())
-    val dailyList: LiveData<List<CalendarEventEntity>> = _dailyList
+    //Variables para seleccionar rival en eventos de partidos
+    private val session = SessionManager.getInstance()
+    private lateinit var myTeam: TeamEntity
+    lateinit var vsTeams: List<TeamEntity>
 
     //Recordar la fecha de un elemento clickable
     var date: LocalDate = LocalDate.now()
-
-    //Recordar un evento a mostrar
-    private val _event: MutableLiveData<CalendarEventEntity> = MutableLiveData()
-    val event: LiveData<CalendarEventEntity> = _event
 
     init {
         load(800)
@@ -60,11 +42,21 @@ class CalendarScreenViewModel(
     private fun load(timeMillis: Long = 0) {
         viewModelScope.launch {
             val teamId = SessionManager.getInstance().getTeamId()
-            _loading.value = true
-            _eventsList.value = calendarEventVM.getEvents(teamId).sortedBy { it.date }
+            _uiState.update { ui ->
+                ui.copy(
+                    loading = true,
+                    eventsList = calendarEventVM.getEvents(teamId).sortedBy { it.date },
+                )
+            }
+            myTeam = teamVM.getById(session.getTeamId())
+            searchOtherTeams()
             delay(timeMillis)
-            _loading.value = false
+            _uiState.update { it.copy(loading = false) }
         }
+    }
+
+    private suspend fun searchOtherTeams() {
+        vsTeams = teamVM.getByLigueAndCategory(myTeam.category, myTeam.league).minus(myTeam)
     }
 
     fun newEvent(event: CalendarEventEntity) {
@@ -76,7 +68,7 @@ class CalendarScreenViewModel(
 
     fun removeEvent(event: CalendarEventEntity) {
         viewModelScope.launch {
-            val e: CalendarEventEntity? = _eventsList.value?.first {
+            val e: CalendarEventEntity? = _uiState.value.eventsList.firstOrNull {
                 it.date == event.date &&
                 it.hour == event.hour &&
                 it.teamId == event.teamId &&
@@ -92,77 +84,99 @@ class CalendarScreenViewModel(
     }
 
     fun nextMonth() {
-        Log.d("DATE", "Before: ${_month.value}")
-        if (_month.value == Month.DECEMBER) {
-            _month.value = Month.JANUARY
-            _year.value = _year.value?.plus(1)
+        Log.d("DATE", "Before: ${_uiState.value.month}")
+        if (_uiState.value.month == Month.DECEMBER) {
+            _uiState.update {
+                it.copy(
+                    month = Month.JANUARY,
+                    year = it.year.plus(1)
+                )
+            }
         }
-        else _month.value = Month.of(_month.value?.value?.plus(1)!!)
-        Log.d("DATE", "After: ${_month.value}")
+        else _uiState.update { it.copy(month = Month.of(_uiState.value.month.value.plus(1))) }
+        Log.d("DATE", "After: ${_uiState.value.month}")
     }
 
     fun backMonth() {
-        Log.d("DATE", "Before: ${_month.value}")
-        if (_month.value == Month.JANUARY) {
-            _month.value = Month.DECEMBER
-            _year.value = _year.value?.minus(1)
+        Log.d("DATE", "Before: ${_uiState.value.month}")
+        if (_uiState.value.month == Month.JANUARY) {
+            _uiState.update {
+                it.copy(
+                    month = Month.DECEMBER,
+                    year = it.year.minus(1)
+                )
+            }
         }
-        else _month.value = Month.of(_month.value?.value?.minus(1)!!)
-        Log.d("DATE", "After: ${_month.value}")
+        else _uiState.update { it.copy(month = Month.of(_uiState.value.month.value.minus(1))) }
+        Log.d("DATE", "After: ${_uiState.value.month}")
     }
 
     fun showAddPopUp(date: LocalDate) {
         this.date = date
-        _showNewEventPopUp.value = true
+        _uiState.update { it.copy(showNewEventPopUp = true) }
+
     }
 
     fun hideAddPopUp() {
-        _showNewEventPopUp.value = false
+        _uiState.update { it.copy(showNewEventPopUp = false) }
     }
 
     fun showEvent(event: CalendarEventEntity) {
-        _event.value = event
-        _showEventPopUp.value = true
+        _uiState.update {
+            it.copy(
+                event = event,
+                showEventPopUp = true
+            )
+        }
     }
 
     fun hideEvent() {
-        _showEventPopUp.value = false
+        _uiState.update { it.copy(showEventPopUp = false) }
     }
 
     fun showConfirmWindow(event: CalendarEventEntity) {
-        _event.value = event
-        _showConfirm.value = true
+        _uiState.update {
+            it.copy(
+                event = event,
+                showConfirm = true
+            )
+        }
     }
 
     fun hideConfirmWindow() {
-        _showConfirm.value = false
+        _uiState.update { it.copy(showConfirm = false) }
     }
 
     fun loadDailyEvents() {
         viewModelScope.launch {
             val teamId = SessionManager.getInstance().getTeamId()
-            _dailyList.value = calendarEventVM.getEvents(teamId, date)
+            _uiState.update { it.copy(dailyList = calendarEventVM.getEvents(teamId, date)) }
             delay(500)
         }
     }
 
     fun showDayEvents(date: LocalDate) {
         this.date = date
-        _showDayEvents.value = true
+        _uiState.update { it.copy(showDayEvents = true) }
     }
 
     fun hideDayEvents() {
-        _showDayEvents.value = false
+        _uiState.update { it.copy(showDayEvents = false) }
+    }
+
+    fun changeDropdownExpanded() {
+        _uiState.update { it.copy(dropdownExpanded = !_uiState.value.dropdownExpanded) }
     }
 }
 
 class CalendarScreenViewModelFactory(
-    private val calendarEventVM: CalendarEventViewModel
+    private val calendarEventVM: CalendarEventViewModel,
+    private val teamVM: TeamViewModel
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CalendarScreenViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return CalendarScreenViewModel(calendarEventVM) as T
+            return CalendarScreenViewModel(calendarEventVM, teamVM) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

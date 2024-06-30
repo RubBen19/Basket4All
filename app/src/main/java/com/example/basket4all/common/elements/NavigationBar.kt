@@ -51,7 +51,7 @@ fun B4AllNavigationBar(navController: NavController) {
             ButtonOfTheBar(screen = profileScreen, selected = actualScreenRoute.contains(profileScreen.route)) {
                 navController.navigate(routeOfMyProfile) {
                     navController.popBackStack(
-                        route = AppScreens.FirstScreen.route,
+                        route = AppScreens.HomeScreen.route,
                         inclusive = false,
                         saveState = false
                     )
@@ -62,7 +62,7 @@ fun B4AllNavigationBar(navController: NavController) {
             ButtonOfTheBar(screen = calendarScreen, selected = actualScreenRoute == calendarScreen.route) {
                 navController.navigate(calendarScreen.route) {
                     navController.popBackStack(
-                        route = AppScreens.FirstScreen.route,
+                        route = AppScreens.HomeScreen.route,
                         inclusive = false,
                         saveState = false
                     )
@@ -75,7 +75,7 @@ fun B4AllNavigationBar(navController: NavController) {
                 Log.d("NavBar", routeOfMyTeam)
                 navController.navigate(routeOfMyTeam) {
                     navController.popBackStack(
-                        route = AppScreens.FirstScreen.route,
+                        route = AppScreens.HomeScreen.route,
                         inclusive = false,
                         saveState = false
                     )
@@ -86,7 +86,7 @@ fun B4AllNavigationBar(navController: NavController) {
             ButtonOfTheBar(screen = exerciseScreen, selected = actualScreenRoute == exerciseScreen.route) {
                 navController.navigate(exerciseScreen.route) {
                     navController.popBackStack(
-                        route = AppScreens.FirstScreen.route,
+                        route = AppScreens.HomeScreen.route,
                         inclusive = false,
                         saveState = false
                     )
@@ -97,7 +97,7 @@ fun B4AllNavigationBar(navController: NavController) {
             ButtonOfTheBar(screen = tacticScreen, selected = actualScreenRoute == tacticScreen.route) {
                 navController.navigate(tacticScreen.route) {
                     navController.popBackStack(
-                        route = AppScreens.FirstScreen.route,
+                        route = AppScreens.HomeScreen.route,
                         inclusive = false,
                         saveState = false
                     )

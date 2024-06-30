@@ -39,22 +39,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.basket4all.common.classes.FreeShots
+import com.example.basket4all.presentation.uistate.AddPlayerScreenUiState
 import com.example.basket4all.presentation.viewmodels.screens.AddPlayerScreenViewModel
 
 @Composable
-fun MinutesPopUp(viewModel: AddPlayerScreenViewModel) {
+fun MinutesPopUp(viewModel: AddPlayerScreenViewModel, screenUiState: AddPlayerScreenUiState) {
     // Inputs
     val total = remember { mutableStateOf("") }
 
     AlertDialog(
         modifier = Modifier.padding(top = 20.dp, bottom = 32.dp),
-        onDismissRequest = { viewModel.hide("Minutos") },
+        onDismissRequest = { viewModel.show("Minutos") },
         confirmButton = {
             IconButton(
                 onClick = {
-                    viewModel.matchStats.value?.minutes = total.value.toDoubleOrNull() ?: 0.0
+                    screenUiState.matchStats.minutes = total.value.toDoubleOrNull() ?: 0.0
 
-                    viewModel.hide("Minutos")
+                    viewModel.show("Minutos")
                 }
             ) {
                 Icon(

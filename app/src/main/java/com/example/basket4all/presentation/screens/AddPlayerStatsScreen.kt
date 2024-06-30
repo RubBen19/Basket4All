@@ -18,15 +18,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,10 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.basket4all.common.classes.PlayerStatsClass
 import com.example.basket4all.common.elements.LoadScreen
-import com.example.basket4all.common.messengers.NewMatchCourier
-import com.example.basket4all.data.local.entities.MatchStats
 import com.example.basket4all.presentation.popup.AssistPopUp
 import com.example.basket4all.presentation.popup.BlockPopUp
 import com.example.basket4all.presentation.popup.FaultsPopUp
@@ -50,6 +46,7 @@ import com.example.basket4all.presentation.popup.ReboundsPopUp
 import com.example.basket4all.presentation.popup.ShotsOf2PopUp
 import com.example.basket4all.presentation.popup.ShotsOf3PopUp
 import com.example.basket4all.presentation.popup.StealsPopUp
+import com.example.basket4all.presentation.uistate.AddPlayerScreenUiState
 import com.example.basket4all.presentation.viewmodels.db.PlayersViewModel
 import com.example.basket4all.presentation.viewmodels.screens.AddPlayerScreenViewModel
 import com.example.basket4all.presentation.viewmodels.screens.AddPlayerScreenViewModelFactory
@@ -65,12 +62,9 @@ fun AddPlayerStatsScreen(
         factory = AddPlayerScreenViewModelFactory(playersViewModel, playerId)
     )
 
-    val loading by viewModel.loading.observeAsState(true)
-    val name by viewModel.name.observeAsState("")
-    val surname by viewModel.surname.observeAsState("")
-    val surname2 by viewModel.surname2.observeAsState("")
+    val screenUiState by viewModel.uiState.collectAsState()
 
-    if (loading) {
+    if (screenUiState.loading) {
         LoadScreen()
     }
     else {
@@ -79,10 +73,9 @@ fun AddPlayerStatsScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            val stats = viewModel.matchStats.observeAsState(PlayerStatsClass())
             IconButton(
                 onClick = {
-                    viewModel.insert(stats.value)
+                    viewModel.insert(screenUiState.matchStats)
                     navController.popBackStack()
                 },
                 modifier = Modifier
@@ -109,9 +102,9 @@ fun AddPlayerStatsScreen(
                 Title()
                 Subtitle(rivalTeamName)
                 // Nombre del jugador
-                PlayerName(name, surname, surname2)
+                PlayerName(screenUiState.name, screenUiState.surname, screenUiState.surname2)
                 // Controlador de los PopUps
-                PopUpController(viewModel)
+                PopUpController(screenUiState, viewModel)
                 // Opciones
                 Buttons(viewModel)
             }
@@ -190,28 +183,20 @@ private fun PlayerName(name: String, surname: String, surname2: String) {
 }
 
 @Composable
-private fun PopUpController(viewModel: AddPlayerScreenViewModel) {
-    val showMinutes by viewModel.showMinutes.observeAsState(false)
-    val showShots2 by viewModel.showShots2.observeAsState(false)
-    val showShots3 by viewModel.showShots3.observeAsState(false)
-    val showFShots by viewModel.showFShots.observeAsState(false)
-    val showAssist by viewModel.showAssist.observeAsState(false)
-    val showBlocks by viewModel.showBlocks.observeAsState(false)
-    val showFaults by viewModel.showFaults.observeAsState(false)
-    val showRebound by viewModel.showRebounds.observeAsState(false)
-    val showLosses by viewModel.showLosses.observeAsState(false)
-    val showSteals by viewModel.showSteals.observeAsState(false)
-
-    if (showMinutes) MinutesPopUp(viewModel)
-    else if (showShots2) ShotsOf2PopUp(viewModel)
-    else if (showShots3) ShotsOf3PopUp(viewModel)
-    else if (showFShots) FreeShotsPopUp(viewModel)
-    else if (showAssist) AssistPopUp(viewModel)
-    else if (showBlocks) BlockPopUp(viewModel)
-    else if (showRebound) ReboundsPopUp(viewModel)
-    else if (showFaults) FaultsPopUp(viewModel)
-    else if (showSteals) StealsPopUp(viewModel)
-    else if (showLosses) LossesPopUp(viewModel)
+private fun PopUpController(
+    screenUiState: AddPlayerScreenUiState,
+    viewModel: AddPlayerScreenViewModel
+) {
+    if (screenUiState.showMinutes) MinutesPopUp(viewModel, screenUiState)
+    else if (screenUiState.showShots2) ShotsOf2PopUp(viewModel, screenUiState)
+    else if (screenUiState.showShots3) ShotsOf3PopUp(viewModel, screenUiState)
+    else if (screenUiState.showFShots) FreeShotsPopUp(viewModel, screenUiState)
+    else if (screenUiState.showAssist) AssistPopUp(viewModel, screenUiState)
+    else if (screenUiState.showBlocks) BlockPopUp(viewModel, screenUiState)
+    else if (screenUiState.showRebounds) ReboundsPopUp(viewModel, screenUiState)
+    else if (screenUiState.showFaults) FaultsPopUp(viewModel, screenUiState)
+    else if (screenUiState.showSteals) StealsPopUp(viewModel, screenUiState)
+    else if (screenUiState.showLosses) LossesPopUp(viewModel, screenUiState)
 }
 
 @Composable

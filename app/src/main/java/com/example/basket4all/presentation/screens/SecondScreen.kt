@@ -54,7 +54,7 @@ private fun SecondBodyContent(navController: NavController, text: String?) {
             Text(text = it)
         }
         Button(onClick = {
-            navController.navigate(AppScreens.FirstScreen.route)
+            navController.navigate(AppScreens.HomeScreen.route)
         }) {
             Text(text = "Return")
         }

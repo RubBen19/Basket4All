@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -37,25 +35,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.basket4all.common.classes.FreeShots
+import com.example.basket4all.presentation.uistate.AddPlayerScreenUiState
 import com.example.basket4all.presentation.viewmodels.screens.AddPlayerScreenViewModel
 
 @Composable
-fun AssistPopUp(viewModel: AddPlayerScreenViewModel) {
+fun AssistPopUp(viewModel: AddPlayerScreenViewModel, screenUiState: AddPlayerScreenUiState) {
     // Inputs
     val success = remember { mutableStateOf("") }
     val failed = remember { mutableStateOf("") }
 
     AlertDialog(
         modifier = Modifier.padding(top = 20.dp, bottom = 32.dp),
-        onDismissRequest = { viewModel.hide("Asistencias") },
+        onDismissRequest = { viewModel.show("Asistencias") },
         confirmButton = {
             IconButton(
                 onClick = {
-                    val lastPasses = viewModel.matchStats.value?.lastPass
-                    lastPasses?.setAssist(success.value.toIntOrNull() ?: 0)
-                    lastPasses?.setNoAssist(failed.value.toIntOrNull() ?: 0)
-                    viewModel.hide("Asistencias")
+                    val lastPasses = screenUiState.matchStats.lastPass
+                    lastPasses.setAssist(success.value.toIntOrNull() ?: 0)
+                    lastPasses.setNoAssist(failed.value.toIntOrNull() ?: 0)
+                    viewModel.show("Asistencias")
                 }
             ) {
                 Icon(

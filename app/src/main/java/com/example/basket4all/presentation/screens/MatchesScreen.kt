@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.basket4all.R
 import com.example.basket4all.common.classes.Score
+import com.example.basket4all.common.elements.MatchButton
 import com.example.basket4all.common.elements.TeamLogoChildScreens
 import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.data.local.entities.MatchEntity
@@ -98,105 +99,6 @@ private fun MatchesPlayedList() {
             MatchButton(team1, team2, m.score, m.date.format(format))
             Spacer(modifier = Modifier.height(4.dp))
         }
-    }
-}
-
-@Composable
-fun MatchButton(team1: TeamEntity, team2: TeamEntity, score: Score, date: String) {
-    //Botón
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.onBackground)
-    ) {
-        //Row imágenes y marcador
-        MatchButtonScoreVs(score, date)
-        // Row de nombres
-        MatchButtonNames(team1, team2)
-    }
-}
-
-@Composable
-private fun MatchButtonNames(team1: TeamEntity, team2: TeamEntity) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = team1.name,
-            color = MaterialTheme.colorScheme.background,
-            fontSize = 10.sp,
-            modifier = Modifier
-                .alpha(0.4f)
-                .padding(start = 4.dp)
-        )
-        Text(
-            text = team2.name,
-            color = MaterialTheme.colorScheme.background,
-            fontSize = 10.sp,
-            modifier = Modifier
-                .alpha(0.4f)
-                .padding(start = 4.dp)
-        )
-    }
-}
-
-@Composable
-private fun MatchButtonScoreVs(score: Score, date: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo_default),
-            contentDescription = "Team 1 logo",
-            modifier = Modifier.size(80.dp)
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(
-                    text = score.getLocalScore().toString(),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.background,
-                    fontSize = 40.sp,
-                    modifier = Modifier
-                        .alpha(0.35f)
-                )
-                Text(
-                    text = "VS",
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(start = 12.dp, end = 12.dp)
-                )
-                Text(
-                    text = score.getVisitorScore().toString(),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.background,
-                    fontSize = 40.sp,
-                    modifier = Modifier
-                        .alpha(0.35f)
-                )
-            }
-            Text(
-                text = date,
-                color = MaterialTheme.colorScheme.background,
-                fontSize = 12.sp
-            )
-        }
-        Image(
-            painter = painterResource(id = R.drawable.logo_default),
-            contentDescription = "Team 2 logo",
-            modifier = Modifier.size(80.dp)
-        )
     }
 }
 
