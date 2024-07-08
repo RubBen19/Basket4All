@@ -152,7 +152,7 @@ private fun Buttons(showAlert: MutableState<Boolean>, navController: NavHostCont
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(AppScreens.TacticsCreatorScreen.route) },
             shape = RectangleShape,
             modifier = Modifier
                 .defaultMinSize(minWidth = 250.dp, minHeight = 50.dp)

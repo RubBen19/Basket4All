@@ -19,8 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -49,15 +49,10 @@ fun TeamScreen(navController: NavHostController, teamViewModel: TeamViewModel,
     val teamScreenViewModel: TeamScreenViewModel = viewModel(
         factory = TeamScreenViewModelFactory(teamViewModel, teamStatsViewModel, teamId)
     )
-    val loading by teamScreenViewModel.loading.observeAsState(false)
-    val team by teamScreenViewModel.team.observeAsState()
-    val players by teamScreenViewModel.players.observeAsState(listOf())
 
-    val wins by teamScreenViewModel.wins.observeAsState(0)
-    val defeats by teamScreenViewModel.defeats.observeAsState(0)
-    val points by teamScreenViewModel.points.observeAsState(0.0)
+    val screenUiState by teamScreenViewModel.uiState.collectAsState()
 
-    if (loading) {
+    if (screenUiState.loading) {
         LoadScreen()
     }
     else {
@@ -75,12 +70,18 @@ fun TeamScreen(navController: NavHostController, teamViewModel: TeamViewModel,
             ) {
                 Portrait(
                     R.drawable.tigers_cb_removebg_preview__1_,
-                    team?.name ?: "",
-                    team?.category?.name ?: "",
-                    team?.league ?: ""
+                    screenUiState.team?.name ?: "",
+                    screenUiState.team?.category?.name ?: "",
+                    screenUiState.team?.league ?: ""
                 )
-                StatsCard(navController, wins.toString(), defeats.toString(), points.toString(), teamId)
-                TeamCard(navController,players)
+                StatsCard(
+                    navController,
+                    screenUiState.wins.toString(),
+                    screenUiState.defeats.toString(),
+                    screenUiState.points.toString(),
+                    teamId
+                )
+                TeamCard(navController, screenUiState.players)
             }
         }
     }

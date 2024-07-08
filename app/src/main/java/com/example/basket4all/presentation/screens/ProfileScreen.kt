@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -73,16 +74,10 @@ fun ProfileScreen(
             playerOrCoach
         )
     )
-    val loading by profileViewModel.loading.observeAsState(false)
 
-    val username by profileViewModel.username.observeAsState("")
-    val userSurname by profileViewModel.surname.observeAsState("")
-    val number by profileViewModel.number.observeAsState(0)
-    val positions by profileViewModel.positions.observeAsState(listOf())
-    val team by profileViewModel.team.observeAsState()
-    val stats by profileViewModel.stats.observeAsState(null)
+    val screenUiState by profileViewModel.uiState.collectAsState()
 
-    if (loading) {
+    if (screenUiState.loading) {
         LoadScreen()
     }
     else {
@@ -102,9 +97,9 @@ fun ProfileScreen(
                 Profile(pictureId = R.drawable.blank_profile_photo)
                 //Muestra el nombre, apellido y dorsal
                 Name(
-                    name = username,
-                    surname = userSurname,
-                    number = if (number < 0) "C" else number.toString()
+                    name = screenUiState.username,
+                    surname = screenUiState.surname,
+                    number = if (screenUiState.number < 0) "C" else screenUiState.number.toString()
                 )
                 //Fila para agrupar los apartados de equipo y posiciones
                 Row(
@@ -116,20 +111,20 @@ fun ProfileScreen(
                 ) {
                     //Card del equipo
                     TeamCard(
-                        teamName = team?.name ?: "",
-                        league = team?.league ?: "",
-                        category = team?.category?.name ?: "",
+                        teamName = screenUiState.team?.name ?: "",
+                        league = screenUiState.team?.league ?: "",
+                        category = screenUiState.team?.category?.name ?: "",
                         clickable = {
-                            Log.d("ProfileScreen", AppScreens.TeamScreen.route+"/${team?.teamId}")
-                            navController.navigate(AppScreens.TeamScreen.route+"/${team?.teamId}")
+                            Log.d("ProfileScreen", AppScreens.TeamScreen.route+"/${screenUiState.team?.teamId}")
+                            navController.navigate(AppScreens.TeamScreen.route+"/${screenUiState.team?.teamId}")
                         }
                     )
                     //Card de las posiciones
-                    PositionsCard(positions = positions)
+                    PositionsCard(positions = screenUiState.positions)
                 }
-                if (SessionManager.getInstance().getRole() == true && stats != null) {
+                if (SessionManager.getInstance().getRole() == true && screenUiState.stats != null) {
                     //ButtonCard de las estadisticas del jugador
-                    PlayerStatsCard(playerStats = stats!!)
+                    PlayerStatsCard(playerStats = screenUiState.stats!!)
                 }
                 else CoachStatsCard()
             }

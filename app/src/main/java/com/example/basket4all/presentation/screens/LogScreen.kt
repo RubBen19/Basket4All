@@ -24,6 +24,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -160,17 +162,12 @@ private fun LogInFormulary(
     loginViewModel: LoginViewModel,
     modifier: Modifier = Modifier
 ) {
-    // Cierre de sesión al inicio
-    //SessionManager.getInstance().logOut()
+    // Cierre de sesión al visualizar esta screen
+    LaunchedEffect(Unit) {
+        loginViewModel.resetLogin()
+    }
 
-    // Variable para ocultar la contraseña
-    var hidden by remember { mutableStateOf(true) }
-    val email by loginViewModel.email.observeAsState("")
-    val password by loginViewModel.password.observeAsState("")
-    // Estado para almacenar la opción seleccionada
-    val selectedOption by loginViewModel.option.observeAsState("")
-    //Estado del login
-    val loginSuccessful by loginViewModel.login.observeAsState(null)
+    val screenUiState by loginViewModel.uiState.collectAsState()
 
     Column(
         modifier = modifier,
@@ -179,7 +176,7 @@ private fun LogInFormulary(
     ) {
         // Campo de texto para pedir el e-mail
         OutlinedTextField(
-            value = email,
+            value = screenUiState.email,
             onValueChange = { loginViewModel.changeEmail(it) },
             label = {
                 Text(
@@ -195,7 +192,7 @@ private fun LogInFormulary(
         )
         // Campo de texto para pedir la contraseña
         OutlinedTextField(
-            value = password,
+            value = screenUiState.password,
             onValueChange = { loginViewModel.changePassword(it) },
             label = {
                 Text(
@@ -208,18 +205,18 @@ private fun LogInFormulary(
             singleLine = true,
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
             // Trasnformacion del campo para visualizar el texto introducido
-            visualTransformation = if(hidden) PasswordVisualTransformation ()
+            visualTransformation = if(screenUiState.hidden) PasswordVisualTransformation ()
             else VisualTransformation.None,
             // Cambio en el icono de visualizar contraseña
             trailingIcon = {
-                IconButton(onClick = { hidden = !hidden }) {
+                IconButton(onClick = { loginViewModel.changeShowPassword() }) {
                     Icon(
                         painterResource(
-                            id = if (hidden) R.drawable.visibility_off
+                            id = if (screenUiState.hidden) R.drawable.visibility_off
                             else R.drawable.visibility_on
                         ),
                         contentDescription = "Visibility",
-                        tint = if (hidden) Color.Gray
+                        tint = if (screenUiState.hidden) Color.Gray
                         else MaterialTheme.colorScheme.primary
                     )
                 }
@@ -237,12 +234,12 @@ private fun LogInFormulary(
             horizontalArrangement = Arrangement.Start
         ) {
             RadioButton(
-                selected = selectedOption == "Jugador",
+                selected = screenUiState.option == "Jugador",
                 onClick = { loginViewModel.changeOption("Jugador") }
             )
             Text(text = "Jugador")
             RadioButton(
-                selected = selectedOption == "Entrenador",
+                selected = screenUiState.option == "Entrenador",
                 onClick = { loginViewModel.changeOption("Entrenador") }
             )
             Text(text = "Entrenador")
@@ -281,14 +278,12 @@ private fun LogInFormulary(
             color = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier.padding(top = 4.dp)
         )
-        if (loginSuccessful == true) {
-            navController.navigate(AppScreens.HomeScreen.route)
-            loginViewModel.resetLogin()
-        }
-        else if (loginSuccessful == false){
-            LogInError()
-        }
-
+    }
+    if (screenUiState.login) {
+        navController.navigate(AppScreens.HomeScreen.route)
+    }
+    else if (screenUiState.loginError){
+        LogInError()
     }
 }
 
@@ -296,11 +291,11 @@ private fun LogInFormulary(
 private fun LogInError(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
+            .wrapContentSize(Alignment.BottomCenter)
+            .padding(top = 16.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ){

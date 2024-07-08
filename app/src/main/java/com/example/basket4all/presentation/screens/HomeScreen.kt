@@ -1,6 +1,7 @@
 package com.example.basket4all.presentation.screens
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -58,6 +59,14 @@ fun HomeScreen (
     playerVM: PlayersViewModel, coachesVM: CoachesViewModel, eventsVM: CalendarEventViewModel,
     matchesVM: MatchesViewModel, teamVM: TeamViewModel, navController: NavHostController
 ) {
+    // Con el uso del BackHandler puedo detectar cuando se produce un evento "Back" en la screen.
+    BackHandler {
+        // Al detectarlo se redirige al usuario a la pantalla de login
+        navController.navigate(AppScreens.LogScreen.route) {
+            popUpTo(AppScreens.LogScreen.route) { inclusive = true }
+        }
+    }
+
     val viewModel: HomeScreenViewModel = viewModel(
         factory = HomeScreenViewModelFactory(playerVM, coachesVM, eventsVM, matchesVM, teamVM)
     )

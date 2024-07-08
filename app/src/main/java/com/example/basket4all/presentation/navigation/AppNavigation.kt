@@ -49,6 +49,7 @@ import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModelFactory
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModelFactory
+import com.example.basket4all.tactics_creator_tool.TacticsCreatorScreen
 
 /**
  * ARCHIVO: AppNavigation.kt
@@ -197,6 +198,11 @@ fun AppNavigation() {
             if (id != null && rivalName != null) {
                 AddPlayerStatsScreen(playersViewModel,navController, id, rivalName)
             }
+        }
+        /* PANTALLA PARA LA CREACIÓN DE TÁCTICAS */
+        composable(route = AppScreens.TacticsCreatorScreen.route) {
+            navIsVisible = false
+            TacticsCreatorScreen()
         }
     }
     if (navIsVisible) {

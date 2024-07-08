@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.basket4all.data.local.daos.PlayerDao
 import com.example.basket4all.data.local.entities.PlayerEntity
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class PlayersViewModel(private val playerDao: PlayerDao): ViewModel() {
@@ -15,8 +16,8 @@ class PlayersViewModel(private val playerDao: PlayerDao): ViewModel() {
             val player: PlayerEntity = playerDao.getByID(1).first()
         }
     }
-    suspend fun getByEmail(email: String): PlayerEntity {
-        return playerDao.getByEmail(email).first()
+    suspend fun getByEmail(email: String): PlayerEntity? {
+        return playerDao.getByEmail(email).firstOrNull()
     }
 
     suspend fun getById(id: Int): PlayerEntity {

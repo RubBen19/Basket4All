@@ -1,17 +1,15 @@
 package com.example.basket4all.presentation.viewmodels.screens
 
 import android.util.Log
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.basket4all.data.local.entities.PlayerEntity
-import com.example.basket4all.data.local.entities.TeamEntity
+import com.example.basket4all.presentation.uistate.TeamScreenUiState
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TeamScreenViewModel(
@@ -19,21 +17,9 @@ class TeamScreenViewModel(
     private val teamStatsVM: TeamStatsViewModel,
     private val teamId: Int,
 ): ViewModel() {
-    private val _team = MutableLiveData<TeamEntity>()
-    val team: LiveData<TeamEntity> = _team
-    private val _players = MutableLiveData<List<PlayerEntity>>()
-    val players: LiveData<List<PlayerEntity>> = _players
-    // Variables relacionadas con las estadísticas
-    private val _defeats = MutableLiveData<Int>()
-    val defeats: LiveData<Int> = _defeats
-    private val _wins = MutableLiveData<Int>()
-    val wins: LiveData<Int> = _wins
-    private val _points = MutableLiveData<Double>()
-    val points: LiveData<Double> = _points
 
-
-    private val _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
+    private val _uiState = MutableStateFlow(TeamScreenUiState())
+    val uiState: StateFlow<TeamScreenUiState> = _uiState
 
     init {
         searchTeam()
@@ -41,18 +27,19 @@ class TeamScreenViewModel(
 
     private fun searchTeam() {
         Log.d("TeamScreenViewModel", "Buscando equipo")
-        _loading.value = true
+        _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
-            _team.value = teamVM.getById(teamId)
-            _players.value = teamVM.getPlayers(teamId)
-
             val stats = teamStatsVM.getByTeamId(teamId)
-            _wins.value = stats.wins
-            _defeats.value = stats.matchPlayed - _wins.value!!
-            _points.value = stats.points.toDouble() / stats.matchPlayed
-
-            delay(800)
-            _loading.value = false
+            _uiState.update {
+                it.copy(
+                    team = teamVM.getById(teamId),
+                    players = teamVM.getPlayers(teamId),
+                    wins = stats.wins,
+                    defeats = stats.matchPlayed - it.wins,
+                    points = stats.points.toDouble() / stats.matchPlayed
+                )
+            }
+            _uiState.update { it.copy(loading = false) }
             Log.d("TeamScreenViewModel", "Equipo encontrado")
         }
     }

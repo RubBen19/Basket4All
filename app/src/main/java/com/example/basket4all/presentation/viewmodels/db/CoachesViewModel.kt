@@ -6,10 +6,11 @@ import com.example.basket4all.data.local.daos.CoachDao
 import com.example.basket4all.data.local.entities.CoachEntity
 import com.example.basket4all.data.local.entities.TeamEntity
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class CoachesViewModel(private val coachDao: CoachDao): ViewModel() {
-    suspend fun getByEmail(email: String): CoachEntity {
-        return coachDao.getByEmail(email).first()
+    suspend fun getByEmail(email: String): CoachEntity? {
+        return coachDao.getByEmail(email).firstOrNull()
     }
 
     suspend fun getById(id: Int): CoachEntity {
