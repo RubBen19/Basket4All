@@ -88,7 +88,8 @@ private fun Description() {
         )
         Text(
             text = "El modo entrenador te permite crear y editar las tácticas de tu equipo.\n" +
-                    "Además de añadir los partidos con las estadísticas de tus jugadores",
+                    "Además de añadir los partidos con las estadísticas de tus jugadores\n" +
+                    "Y llevar tu pizarra de entrenador contigo",
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
@@ -105,10 +106,24 @@ private fun Buttons(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
+            onClick = { navController.navigate(AppScreens.BoardScreen.route) },
+            shape = RectangleShape,
+            modifier = Modifier
+                .defaultMinSize(minWidth = 250.dp, minHeight = 50.dp)
+        ) {
+            Text(
+                text = "Modo pizarra",
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 24.sp
+            )
+        }
+        Button(
             onClick = { /*TODO*/ },
             shape = RectangleShape,
             modifier = Modifier
                 .defaultMinSize(minWidth = 250.dp, minHeight = 50.dp)
+                .padding(top = 40.dp)
         ) {
             Text(
                 text = "Crear tácticas",

@@ -1,5 +1,6 @@
 package com.example.basket4all.common.elements
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -202,4 +205,13 @@ private fun MatchButtonScoreVs(score: Score, date: String) {
             modifier = Modifier.size(80.dp)
         )
     }
+}
+
+// Función para convertir imagenes partiendo de un array de bytes
+fun imageBitmapFromBytes(encodedImageData: ByteArray?): ImageBitmap? {
+    if (encodedImageData != null) {
+        return BitmapFactory.decodeByteArray(encodedImageData, 0, encodedImageData.size)
+            .asImageBitmap()
+    }
+    return null
 }

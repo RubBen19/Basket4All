@@ -254,8 +254,7 @@ abstract class AppDatabase : RoomDatabase() {
                 name = "Rubén",
                 surname1 = "Vicente",
                 surname2 = "Benito",
-                birthdate = LocalDate.of(2001, 1, 9),
-                picture = 0
+                birthdate = LocalDate.of(2001, 1, 9)
             )
 
             val user2 = User(
@@ -264,8 +263,7 @@ abstract class AppDatabase : RoomDatabase() {
                 name = "Ismael",
                 surname1 = "Navarro",
                 surname2 = "Macias",
-                birthdate = LocalDate.of(2000, 1, 1),
-                picture = 1
+                birthdate = LocalDate.of(2000, 1, 1)
             )
 
             val user3 = User(
@@ -274,8 +272,7 @@ abstract class AppDatabase : RoomDatabase() {
                 name = "Samuel",
                 surname1 = "Gordillo",
                 surname2 = "Perez",
-                birthdate = LocalDate.of(2000, 1, 1),
-                picture = 2
+                birthdate = LocalDate.of(2000, 1, 1)
             )
 
             val user4 = User(
@@ -284,8 +281,7 @@ abstract class AppDatabase : RoomDatabase() {
                 name = "David",
                 surname1 = "Garcia",
                 surname2 = "Mayordomo",
-                birthdate = LocalDate.of(2000, 1, 1),
-                picture = 3
+                birthdate = LocalDate.of(2000, 1, 1)
             )
 
             val user5 = User(
@@ -294,8 +290,7 @@ abstract class AppDatabase : RoomDatabase() {
                 name = "Gonzalo",
                 surname1 = "Crespo",
                 surname2 = "Dominguez",
-                birthdate = LocalDate.of(2000, 1, 1),
-                picture = 4
+                birthdate = LocalDate.of(2000, 1, 1)
             )
             // Agrupación en listas de los distintos elementos
             val players = listOf(user1, user2, user3, user4, user5)

@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun TacticsCreatorScreen() {
+fun BoardScreen() {
     val localColor = MaterialTheme.colorScheme.primary
     val visitorColor = Color.Gray
     val players = remember { mutableStateListOf(

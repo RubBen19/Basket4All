@@ -23,6 +23,10 @@ class PlayersViewModel(private val playerDao: PlayerDao): ViewModel() {
     suspend fun getById(id: Int): PlayerEntity {
         return playerDao.getByID(id).first()
     }
+
+    suspend fun update(player: PlayerEntity) {
+        playerDao.update(player)
+    }
 }
 
 class PlayersViewModelFactory(private val playerDao: PlayerDao): ViewModelProvider.Factory {

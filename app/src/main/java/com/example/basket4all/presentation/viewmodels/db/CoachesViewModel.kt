@@ -20,6 +20,10 @@ class CoachesViewModel(private val coachDao: CoachDao): ViewModel() {
     suspend fun getTeams(id: Int): TeamEntity {
         return coachDao.getCoachesWithTeams().first().first { it.coach.coachId == id }.teams.first()
     }
+
+    suspend fun update(coach: CoachEntity) {
+        coachDao.update(coach)
+    }
 }
 
 class CoachesViewModelFactory(private val coachDao: CoachDao): ViewModelProvider.Factory {

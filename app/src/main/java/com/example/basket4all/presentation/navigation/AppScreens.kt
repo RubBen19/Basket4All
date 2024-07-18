@@ -17,5 +17,5 @@ sealed class AppScreens (val route: String) {
     object NewMatchScreen: AppScreens("new_match_screen")
     object AddPlayerStatsScreen: AppScreens("add_new_player_stats")
 
-    object TacticsCreatorScreen: AppScreens("tactics_creator_screen")
+    object BoardScreen: AppScreens("board_screen")
 }

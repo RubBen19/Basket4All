@@ -27,11 +27,6 @@ data class PlayerEntity(
     @ColumnInfo(name = "Number")
     var number: Int = (-1)
 ) {
-    fun toPlayerClass(): PlayerClass {
-        return PlayerClass(id, user.email, user.name, user.surname1, user.surname2,
-            user.birthdate, user.picture, teamId, positions, categories)
-    }
-
     fun getPositionsName(): List<String> {
         val list = mutableListOf<String>()
         this.positions.forEach { list.add(it.name) }

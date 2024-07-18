@@ -1,19 +1,15 @@
 package com.example.basket4all.presentation.viewmodels.screens
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.basket4all.data.local.entities.PlayerStats
-import com.example.basket4all.data.local.entities.TeamEntity
-import com.example.basket4all.presentation.uistate.AddPlayerScreenUiState
 import com.example.basket4all.presentation.uistate.ProfileUiState
 import com.example.basket4all.presentation.viewmodels.db.CoachesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayersViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
+import com.google.zxing.common.BitArray
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,6 +46,7 @@ class ProfileViewModel(
                             username = player.user.name,
                             surname = player.user.surname1,
                             number = player.number,
+                            image = player.user.picture,
                             positions = player.getPositionsName(),
                             team = teamVM.getById(player.teamId),
                             stats = playerStatsVM.getByPlayerId(userId).first()
@@ -65,7 +62,8 @@ class ProfileViewModel(
                             surname = coach.user.surname1,
                             number = -1,
                             positions = coach.getCoachRoles(),
-                            team = coachesVM.getTeams(coach.coachId)
+                            team = coachesVM.getTeams(coach.coachId),
+                            image = coach.user.picture
                         )
                     }
                 }
@@ -74,6 +72,28 @@ class ProfileViewModel(
             delay(800)
             _uiState.update { it.copy(loading = false) }
             Log.d("Search", "Usuario encontrado")
+        }
+    }
+
+    fun changeImageSelectorVisibility() {
+        _uiState.update { it.copy(imageSelectorVisible = !it.imageSelectorVisible) }
+    }
+
+    fun changeProfileImage(image: ByteArray) {
+        viewModelScope.launch {
+            when(isPlayer) {
+                true -> {
+                    val player = playersVM.getById(userId)
+                    player.user.picture = image
+                    playersVM.update(player)
+                }
+                false -> {
+                    val coach = coachesVM.getById(userId)
+                    coach.user.picture = image
+                    coachesVM.update(coach)
+                }
+                else -> throw Exception("No se ha iniciado sesión correctamente")
+            }
         }
     }
 }

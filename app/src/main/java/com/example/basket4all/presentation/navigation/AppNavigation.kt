@@ -49,7 +49,7 @@ import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModelFactory
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModelFactory
-import com.example.basket4all.tactics_creator_tool.TacticsCreatorScreen
+import com.example.basket4all.tactics_creator_tool.BoardScreen
 
 /**
  * ARCHIVO: AppNavigation.kt
@@ -199,10 +199,10 @@ fun AppNavigation() {
                 AddPlayerStatsScreen(playersViewModel,navController, id, rivalName)
             }
         }
-        /* PANTALLA PARA LA CREACIÓN DE TÁCTICAS */
-        composable(route = AppScreens.TacticsCreatorScreen.route) {
+        /* PANTALLA DEL MODO PIZARRA */
+        composable(route = AppScreens.BoardScreen.route) {
             navIsVisible = false
-            TacticsCreatorScreen()
+            BoardScreen()
         }
     }
     if (navIsVisible) {

@@ -15,13 +15,13 @@ import kotlinx.coroutines.flow.Flow
 interface CoachDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(club: CoachEntity)
+    suspend fun insert(coach: CoachEntity)
 
     @Delete
-    suspend fun delete(club: CoachEntity)
+    suspend fun delete(coach: CoachEntity)
 
     @Update
-    suspend fun update(club: CoachEntity)
+    suspend fun update(coach: CoachEntity)
 
     @Query("SELECT * FROM coaches_table")
     fun getAll(): Flow<List<CoachEntity>>

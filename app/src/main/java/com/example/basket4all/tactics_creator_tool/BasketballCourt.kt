@@ -269,17 +269,3 @@ private fun ScrollPlayer(player2D: Player2D, playerMove: (Int, Offset) -> Unit) 
         )
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun InsertComments(comment: String, offset: Offset) {
-    var commentText by remember { mutableStateOf(comment) }
-    var position by remember { mutableStateOf(offset) }
-    
-    Column {
-        TextField(value = commentText, onValueChange = { commentText = it })
-        Button(onClick = { /*TODO*/ }) {
-
-        }
-    }
-}

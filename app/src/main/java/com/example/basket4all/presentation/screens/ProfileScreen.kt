@@ -1,6 +1,9 @@
 package com.example.basket4all.presentation.screens
 
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,12 +30,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +50,9 @@ import androidx.navigation.NavHostController
 import com.example.basket4all.R
 import com.example.basket4all.common.messengers.SessionManager
 import com.example.basket4all.common.elements.LoadScreen
+import com.example.basket4all.common.elements.imageBitmapFromBytes
 import com.example.basket4all.data.local.entities.PlayerStats
+import com.example.basket4all.presentation.activities.SelectorProfileImage
 import com.example.basket4all.presentation.navigation.AppScreens
 import com.example.basket4all.presentation.viewmodels.db.CoachesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
@@ -86,6 +94,9 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
+            if (screenUiState.imageSelectorVisible) {
+                SelectorProfileImage(profileViewModel = profileViewModel)
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -94,7 +105,12 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 //Imagen de perfil junto al icono de información
-                Profile(pictureId = R.drawable.blank_profile_photo)
+                Profile(
+                    pictureId = R.drawable.blank_profile_photo,
+                    bitmap = imageBitmapFromBytes(screenUiState.image),
+                    userId = userId,
+                    profileViewModel = profileViewModel
+                )
                 //Muestra el nombre, apellido y dorsal
                 Name(
                     name = screenUiState.username,
@@ -134,7 +150,7 @@ fun ProfileScreen(
 
 // Función que representa la imagen junto al botón de más información
 @Composable
-private fun Profile (pictureId: Int) {
+private fun Profile (pictureId: Int, bitmap: ImageBitmap?=null, userId: Int, profileViewModel: ProfileViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -142,24 +158,62 @@ private fun Profile (pictureId: Int) {
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Bottom
     ) {
-        //Imagen de perfil
-        Image(
-            painter = painterResource(id = pictureId),
-            contentDescription = "Profile picture",
-            modifier = Modifier
-                .clip(CircleShape)
-                .border(
-                    width = 2.dp,
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.tertiary
-                        )
-                    ),
-                    shape = CircleShape
-                )
-                .size(140.dp)
-        )
+        //Imagen de perfil en bitmap
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap,
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .border(
+                        width = 2.dp,
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.tertiary
+                            )
+                        ),
+                        shape = CircleShape
+                    )
+                    .size(140.dp)
+                    .clickable {
+                        if (userId == SessionManager
+                                .getInstance()
+                                .getUserId()
+                        ) {
+                            profileViewModel.changeImageSelectorVisibility()
+                        }
+                    }
+            )
+        }
+        // Imagen de perfil default
+        else{
+            Image(
+                painter = painterResource(id = pictureId),
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .border(
+                        width = 2.dp,
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.tertiary
+                            )
+                        ),
+                        shape = CircleShape
+                    )
+                    .size(140.dp)
+                    .clickable {
+                        if (userId == SessionManager
+                                .getInstance()
+                                .getUserId()
+                        ) {
+                            profileViewModel.changeImageSelectorVisibility()
+                        }
+                    }
+            )
+        }
         //Botón de info
         IconButton(
             onClick = { /*TODO*/ }
