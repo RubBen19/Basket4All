@@ -1,6 +1,11 @@
 package com.example.basket4all.common.elements
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,6 +31,8 @@ import com.example.basket4all.R
 import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.data.local.entities.TeamEntity
+import java.io.ByteArrayOutputStream
+import java.net.URI
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -207,11 +215,30 @@ private fun MatchButtonScoreVs(score: Score, date: String) {
     }
 }
 
-// Función para convertir imagenes partiendo de un array de bytes
-fun imageBitmapFromBytes(encodedImageData: ByteArray?): ImageBitmap? {
-    if (encodedImageData != null) {
-        return BitmapFactory.decodeByteArray(encodedImageData, 0, encodedImageData.size)
-            .asImageBitmap()
+// Función que convierte las imagenes de un array de bytes en un bitmap
+fun byteArrayToBitmap(byteArrayImage: ByteArray?): Bitmap? {
+    // Con BitmapFactory creo un objeto bitmap partiendo de los bytes de la imagen
+    if (byteArrayImage != null && byteArrayImage.isNotEmpty()) {
+        Log.d("Functions_byteArrayToBitmap", "Array de bytes no nulo y no vacio")
+        return BitmapFactory.decodeByteArray(byteArrayImage, 0, byteArrayImage.size)
     }
+    Log.d("Functions_byteArrayToBitmap", "Array de bytes nulo o vacío")
     return null
+}
+
+@SuppressLint("Recycle")
+fun imageResize(context: Context, uri: Uri): ByteArray? {
+    val stream = context.contentResolver.openInputStream(uri)
+    val baseImg = BitmapFactory.decodeStream(stream)
+
+    if (baseImg != null) {
+        val maxSize = Pair(1500, 1500)
+        val width = if (baseImg.width > maxSize.first) maxSize.first else baseImg.width
+        val height = if (baseImg.height > maxSize.second) maxSize.second else baseImg.height
+        val scaledImg = Bitmap.createScaledBitmap(baseImg, width, height,true)
+        val outputStream = ByteArrayOutputStream()
+        scaledImg.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        return outputStream.toByteArray()
+    }
+    else return null
 }

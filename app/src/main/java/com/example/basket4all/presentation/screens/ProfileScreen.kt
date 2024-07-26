@@ -1,9 +1,7 @@
 package com.example.basket4all.presentation.screens
 
-import android.net.Uri
+import android.graphics.Bitmap
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,16 +28,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,7 +46,7 @@ import androidx.navigation.NavHostController
 import com.example.basket4all.R
 import com.example.basket4all.common.messengers.SessionManager
 import com.example.basket4all.common.elements.LoadScreen
-import com.example.basket4all.common.elements.imageBitmapFromBytes
+import com.example.basket4all.common.elements.byteArrayToBitmap
 import com.example.basket4all.data.local.entities.PlayerStats
 import com.example.basket4all.presentation.activities.SelectorProfileImage
 import com.example.basket4all.presentation.navigation.AppScreens
@@ -94,9 +90,6 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
-            if (screenUiState.imageSelectorVisible) {
-                SelectorProfileImage(profileViewModel = profileViewModel)
-            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,7 +100,7 @@ fun ProfileScreen(
                 //Imagen de perfil junto al icono de información
                 Profile(
                     pictureId = R.drawable.blank_profile_photo,
-                    bitmap = imageBitmapFromBytes(screenUiState.image),
+                    bitmap = byteArrayToBitmap(screenUiState.image),
                     userId = userId,
                     profileViewModel = profileViewModel
                 )
@@ -144,13 +137,17 @@ fun ProfileScreen(
                 }
                 else CoachStatsCard()
             }
+            // Launcher del selector de imagen del perfil
+            if (screenUiState.imageSelectorVisible) {
+                SelectorProfileImage(profileViewModel = profileViewModel)
+            }
         }
     }
 }
 
 // Función que representa la imagen junto al botón de más información
 @Composable
-private fun Profile (pictureId: Int, bitmap: ImageBitmap?=null, userId: Int, profileViewModel: ProfileViewModel) {
+private fun Profile (pictureId: Int, bitmap: Bitmap? =null, userId: Int, profileViewModel: ProfileViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -160,8 +157,9 @@ private fun Profile (pictureId: Int, bitmap: ImageBitmap?=null, userId: Int, pro
     ) {
         //Imagen de perfil en bitmap
         if (bitmap != null) {
+            Log.d("ProfileScreen", "Imagen de perfil: $bitmap")
             Image(
-                bitmap = bitmap,
+                bitmap = bitmap.asImageBitmap(),
                 contentDescription = "Profile picture",
                 modifier = Modifier
                     .clip(CircleShape)
@@ -183,11 +181,13 @@ private fun Profile (pictureId: Int, bitmap: ImageBitmap?=null, userId: Int, pro
                         ) {
                             profileViewModel.changeImageSelectorVisibility()
                         }
-                    }
+                    },
+                contentScale = ContentScale.Crop
             )
         }
         // Imagen de perfil default
         else{
+            Log.d("ProfileScreen", "Imagen de perfil por defecto")
             Image(
                 painter = painterResource(id = pictureId),
                 contentDescription = "Profile picture",

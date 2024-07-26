@@ -34,12 +34,12 @@ class ProfileViewModel(
     }
 
     private fun searchUser() {
-        Log.d("Search", "Buscando usuario")
+        Log.d("ProfileVM", "Buscando usuario")
         _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
             when(isPlayer) {
                 true -> {
-                    Log.d("Search", "El usuario es un jugador")
+                    Log.d("ProfileVM", "El usuario es un jugador")
                     val player = playersVM.getById(userId)
                     _uiState.update {
                         it.copy(
@@ -54,7 +54,7 @@ class ProfileViewModel(
                     }
                 }
                 false -> {
-                    Log.d("Search", "El usuario es un entrenador")
+                    Log.d("ProfileVM", "El usuario es un entrenador")
                     val coach = coachesVM.getById(userId)
                     _uiState.update {
                         it.copy(
@@ -69,9 +69,8 @@ class ProfileViewModel(
                 }
                 else -> throw Exception("No se ha iniciado sesión correctamente")
             }
-            delay(800)
             _uiState.update { it.copy(loading = false) }
-            Log.d("Search", "Usuario encontrado")
+            Log.d("ProfileVM", "Usuario encontrado")
         }
     }
 
@@ -80,21 +79,27 @@ class ProfileViewModel(
     }
 
     fun changeProfileImage(image: ByteArray) {
+        Log.d("ProfileVM", "Actualizando la imagen de perfil")
+        _uiState.update { it.copy(loading = true) }
         viewModelScope.launch {
             when(isPlayer) {
                 true -> {
                     val player = playersVM.getById(userId)
                     player.user.picture = image
                     playersVM.update(player)
+                    _uiState.update { it.copy(image = player.user.picture) }
                 }
                 false -> {
                     val coach = coachesVM.getById(userId)
                     coach.user.picture = image
                     coachesVM.update(coach)
+                    _uiState.update { it.copy(image = coach.user.picture) }
                 }
                 else -> throw Exception("No se ha iniciado sesión correctamente")
             }
         }
+        Log.d("ProfileVM", "¡Imagen de perfil actualizada!")
+        _uiState.update { it.copy(loading = false) }
     }
 }
 
