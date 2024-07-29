@@ -115,7 +115,7 @@ fun getDaysOfWeek(): List<String> {
     }
 }
 
-// Botones para representar una partido con los datos más relevantes
+// Botones para representar un partido con los datos más relevantes
 @Composable
 fun MatchButton(team1: TeamEntity, team2: TeamEntity, score: Score, date: String) {
     //Botón
@@ -226,13 +226,14 @@ fun byteArrayToBitmap(byteArrayImage: ByteArray?): Bitmap? {
     return null
 }
 
+// Función que redimensiona las iamgenes para guardarlas en la base de datos
 @SuppressLint("Recycle")
 fun imageResize(context: Context, uri: Uri): ByteArray? {
     val stream = context.contentResolver.openInputStream(uri)
     val baseImg = BitmapFactory.decodeStream(stream)
 
     if (baseImg != null) {
-        val maxSize = Pair(1500, 1500)
+        val maxSize = Pair(1600, 1600)
         val width = if (baseImg.width > maxSize.first) maxSize.first else baseImg.width
         val height = if (baseImg.height > maxSize.second) maxSize.second else baseImg.height
         val scaledImg = Bitmap.createScaledBitmap(baseImg, width, height,true)

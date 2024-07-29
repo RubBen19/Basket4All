@@ -1,5 +1,6 @@
 package com.example.basket4all.presentation.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +28,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.basket4all.R
 import com.example.basket4all.common.elements.LoadScreen
+import com.example.basket4all.common.elements.byteArrayToBitmap
 import com.example.basket4all.data.local.entities.PlayerEntity
 import com.example.basket4all.presentation.navigation.AppScreens
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
@@ -254,6 +258,7 @@ private fun TeamCard(navController: NavHostController, squad: List<PlayerEntity>
 }
 
 //Representa el botón de un jugador desde la card de equipo en club
+@SuppressLint("DefaultLocale")
 @Composable
 private fun PlayerButton(navController: NavHostController, player: PlayerEntity) {
     Row(
@@ -267,19 +272,35 @@ private fun PlayerButton(navController: NavHostController, player: PlayerEntity)
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val imageId = R.drawable.blank_profile_photo
-        Image(
-            painter = painterResource(id = imageId),
-            contentDescription = "Profile picture",
-            modifier = Modifier
-                .size(64.dp)
-                .border(
-                    2.dp,
-                    MaterialTheme.colorScheme.primary,
-                    CircleShape
-                )
-                .clip(CircleShape)
-        )
+        val bitmap = byteArrayToBitmap(player.user.picture)
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = "Profile picture",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(64.dp)
+                    .border(
+                        2.dp,
+                        MaterialTheme.colorScheme.primary,
+                        CircleShape
+                    )
+                    .clip(CircleShape)
+            )
+        }
+        else
+            Image(
+                painter = painterResource(id = R.drawable.blank_profile_photo),
+                contentDescription = "Profile picture",
+                modifier = Modifier
+                    .size(64.dp)
+                    .border(
+                        2.dp,
+                        MaterialTheme.colorScheme.primary,
+                        CircleShape
+                    )
+                    .clip(CircleShape)
+            )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
