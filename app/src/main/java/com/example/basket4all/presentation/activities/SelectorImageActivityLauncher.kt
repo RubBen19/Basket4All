@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ fun SelectorProfileImage(profileViewModel: ProfileViewModel) {
         uri = it
     }
     val context = LocalContext.current
+    val screenUiState by profileViewModel.uiState.collectAsState()
 
     AlertDialog(
         onDismissRequest = { profileViewModel.changeImageSelectorVisibility() },
@@ -110,7 +112,7 @@ fun SelectorProfileImage(profileViewModel: ProfileViewModel) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 AsyncImage(
-                    model = uri,
+                    model = if(uri == null && screenUiState.image != null) screenUiState.image else uri,
                     contentDescription = "Imagen de perfil seleccionada",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

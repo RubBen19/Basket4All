@@ -1,16 +1,17 @@
 package com.example.basket4all.presentation.viewmodels.screens
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.basket4all.data.local.entities.User
 import com.example.basket4all.presentation.uistate.ProfileUiState
 import com.example.basket4all.presentation.viewmodels.db.CoachesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayersViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
-import com.google.zxing.common.BitArray
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,6 +29,9 @@ class ProfileViewModel(
     // Screen UI state
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    private val _user: MutableLiveData<User> = MutableLiveData(null)
+    val user: LiveData<User> = _user
 
     init {
         searchUser()
@@ -52,6 +56,7 @@ class ProfileViewModel(
                             stats = playerStatsVM.getByPlayerId(userId).first()
                         )
                     }
+                    _user.value = player.user
                 }
                 false -> {
                     Log.d("ProfileVM", "El usuario es un entrenador")
@@ -66,6 +71,7 @@ class ProfileViewModel(
                             image = coach.user.picture
                         )
                     }
+                    _user.value = coach.user
                 }
                 else -> throw Exception("No se ha iniciado sesión correctamente")
             }
@@ -78,6 +84,9 @@ class ProfileViewModel(
         _uiState.update { it.copy(imageSelectorVisible = !it.imageSelectorVisible) }
     }
 
+    fun changeVisibilityOfInfo(){
+        _uiState.update { it.copy(showInfo = !it.showInfo) }
+    }
     fun changeProfileImage(image: ByteArray) {
         Log.d("ProfileVM", "Actualizando la imagen de perfil")
         _uiState.update { it.copy(loading = true) }

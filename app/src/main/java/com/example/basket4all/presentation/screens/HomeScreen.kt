@@ -109,7 +109,6 @@ fun HomeScreen (
             }
         }
     }
-
 }
 
 @Composable

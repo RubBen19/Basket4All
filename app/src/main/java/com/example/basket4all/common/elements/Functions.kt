@@ -20,9 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,7 +29,6 @@ import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.data.local.entities.TeamEntity
 import java.io.ByteArrayOutputStream
-import java.net.URI
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -232,14 +228,15 @@ fun imageResize(context: Context, uri: Uri): ByteArray? {
     val stream = context.contentResolver.openInputStream(uri)
     val baseImg = BitmapFactory.decodeStream(stream)
 
-    if (baseImg != null) {
-        val maxSize = Pair(1600, 1600)
-        val width = if (baseImg.width > maxSize.first) maxSize.first else baseImg.width
-        val height = if (baseImg.height > maxSize.second) maxSize.second else baseImg.height
+    return if (baseImg != null) {
+        val maxSize = 1600
+        val relationHW = baseImg.height / baseImg.width
+        val height = if (baseImg.height > maxSize) maxSize else baseImg.height
+        val width = if (baseImg.width > maxSize) height/relationHW else baseImg.width
         val scaledImg = Bitmap.createScaledBitmap(baseImg, width, height,true)
         val outputStream = ByteArrayOutputStream()
         scaledImg.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        return outputStream.toByteArray()
+        outputStream.toByteArray()
     }
-    else return null
+    else null
 }

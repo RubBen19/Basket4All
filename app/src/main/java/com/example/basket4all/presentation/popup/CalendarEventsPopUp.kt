@@ -55,7 +55,7 @@ import java.time.format.DateTimeParseException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarEvent(viewModel: CalendarScreenViewModel, screenUiState: CalendarScreenUiState, ) {
+fun CalendarEvent(viewModel: CalendarScreenViewModel, screenUiState: CalendarScreenUiState) {
     val type = remember { mutableStateOf(EventType.NOTE) }
     var description by remember { mutableStateOf("") }
     var place by remember { mutableStateOf("") }

@@ -21,6 +21,7 @@ import com.example.basket4all.data.local.AppDatabase
 import com.example.basket4all.presentation.screens.AddPlayerStatsScreen
 import com.example.basket4all.presentation.screens.CalendarScreen
 import com.example.basket4all.presentation.screens.CoachModeScreen
+import com.example.basket4all.presentation.screens.EditUserScreen
 import com.example.basket4all.presentation.screens.ExerciseScreen
 import com.example.basket4all.presentation.screens.HomeScreen
 import com.example.basket4all.presentation.screens.LogScreen
@@ -199,6 +200,13 @@ fun AppNavigation() {
                 AddPlayerStatsScreen(playersViewModel,navController, id, rivalName)
             }
         }
+
+        /* Pantalla para editar la información de un usuario */
+        composable(route = AppScreens.EditUserInfoScreen.route) {
+            navIsVisible = false
+            EditUserScreen(playersViewModel, coachesViewModel, teamsViewModel)
+        }
+
         /* PANTALLA DEL MODO PIZARRA */
         composable(route = AppScreens.BoardScreen.route) {
             navIsVisible = false

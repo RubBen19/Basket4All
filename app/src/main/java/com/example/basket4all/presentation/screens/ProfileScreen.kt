@@ -50,6 +50,7 @@ import com.example.basket4all.common.elements.byteArrayToBitmap
 import com.example.basket4all.data.local.entities.PlayerStats
 import com.example.basket4all.presentation.activities.SelectorProfileImage
 import com.example.basket4all.presentation.navigation.AppScreens
+import com.example.basket4all.presentation.popup.UserInfoPopUp
 import com.example.basket4all.presentation.viewmodels.db.CoachesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayersViewModel
@@ -79,6 +80,7 @@ fun ProfileScreen(
         )
     )
 
+    // Estado de la pantalla
     val screenUiState by profileViewModel.uiState.collectAsState()
 
     if (screenUiState.loading) {
@@ -102,7 +104,8 @@ fun ProfileScreen(
                     pictureId = R.drawable.blank_profile_photo,
                     bitmap = byteArrayToBitmap(screenUiState.image),
                     userId = userId,
-                    profileViewModel = profileViewModel
+                    profileViewModel = profileViewModel,
+                    playerOrCoach = playerOrCoach
                 )
                 //Muestra el nombre, apellido y dorsal
                 Name(
@@ -141,13 +144,23 @@ fun ProfileScreen(
             if (screenUiState.imageSelectorVisible) {
                 SelectorProfileImage(profileViewModel = profileViewModel)
             }
+            // Mostrar la información del usuario
+            if (screenUiState.showInfo) {
+                UserInfoPopUp(navController, profileViewModel, userId, playerOrCoach)
+            }
         }
     }
 }
 
 // Función que representa la imagen junto al botón de más información
 @Composable
-private fun Profile (pictureId: Int, bitmap: Bitmap? =null, userId: Int, profileViewModel: ProfileViewModel) {
+private fun Profile (
+    pictureId: Int,
+    bitmap: Bitmap? = null,
+    userId: Int,
+    profileViewModel: ProfileViewModel,
+    playerOrCoach: Boolean?
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -175,9 +188,9 @@ private fun Profile (pictureId: Int, bitmap: Bitmap? =null, userId: Int, profile
                     )
                     .size(140.dp)
                     .clickable {
-                        if (userId == SessionManager
-                                .getInstance()
-                                .getUserId()
+                        val sessionManager = SessionManager.getInstance()
+                        if (userId == sessionManager.getUserId() &&
+                            playerOrCoach == sessionManager.getRole()
                         ) {
                             profileViewModel.changeImageSelectorVisibility()
                         }
@@ -216,7 +229,7 @@ private fun Profile (pictureId: Int, bitmap: Bitmap? =null, userId: Int, profile
         }
         //Botón de info
         IconButton(
-            onClick = { /*TODO*/ }
+            onClick = { profileViewModel.changeVisibilityOfInfo() }
         ) {
             Icon(
                 imageVector = Icons.Default.Info,
