@@ -1,4 +1,4 @@
-package com.example.basket4all.tactics_creator_tool
+package com.example.basket4all.board_tool
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

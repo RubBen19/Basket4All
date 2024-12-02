@@ -58,7 +58,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun teamDao(): TeamDao
     abstract fun teamStatsDao(): TeamStatsDao
     abstract fun calendarEventDao(): CalendarEventDao
-
     abstract fun coachTeamCrossRefDao(): CoachTeamCrossRefDao
 
     companion object {

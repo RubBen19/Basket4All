@@ -32,8 +32,8 @@ class AddPlayerScreenViewModel(
                     surname2 = player.user.surname2.toString()
                 )
             }
+            _uiState.update { it.copy(loading = false) }
         }
-        _uiState.update { it.copy(loading = false) }
     }
 
     fun insert(stats: PlayerStatsClass) {

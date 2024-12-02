@@ -1,4 +1,4 @@
-package com.example.basket4all.tactics_creator_tool
+package com.example.basket4all.board_tool
 
 import androidx.compose.ui.graphics.Color
 

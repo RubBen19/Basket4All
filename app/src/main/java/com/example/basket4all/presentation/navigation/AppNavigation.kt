@@ -50,7 +50,7 @@ import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModelFactory
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModelFactory
-import com.example.basket4all.tactics_creator_tool.BoardScreen
+import com.example.basket4all.board_tool.BoardScreen
 
 /**
  * ARCHIVO: AppNavigation.kt
