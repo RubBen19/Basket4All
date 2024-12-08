@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +53,8 @@ fun CourtDraw(playersList: List<Player2D>, playerMove: (Int, Offset) -> Unit) {
         playersList.forEach { player2D ->
             ScrollPlayer(player2D, playerMove)
         }
+        // Balón
+        ScrollableBall()
         // Canasta inferior y superior
         DrawBaskets(basketBoardColor, linesWidth)
     }
@@ -262,6 +265,70 @@ private fun ScrollPlayer(player2D: Player2D, playerMove: (Int, Offset) -> Unit) 
             text = player2D.id.toString(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun ScrollableBall() {
+    var offset by remember { mutableStateOf(Offset(0f, 0f)) }
+    val ballSize = 35f
+    // Dibujo del balón
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    change.consume()
+                    offset = Offset(offset.x + dragAmount.x, offset.y + dragAmount.y)
+                }
+            }
+            .wrapContentSize(Alignment.Center)
+    ) {
+        // Esfera
+        drawCircle(color = Color(0xFFFFA500), center =  offset, radius = ballSize)
+        // Líneas
+        drawLine(
+            color = Color.Black,
+            start = Offset(offset.x - ballSize, offset.y),
+            end = Offset(offset.x + ballSize, offset.y),
+            strokeWidth = 3f
+        )
+        drawArc(
+            color = Color.Black,
+            startAngle = 360f,
+            sweepAngle = -180f,
+            useCenter = false,
+            topLeft = Offset(offset.x - ballSize*0.97f, offset.y - (ballSize*1.4f)/2),
+            size = Size(ballSize*0.97f*2, ballSize*1.4f),
+            style = Stroke(width = 3f)
+        )
+        drawArc(
+            color = Color.Black,
+            startAngle = 360f,
+            sweepAngle = 180f,
+            useCenter = false,
+            topLeft = Offset(offset.x - ballSize*0.97f, offset.y - (ballSize*1.4f)/2),
+            size = Size(ballSize*0.97f*2, ballSize*1.4f),
+            style = Stroke(width = 3f)
+        )
+        drawArc(
+            color = Color.Black,
+            startAngle = 45f,
+            sweepAngle = 180f,
+            useCenter = false,
+            topLeft = Offset(offset.x - ballSize, offset.y - ballSize),
+            size = Size(ballSize*2, ballSize*2),
+            style = Stroke(width = 4f)
+        )
+        drawArc(
+            color = Color.Black,
+            startAngle = 225f,
+            sweepAngle = 180f,
+            useCenter = false,
+            topLeft = Offset(offset.x - ballSize, offset.y - ballSize),
+            size = Size(ballSize*2, ballSize*2),
+            style = Stroke(width = 4f)
         )
     }
 }

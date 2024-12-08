@@ -6,5 +6,5 @@ import androidx.navigation.NavController
 
 @Composable
 fun ExerciseScreen(navController: NavController) {
-    Text(text = "EJERCICIO")
+    Text(text = "Clasificación")
 }

@@ -152,13 +152,13 @@ private fun Buttons(showAlert: MutableState<Boolean>, navController: NavHostCont
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = {},
+            onClick = { navController.navigate(AppScreens.BoardScreen.route) },
             shape = RectangleShape,
             modifier = Modifier
                 .defaultMinSize(minWidth = 250.dp, minHeight = 50.dp)
         ) {
             Text(
-                text = "Ver tácticas",
+                text = "Modo pizarra",
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 fontSize = 24.sp

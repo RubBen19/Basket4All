@@ -106,13 +106,14 @@ private fun Buttons(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { navController.navigate(AppScreens.BoardScreen.route) },
+            onClick = { /*TODO*/ },
             shape = RectangleShape,
             modifier = Modifier
                 .defaultMinSize(minWidth = 250.dp, minHeight = 50.dp)
+                .padding(top = 40.dp)
         ) {
             Text(
-                text = "Modo pizarra",
+                text = "Mi Liga",
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 fontSize = 24.sp
@@ -126,21 +127,7 @@ private fun Buttons(navController: NavHostController) {
                 .padding(top = 40.dp)
         ) {
             Text(
-                text = "Crear tácticas",
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                fontSize = 24.sp
-            )
-        }
-        Button(
-            onClick = { /*TODO*/ },
-            shape = RectangleShape,
-            modifier = Modifier
-                .defaultMinSize(minWidth = 250.dp, minHeight = 50.dp)
-                .padding(top = 40.dp)
-        ) {
-            Text(
-                text = "Editar tácticas",
+                text = "Nuevo resultado",
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 fontSize = 24.sp
