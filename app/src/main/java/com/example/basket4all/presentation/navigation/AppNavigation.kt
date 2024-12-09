@@ -51,6 +51,7 @@ import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModelFacto
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModelFactory
 import com.example.basket4all.board_tool.BoardScreen
+import com.example.basket4all.presentation.screens.PlayerStatsScreen
 
 /**
  * ARCHIVO: AppNavigation.kt
@@ -205,6 +206,12 @@ fun AppNavigation() {
         composable(route = AppScreens.EditUserInfoScreen.route) {
             navIsVisible = false
             EditUserScreen(playersViewModel, coachesViewModel, teamsViewModel)
+        }
+
+        /* Pantalla de estadísticas de un jugador */
+        composable(route = AppScreens.PlayerStatsScreen.route) {
+            navIsVisible = false
+            PlayerStatsScreen()
         }
 
         /* PANTALLA DEL MODO PIZARRA */

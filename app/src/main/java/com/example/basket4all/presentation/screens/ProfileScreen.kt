@@ -136,7 +136,10 @@ fun ProfileScreen(
                 }
                 if (SessionManager.getInstance().getRole() == true && screenUiState.stats != null) {
                     //ButtonCard de las estadisticas del jugador
-                    PlayerStatsCard(playerStats = screenUiState.stats!!)
+                    PlayerStatsCard(
+                        playerStats = screenUiState.stats!!,
+                        clickable = { navController.navigate(AppScreens.PlayerStatsScreen.route) }
+                    )
                 }
                 else CoachStatsCard()
             }
@@ -377,7 +380,7 @@ private fun PositionsCard(positions: List<String>) {
 
 // Función que muestra la clickable card de las estadísticas junto a una breve información de ellas
 @Composable
-private fun PlayerStatsCard(playerStats: PlayerStats) {
+private fun PlayerStatsCard(playerStats: PlayerStats, clickable: ()->Unit = {}) {
     Row(
         modifier = Modifier
             .size(width = 348.dp, height = 140.dp)
@@ -392,7 +395,7 @@ private fun PlayerStatsCard(playerStats: PlayerStats) {
                 ),
                 shape = RectangleShape
             )
-            .clickable { },
+            .clickable { clickable.invoke() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

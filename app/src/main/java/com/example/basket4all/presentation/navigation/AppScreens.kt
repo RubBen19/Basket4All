@@ -18,4 +18,6 @@ sealed class AppScreens (val route: String) {
     object AddPlayerStatsScreen: AppScreens("add_new_player_stats")
     object BoardScreen: AppScreens("board_screen")
     object EditUserInfoScreen: AppScreens("edit_user_info")
+
+    object PlayerStatsScreen: AppScreens("player_stats")
 }
