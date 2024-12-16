@@ -106,7 +106,7 @@ private fun Buttons(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(AppScreens.MiLigueScreen.route) },
             shape = RectangleShape,
             modifier = Modifier
                 .defaultMinSize(minWidth = 250.dp, minHeight = 50.dp)
