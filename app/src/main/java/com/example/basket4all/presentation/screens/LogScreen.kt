@@ -273,7 +273,7 @@ private fun LogInFormulary(
         TextWithButtonText(
             text = "",
             buttonText = "He olvidado mi contraseña",
-            click = { /*TODO*/ },
+            click = { navController.navigate(AppScreens.MyPasswordScreen.route) },
             fontSize = FONT_SIZE,
             color = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier.padding(top = 4.dp)

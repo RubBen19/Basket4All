@@ -52,6 +52,7 @@ import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModelFactory
 import com.example.basket4all.board_tool.BoardScreen
 import com.example.basket4all.presentation.screens.MiLigueScreen
+import com.example.basket4all.presentation.screens.MyPasswordScreen
 import com.example.basket4all.presentation.screens.PlayerStatsScreen
 
 /**
@@ -213,6 +214,12 @@ fun AppNavigation() {
         composable(route = AppScreens.PlayerStatsScreen.route) {
             navIsVisible = false
             PlayerStatsScreen()
+        }
+
+        /* Pantalla de recuèración de contraseña */
+        composable(route = AppScreens.MyPasswordScreen.route) {
+            navIsVisible = false
+            MyPasswordScreen()
         }
 
         /* Pantalla de Mi liga */

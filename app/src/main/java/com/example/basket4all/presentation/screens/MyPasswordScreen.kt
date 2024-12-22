@@ -38,16 +38,16 @@ fun MyPasswordScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp),
+            .padding(horizontal = 28.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "He olvidado mi contraseña",
-            fontSize = 30.sp,
+            text = "Recuperar contraseña",
+            fontSize = 32.sp,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 12.dp)
+            modifier = Modifier.padding(bottom = 20.dp)
         )
         OutlinedTextField(
             value = email,
@@ -69,7 +69,7 @@ fun MyPasswordScreen() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Recuperar contraseña",
+                text = "Enviar por email",
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
@@ -78,7 +78,7 @@ fun MyPasswordScreen() {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Contraseña enviada, revisa tu correo",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
         }
