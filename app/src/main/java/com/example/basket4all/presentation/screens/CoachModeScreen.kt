@@ -120,7 +120,7 @@ private fun Buttons(navController: NavHostController) {
             )
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(AppScreens.NewResultScreen.route) },
             shape = RectangleShape,
             modifier = Modifier
                 .defaultMinSize(minWidth = 250.dp, minHeight = 50.dp)
