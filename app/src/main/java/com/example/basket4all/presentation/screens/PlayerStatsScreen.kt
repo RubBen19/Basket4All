@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,12 +31,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.basket4all.R
 import com.example.basket4all.common.classes.PlayerStatsClass
+import com.example.basket4all.presentation.navigation.AppScreens
 import com.example.basket4all.ui.theme.Basket4allTheme
 
 @Composable
-fun PlayerStatsScreen() {
+fun PlayerStatsScreen(navController: NavHostController) {
     val generalStats = listOf(
         "Puntos" to "8.2",
         "Minutos" to "12.5",
@@ -80,6 +83,13 @@ fun PlayerStatsScreen() {
                     totalList = total,
                     percentList = percent
                 )
+                Button(onClick = { navController.navigate(AppScreens.ShotInformScreen.route) }) {
+                    Text(
+                        text = "Informe de tiro completo",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
             // Estadisitcas de pases clave
             item {
@@ -361,13 +371,5 @@ private fun MatchesList(title: String, matches: List <PlayerStatsClass>) {
                 }
             }
         }
-    }
-}
-
-@Composable
-@Preview(showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun Preview() {
-    Basket4allTheme {
-        PlayerStatsScreen()
     }
 }

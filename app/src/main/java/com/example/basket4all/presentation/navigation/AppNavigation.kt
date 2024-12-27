@@ -55,6 +55,7 @@ import com.example.basket4all.presentation.screens.MiLigueScreen
 import com.example.basket4all.presentation.screens.MyPasswordScreen
 import com.example.basket4all.presentation.screens.NewResultScreen
 import com.example.basket4all.presentation.screens.PlayerStatsScreen
+import com.example.basket4all.presentation.screens.ShotInformScreen
 
 /**
  * ARCHIVO: AppNavigation.kt
@@ -214,7 +215,7 @@ fun AppNavigation() {
         /* Pantalla de estadísticas de un jugador */
         composable(route = AppScreens.PlayerStatsScreen.route) {
             navIsVisible = false
-            PlayerStatsScreen()
+            PlayerStatsScreen(navController)
         }
 
         /* Pantalla de recuèración de contraseña */
@@ -229,10 +230,16 @@ fun AppNavigation() {
             MiLigueScreen()
         }
 
-        /* Pantalla de Nuevo resultado */
+        /* Pantalla de nuevo resultado */
         composable(route = AppScreens.NewResultScreen.route) {
             navIsVisible = false
             NewResultScreen()
+        }
+
+        /* Pantalla de informes de tiro */
+        composable(route = AppScreens.ShotInformScreen.route) {
+            navIsVisible = false
+            ShotInformScreen()
         }
 
         /* PANTALLA DEL MODO PIZARRA */
