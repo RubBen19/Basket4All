@@ -1,9 +1,6 @@
 package com.example.basket4all.presentation.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,13 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,28 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import com.example.basket4all.R
-import com.example.basket4all.common.classes.PlayerStatsClass
-import com.example.basket4all.presentation.navigation.AppScreens
 
 @Composable
-fun PlayerStatsScreen(navController: NavHostController) {
-    val generalStats = listOf(
-        "Puntos" to "8.2",
-        "Minutos" to "12.5",
-        "Asistencias" to "2.5",
-        "Rebotes" to "12.1",
-        "Partidos jugados" to "5",
-        "Faltas" to "0.6",
-        "Pérdidas" to "0.4",
-        "Robos" to "0.8",
-        "Tapones" to "1.2"
-    )
+fun MatchStatsScreen() {
     val categories = listOf("De 2", "Triples", "Libres", "Zona")
     val success = listOf("8", "1", "2", "12")
     val failed = listOf("6", "4", "0", "8")
@@ -64,13 +42,6 @@ fun PlayerStatsScreen(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Estadísticas generales por partido
-            item {
-                GeneralStatsTable(
-                    title = "Por partido",
-                    stats = generalStats
-                )
-            }
             // Estadísticas de tiro generales
             item {
                 AdvancedStatsTable(
@@ -81,13 +52,6 @@ fun PlayerStatsScreen(navController: NavHostController) {
                     totalList = total,
                     percentList = percent
                 )
-                Button(onClick = { navController.navigate(AppScreens.ShotInformScreen.route) }) {
-                    Text(
-                        text = "Informe de tiro completo",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
             }
             // Estadisitcas de pases clave
             item {
@@ -120,16 +84,6 @@ fun PlayerStatsScreen(navController: NavHostController) {
                         "Robos" to "4",
                         "Tapones" to "6"
                     )
-                )
-            }
-            // Estadisticas por partido
-            item {
-                MatchesList(
-                    title = "Partidos jugados",
-                    matches = listOf(
-                        PlayerStatsClass()
-                    ),
-                    navController = navController
                 )
             }
         }
@@ -277,96 +231,6 @@ private fun AdvancedStatsTable(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun MatchesList(title: String, matches: List <PlayerStatsClass>, navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = title,
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Divider(
-            color = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-        matches.forEach { match ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-                    .clickable { navController.navigate(AppScreens.MatchStatsScreen.route) }
-                    .border(1.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(6)),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_default),
-                        contentDescription = "Logo default",
-                        modifier = Modifier.size(100.dp)
-                    )
-                    Text(
-                        text = "17/10/2024",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                }
-                Column {
-                    Text(
-                        text = "Puntos",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Text(
-                        text = "Minutos",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Text(
-                        text = "Asistencias",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-                Column {
-                    Text(
-                        text = match.shots.getPoints().toString(),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Text(
-                        text = match.minutes.toString(),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Text(
-                        text = match.lastPass.getAssist().toString(),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }

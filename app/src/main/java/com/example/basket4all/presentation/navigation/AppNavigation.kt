@@ -51,6 +51,8 @@ import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModelFacto
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModelFactory
 import com.example.basket4all.board_tool.BoardScreen
+import com.example.basket4all.presentation.screens.MatchScreen
+import com.example.basket4all.presentation.screens.MatchStatsScreen
 import com.example.basket4all.presentation.screens.MiLigueScreen
 import com.example.basket4all.presentation.screens.MyPasswordScreen
 import com.example.basket4all.presentation.screens.NewResultScreen
@@ -236,10 +238,22 @@ fun AppNavigation() {
             NewResultScreen()
         }
 
+        /* Pantalla de partidos */
+        composable(route = AppScreens.MatchScreen.route) {
+            navIsVisible = false
+            MatchScreen()
+        }
+
         /* Pantalla de informes de tiro */
         composable(route = AppScreens.ShotInformScreen.route) {
             navIsVisible = false
             ShotInformScreen()
+        }
+
+        /* Pantalla de estadísticas de partido */
+        composable(route = AppScreens.MatchStatsScreen.route) {
+            navIsVisible = false
+            MatchStatsScreen()
         }
 
         /* PANTALLA DEL MODO PIZARRA */

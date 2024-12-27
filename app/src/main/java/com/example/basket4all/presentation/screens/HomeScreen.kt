@@ -105,7 +105,7 @@ fun HomeScreen (
                 // Cards con los proximos partidos y eventos
                 HorizontalCards(screenUiState.events, screenUiState.matches, navController)
                 // Card para el último partido jugado
-                LastMatchPlayed(screenUiState)
+                LastMatchPlayed(screenUiState, navController)
             }
         }
     }
@@ -186,12 +186,13 @@ private fun HorizontalCards(
 }
 
 @Composable
-private fun LastMatchPlayed(screenUiState: HomeScreenUiState) {
+private fun LastMatchPlayed(screenUiState: HomeScreenUiState, navController: NavHostController) {
     if (screenUiState.lastMatch != null) {
         val format = DateTimeFormatter.ofPattern("dd / MM / yyyy")
 
         Row(
-            modifier = Modifier.padding(top = 40.dp)
+            modifier = Modifier
+                .padding(top = 40.dp)
         ) {
             Text(
                 text = "ÚLTIMO ",
@@ -212,7 +213,8 @@ private fun LastMatchPlayed(screenUiState: HomeScreenUiState) {
                 team1 = screenUiState.localTeam,
                 team2 = screenUiState.visitorTeam,
                 score = screenUiState.lastMatch.score,
-                date = screenUiState.lastMatch.date.format(format)
+                date = screenUiState.lastMatch.date.format(format),
+                onClick = { navController.navigate(AppScreens.MatchScreen.route) }
             )
         }
     }

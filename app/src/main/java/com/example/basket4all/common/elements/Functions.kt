@@ -8,6 +8,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -113,12 +114,19 @@ fun getDaysOfWeek(): List<String> {
 
 // Botones para representar un partido con los datos más relevantes
 @Composable
-fun MatchButton(team1: TeamEntity, team2: TeamEntity, score: Score, date: String) {
+fun MatchButton(
+    team1: TeamEntity,
+    team2: TeamEntity,
+    score: Score,
+    date: String,
+    onClick: () -> Unit = { /*TODO*/ }
+) {
     //Botón
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.onBackground)
+            .clickable { onClick.invoke() }
     ) {
         //Row imágenes y marcador
         MatchButtonScoreVs(score, date)

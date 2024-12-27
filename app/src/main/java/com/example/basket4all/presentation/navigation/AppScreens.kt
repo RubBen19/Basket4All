@@ -23,4 +23,6 @@ sealed class AppScreens (val route: String) {
     object MyPasswordScreen: AppScreens("my_password_screen")
     object NewResultScreen: AppScreens("new_result_screen")
     object ShotInformScreen: AppScreens("shot_inform_screen")
+    object MatchScreen: AppScreens("match_screen")
+    object MatchStatsScreen: AppScreens("match_stats_screen")
 }
