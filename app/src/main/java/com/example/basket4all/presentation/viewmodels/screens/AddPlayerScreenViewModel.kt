@@ -37,6 +37,7 @@ class AddPlayerScreenViewModel(
     }
 
     fun insert(stats: PlayerStatsClass) {
+        stats.id = playerId
         _uiState.value.newMatchCourier.addPlayer(playerId, stats)
     }
 

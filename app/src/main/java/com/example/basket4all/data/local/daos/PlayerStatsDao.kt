@@ -29,5 +29,5 @@ interface PlayerStatsDao {
     fun getByID(id: Int): Flow<PlayerStats>
 
     @Query("SELECT * FROM players_stats_table WHERE Player = :playerId")
-    fun getByPlayer(playerId: Int): Flow<List<PlayerStats>>
+    fun getByPlayer(playerId: Int): Flow<PlayerStats>
 }

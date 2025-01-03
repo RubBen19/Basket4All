@@ -18,5 +18,5 @@ data class MatchEntity(
     @ColumnInfo("Date")
     val date: LocalDate,
     @ColumnInfo("Score")
-    val score: Score
+    var score: Score
 )

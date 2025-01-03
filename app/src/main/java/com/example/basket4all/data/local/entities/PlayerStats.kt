@@ -13,5 +13,5 @@ data class PlayerStats(
     @ColumnInfo(name = "Player")
     val playerId: Int,
     @ColumnInfo(name = "Estadísticas")
-    val stats: PlayerStatsClass = PlayerStatsClass()
+    var stats: PlayerStatsClass = PlayerStatsClass()
 )

@@ -1,5 +1,6 @@
 package com.example.basket4all.presentation.screens
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -39,10 +41,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -56,12 +62,14 @@ import androidx.navigation.NavHostController
 import com.example.basket4all.R
 import com.example.basket4all.common.elements.LoadScreen
 import com.example.basket4all.presentation.navigation.AppScreens
+import com.example.basket4all.presentation.viewmodels.db.MatchStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.MatchesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.screens.NewMatchScreenViewModel
 import com.example.basket4all.presentation.viewmodels.screens.NewMatchScreenViewModelFactory
+import java.util.Calendar
 
 @Composable
 fun NewMatchScreen(
@@ -69,11 +77,12 @@ fun NewMatchScreen(
     teamViewModel: TeamViewModel,
     matchesViewModel: MatchesViewModel,
     teamStatsViewModel: TeamStatsViewModel,
-    playerStatsViewModel: PlayerStatsViewModel
+    playerStatsViewModel: PlayerStatsViewModel,
+    matchStatsViewModel: MatchStatsViewModel
 ) {
     val viewModel: NewMatchScreenViewModel = viewModel(
         factory = NewMatchScreenViewModelFactory(
-            teamViewModel, matchesViewModel, teamStatsViewModel, playerStatsViewModel
+            teamViewModel, matchesViewModel, teamStatsViewModel, playerStatsViewModel, matchStatsViewModel
         )
     )
     val loading by viewModel.loading.observeAsState(false)
@@ -91,7 +100,10 @@ fun NewMatchScreen(
         ) {
             //Botón para añadir el partido
             IconButton(
-                onClick = {  },
+                onClick = {
+                    viewModel.saveChanges()
+                    navController.popBackStack()
+                },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 56.dp, end = 8.dp)
@@ -115,6 +127,8 @@ fun NewMatchScreen(
                 if (show) PlayerSelectionPopUp(navController, viewModel)
                 //Seleccionar equipo rival
                 RivalSelection(viewModel)
+                // Selector de fecha para el partido
+                DateField(viewModel)
                 //Marcador
                 ScoreInput(viewModel)
                 //Seleccionar si se ha sido local o visitante
@@ -155,6 +169,49 @@ fun NewMatchScreen(
             }
         }
     }
+}
+
+// Funcion que invoca un selector de fecha
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateField(viewModel: NewMatchScreenViewModel) {
+    var selectedDate by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, selectedYear, selectedMonth, selectedDay ->
+            selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+            viewModel.changeDate(selectedDay, selectedMonth + 1, selectedYear)
+        },
+        year,
+        month,
+        day
+    )
+
+    OutlinedTextField(
+        value = selectedDate,
+        textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+        onValueChange = {},
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 60.dp, vertical = 4.dp)
+            .clickable { datePickerDialog.show() },
+        label = { Text("Fecha") },
+        readOnly = true,
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.DateRange,
+                contentDescription = "Introduce una fecha",
+                modifier = Modifier.clickable { datePickerDialog.show() }
+            )
+        }
+    )
 }
 
 @Composable

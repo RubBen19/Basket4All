@@ -5,27 +5,32 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.messengers.NewMatchCourier
 import com.example.basket4all.common.messengers.SessionManager
+import com.example.basket4all.data.local.entities.MatchEntity
+import com.example.basket4all.data.local.entities.MatchStats
 import com.example.basket4all.data.local.entities.PlayerEntity
 import com.example.basket4all.data.local.entities.TeamEntity
+import com.example.basket4all.presentation.viewmodels.db.MatchStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.MatchesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class NewMatchScreenViewModel(
     private val teamVM: TeamViewModel,
     private val matchVM: MatchesViewModel,
     private val teamStatsVM: TeamStatsViewModel,
-    private val playerStatsVM: PlayerStatsViewModel
+    private val playerStatsVM: PlayerStatsViewModel,
+    private val matchStatsVM: MatchStatsViewModel
 ): ViewModel() {
     //Otras variables
     private val session = SessionManager.getInstance()
     private val _courier = MutableLiveData(NewMatchCourier.getInstance())
-    val courier: LiveData<NewMatchCourier> = _courier
 
     //Variables de la screen
     lateinit var vsTeams: List<TeamEntity>
@@ -49,6 +54,8 @@ class NewMatchScreenViewModel(
     val playersSelected: LiveData<List<String>> = _playersSelected
     private val _playerSelectionShow: MutableLiveData<Boolean> = MutableLiveData(false)
     val playerSelectionShow: LiveData<Boolean> = _playerSelectionShow
+    private val _date: MutableLiveData<LocalDate> = MutableLiveData()
+    val date: LiveData<LocalDate> = _date
 
     //Variable para la carga de la screen
     private val _loading = MutableLiveData<Boolean>()
@@ -109,18 +116,71 @@ class NewMatchScreenViewModel(
         _playersSelected.value = searchPlayersByID(_courier.value?.getPlayers())
             .map { "${it.user.name} ${it.user.surname1} ${it.user.surname2}" }
     }
+
+    fun changeDate(day: Int, month: Int, year: Int) {
+        _date.value = LocalDate.of(year, month, day)
+    }
+
+    fun saveChanges() {
+        val teamId = vsTeams.find { it.name == _rival.value }?.teamId
+        val playerLists = _courier.value?.getPlayers()
+        viewModelScope.launch {
+            if(teamId != null && _date.value != null && ((playerLists?.size ?: 0) >= 5)) {
+                val existMatch = matchVM.searchMatch(myTeam.teamId, teamId, _date.value!!)
+                if (existMatch != null) {
+                    // Update the match
+                    existMatch.score = Score(_localScore.value?:0,_visitorScore.value?:0)
+                    matchVM.update(existMatch)
+                }
+                else {
+                    // Save the match
+                    val match = MatchEntity(
+                        localTeamId = myTeam.teamId,
+                        visitorTeamId = teamId,
+                        date = _date.value!!,
+                        score = Score(_localScore.value?:0,_visitorScore.value?:0)
+                    )
+                    matchVM.insertMatch(match)
+                    // Save players and his stats
+                    _courier.value?.getStats()?.forEach { player ->
+                        val matchId = matchVM.searchEqualMatch(
+                            match.localTeamId,
+                            match.visitorTeamId,
+                            match.date,
+                            match.score
+                        )?.id
+                        if (matchId != null) {
+                            val matchStats = MatchStats(
+                                matchId = matchId,
+                                playerId = player.id,
+                                stats = player
+                            )
+                            matchStatsVM.insert(matchStats)
+                            playerStatsVM.updateStats(
+                                player.id,
+                                matchStatsVM.playerMatchStats(player.id)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 class NewMatchScreenViewModelFactory(
     private val teamVM: TeamViewModel,
     private val matchVM: MatchesViewModel,
     private val teamStatsVM: TeamStatsViewModel,
-    private val playerStatsVM: PlayerStatsViewModel
+    private val playerStatsVM: PlayerStatsViewModel,
+    private val matchStatsViewModel: MatchStatsViewModel
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewMatchScreenViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return NewMatchScreenViewModel(teamVM, matchVM, teamStatsVM, playerStatsVM) as T
+            return NewMatchScreenViewModel(
+                teamVM, matchVM, teamStatsVM, playerStatsVM, matchStatsViewModel
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

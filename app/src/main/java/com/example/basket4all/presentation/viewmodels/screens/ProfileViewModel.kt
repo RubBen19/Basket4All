@@ -53,7 +53,7 @@ class ProfileViewModel(
                             image = player.user.picture,
                             positions = player.getPositionsName(),
                             team = teamVM.getById(player.teamId),
-                            stats = playerStatsVM.getByPlayerId(userId).first()
+                            stats = playerStatsVM.getByPlayerId(userId)
                         )
                     }
                     _user.value = player.user

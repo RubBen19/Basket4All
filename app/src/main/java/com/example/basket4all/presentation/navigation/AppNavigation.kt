@@ -58,6 +58,8 @@ import com.example.basket4all.presentation.screens.MyPasswordScreen
 import com.example.basket4all.presentation.screens.NewResultScreen
 import com.example.basket4all.presentation.screens.PlayerStatsScreen
 import com.example.basket4all.presentation.screens.ShotInformScreen
+import com.example.basket4all.presentation.viewmodels.db.MatchStatsViewModel
+import com.example.basket4all.presentation.viewmodels.db.MatchStatsViewModelFactory
 
 /**
  * ARCHIVO: AppNavigation.kt
@@ -83,6 +85,7 @@ fun AppNavigation() {
     val matchDao = appDatabase.matchDao()
     val playerStatsDao = appDatabase.playerStatsDao()
     val calendarEventDao = appDatabase.calendarEventDao()
+    val matchStatsDao = appDatabase.matchStatsDao()
 
     //ViewModels relacionados con la base de datos
     val playersViewModel: PlayersViewModel = viewModel(factory = PlayersViewModelFactory(playerDao))
@@ -97,6 +100,9 @@ fun AppNavigation() {
     )
     val calendarEventViewModel: CalendarEventViewModel = viewModel(
         factory = CalendarEventViewModelFactory(calendarEventDao)
+    )
+    val matchStatsViewModel: MatchStatsViewModel = viewModel(
+        factory = MatchStatsViewModelFactory(matchStatsDao)
     )
 
     //ViewModels relacionados con screens
@@ -191,7 +197,8 @@ fun AppNavigation() {
                 teamsViewModel,
                 matchesViewModel,
                 teamStatsViewModel,
-                playerStatsViewModel
+                playerStatsViewModel,
+                matchStatsViewModel
             )
         }
         composable(route = AppScreens.AddPlayerStatsScreen.route + "/{id}/{vsName}",
