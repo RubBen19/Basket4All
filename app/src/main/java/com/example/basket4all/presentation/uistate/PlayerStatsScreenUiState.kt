@@ -37,4 +37,5 @@ data class PlayerStatsUiScreen(
   val losts: Int = 0,
   val steals: Int = 0,
   val blocks: Int = 0
+)
   
