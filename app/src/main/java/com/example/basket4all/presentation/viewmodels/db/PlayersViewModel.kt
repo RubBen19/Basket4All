@@ -16,6 +16,11 @@ class PlayersViewModel(private val playerDao: PlayerDao): ViewModel() {
             val player: PlayerEntity = playerDao.getByID(1).first()
         }
     }
+
+    suspend fun insert(player: PlayerEntity) {
+        playerDao.insert(player)
+    }
+
     suspend fun getByEmail(email: String): PlayerEntity? {
         return playerDao.getByEmail(email).firstOrNull()
     }

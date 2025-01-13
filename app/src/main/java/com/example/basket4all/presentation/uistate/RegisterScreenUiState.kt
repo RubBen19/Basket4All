@@ -13,5 +13,7 @@ data class RegisterScreenUiState(
     val surnameFormatError: Boolean = false,
     val passwordFormatError: Boolean = false,
     val birthdateFormatError: Boolean = false,
-    val teamCodeFormatError: Boolean = false
+    val teamCodeFormatError: Boolean = false,
+    // Error message
+    val msg: String = ""
 )

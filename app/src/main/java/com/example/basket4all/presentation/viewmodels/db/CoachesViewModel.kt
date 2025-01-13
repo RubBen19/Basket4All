@@ -9,6 +9,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 
 class CoachesViewModel(private val coachDao: CoachDao): ViewModel() {
+
+    suspend fun insert(coach: CoachEntity) {
+        coachDao.insert(coach)
+    }
+
     suspend fun getByEmail(email: String): CoachEntity? {
         return coachDao.getByEmail(email).firstOrNull()
     }

@@ -174,7 +174,7 @@ fun NewMatchScreen(
 // Funcion que invoca un selector de fecha
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateField(viewModel: NewMatchScreenViewModel) {
+private fun DateField(viewModel: NewMatchScreenViewModel) {
     var selectedDate by remember { mutableStateOf("") }
     val context = LocalContext.current
     val calendar = Calendar.getInstance()

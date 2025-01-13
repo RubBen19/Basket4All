@@ -141,7 +141,7 @@ fun AppNavigation() {
         }
         composable(route = AppScreens.RegisterScreen.route) {
             navIsVisible = false
-            RegisterScreen(navController)
+            RegisterScreen(playersViewModel, coachesViewModel)
         }
         composable(route = AppScreens.ProfileScreen.route + "/{id}/{isPlayer}",
             arguments = listOf(
