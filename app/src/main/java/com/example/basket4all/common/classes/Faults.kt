@@ -13,6 +13,10 @@ class Faults {
         return outFaults
     }
 
+    fun getTotal(): Int {
+        return inFaults + outFaults
+    }
+
     /*** SETTERS ***/
     fun setInFaults(value: Int) {
         inFaults = value

@@ -23,6 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,107 +32,153 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.basket4all.R
 import com.example.basket4all.common.classes.PlayerStatsClass
+import com.example.basket4all.common.elements.LoadScreen
 import com.example.basket4all.presentation.navigation.AppScreens
+import com.example.basket4all.presentation.viewmodels.db.MatchStatsViewModel
+import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
+import com.example.basket4all.presentation.viewmodels.screens.PlayerStatsScreenViewModel
+import com.example.basket4all.presentation.viewmodels.screens.PlayerStatsScreenViewModelFactory
+import com.example.basket4all.presentation.viewmodels.screens.ProfileViewModel
+import com.example.basket4all.presentation.viewmodels.screens.ProfileViewModelFactory
 
 @Composable
-fun PlayerStatsScreen(navController: NavHostController) {
-    val generalStats = listOf(
-        "Puntos" to "8.2",
-        "Minutos" to "12.5",
-        "Asistencias" to "2.5",
-        "Rebotes" to "12.1",
-        "Partidos jugados" to "5",
-        "Faltas" to "0.6",
-        "Pérdidas" to "0.4",
-        "Robos" to "0.8",
-        "Tapones" to "1.2"
+fun PlayerStatsScreen(
+    matchStatsVM: MatchStatsViewModel,
+    playerStatsVM: PlayerStatsViewModel,
+    playerID: Int,
+    navController: NavHostController
+) {
+    // ViewModel
+    val viewModel: PlayerStatsScreenViewModel = viewModel (
+        factory = PlayerStatsScreenViewModelFactory(matchStatsVM, playerStatsVM, playerID)
     )
-    val categories = listOf("De 2", "Triples", "Libres", "Zona")
-    val success = listOf("8", "1", "2", "12")
-    val failed = listOf("6", "4", "0", "8")
-    val total = listOf("14", "5", "2", "20")
-    val percent = listOf("57", "20", "100", "60")
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        LazyColumn(
+
+    // Estado de la pantalla
+    val screenUiState by viewModel.uiState.collectAsState()
+
+    if (screenUiState.loading) {
+        LoadScreen()
+    }
+    else {
+        val generalStats = listOf(
+            "Puntos" to screenUiState.ppp.toString(),
+            "Minutos" to screenUiState.mpp.toString(),
+            "Asistencias" to screenUiState.app.toString(),
+            "Rebotes" to screenUiState.rpp.toString(),
+            "Partidos jugados" to screenUiState.mPlayed.toString(),
+            "Faltas" to screenUiState.fpp.toString(),
+            "Pérdidas" to screenUiState.lpp.toString(),
+            "Robos" to screenUiState.spp.toString(),
+            "Tapones" to screenUiState.bpp.toString()
+        )
+        val categories = listOf("De 2", "Triples", "Libres", "Zona")
+        val success = listOf(
+            screenUiState.twoPIn.toString(),
+            screenUiState.ThreePIn.toString(),
+            screenUiState.FpIn.toString(),
+            screenUiState.ZpIn.toString()
+        )
+        val failed = listOf(
+            screenUiState.twoPOut.toString(),
+            screenUiState.ThreePOut.toString(),
+            screenUiState.FpOut.toString(),
+            screenUiState.ZpOut.toString()
+        )
+        val total = listOf(
+            screenUiState.twoPShoots.toString(),
+            screenUiState.ThreePShoots.toString(),
+            screenUiState.ZpShoots.toString(),
+            screenUiState.FpShoots.toString()
+        )
+        val percent = listOf(
+            screenUiState.twoPPercent.toString(),
+            screenUiState.ThreePPercent.toString(),
+            screenUiState.ZpPercent.toString(),
+            screenUiState.FpShoots.toString()
+        )
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            // Estadísticas generales por partido
-            item {
-                GeneralStatsTable(
-                    title = "Por partido",
-                    stats = generalStats
-                )
-            }
-            // Estadísticas de tiro generales
-            item {
-                AdvancedStatsTable(
-                    title = "Tiro",
-                    categories = categories,
-                    successValues = success,
-                    failValues = failed,
-                    totalList = total,
-                    percentList = percent
-                )
-                Button(onClick = { navController.navigate(AppScreens.ShotInformScreen.route) }) {
-                    Text(
-                        text = "Informe de tiro completo",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Estadísticas generales por partido
+                item {
+                    GeneralStatsTable(
+                        title = "Por partido",
+                        stats = generalStats
                     )
                 }
-            }
-            // Estadisitcas de pases clave
-            item {
-                GeneralStatsTable(
-                    title = "Pases clave",
-                    stats = listOf(
-                        "Total" to "18",
-                        "Asistencias" to "9",
-                        "Probabilidad de asistencia" to "50%"
+                // Estadísticas de tiro generales
+                item {
+                    AdvancedStatsTable(
+                        title = "Tiro",
+                        categories = categories,
+                        successValues = success,
+                        failValues = failed,
+                        totalList = total,
+                        percentList = percent
                     )
-                )
-            }
-            // Estadisitcas de rebotes
-            item {
-                GeneralStatsTable(
-                    title = "Rebotes",
-                    stats = listOf(
-                        "Ofensivo" to "12",
-                        "Defensivo" to "20"
+                    Button(onClick = { navController.navigate(AppScreens.ShotInformScreen.route) }) {
+                        Text(
+                            text = "Informe de tiro completo",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+                // Estadisitcas de pases clave
+                item {
+                    GeneralStatsTable(
+                        title = "Pases clave",
+                        stats = listOf(
+                            "Total" to "18",
+                            "Asistencias" to "9",
+                            "Probabilidad de asistencia" to "50%"
+                        )
                     )
-                )
-            }
-            // Estadisitcas de rebotes
-            item {
-                GeneralStatsTable(
-                    title = "Total",
-                    stats = listOf(
-                        "Faltas" to "12",
-                        "Pérdidas" to "20",
-                        "Robos" to "4",
-                        "Tapones" to "6"
+                }
+                // Estadisitcas de rebotes
+                item {
+                    GeneralStatsTable(
+                        title = "Rebotes",
+                        stats = listOf(
+                            "Ofensivo" to "12",
+                            "Defensivo" to "20"
+                        )
                     )
-                )
-            }
-            // Estadisticas por partido
-            item {
-                MatchesList(
-                    title = "Partidos jugados",
-                    matches = listOf(
-                        PlayerStatsClass()
-                    ),
-                    navController = navController
-                )
+                }
+                // Estadisitcas de rebotes
+                item {
+                    GeneralStatsTable(
+                        title = "Total",
+                        stats = listOf(
+                            "Faltas" to "12",
+                            "Pérdidas" to "20",
+                            "Robos" to "4",
+                            "Tapones" to "6"
+                        )
+                    )
+                }
+                // Estadisticas por partido
+                item {
+                    MatchesList(
+                        title = "Partidos jugados",
+                        matches = listOf(
+                            PlayerStatsClass()
+                        ),
+                        navController = navController
+                    )
+                }
             }
         }
     }

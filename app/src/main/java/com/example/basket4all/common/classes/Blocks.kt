@@ -13,6 +13,10 @@ class Blocks {
         return outBlock
     }
 
+    fun getBlocks(): Int {
+        return inBlock + outBlock
+    }
+
     /*** SETTERS ***/
     fun setInBlock(value: Int) {
         inBlock = value

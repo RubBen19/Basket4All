@@ -224,7 +224,7 @@ fun AppNavigation() {
         /* Pantalla de estadísticas de un jugador */
         composable(route = AppScreens.PlayerStatsScreen.route) {
             navIsVisible = false
-            PlayerStatsScreen(navController)
+            PlayerStatsScreen(matchStatsViewModel, playerStatsViewModel, 1, navController)
         }
 
         /* Pantalla de recuèración de contraseña */

@@ -1,14 +1,14 @@
-data ShotInformScreenUiState(
+data class ShotInformScreenUiState(
   // Media distancia
-  val 2pLeftCornerIn: Int = 0,
-  val 2pLeftCornerOut: Int = 0,
-  val 2pLeftCornerTotal: Int = 0,
-  val 2pLeftCornerPercent: Float = 0.0f,
+  val TwoPLeftCornerIn: Int = 0,
+  val TwoPLeftCornerOut: Int = 0,
+  val TwoPLeftCornerTotal: Int = 0,
+  val TwoPLeftCornerPercent: Float = 0.0f,
   // Triple
-  val 3pLeftCornerIn: Int = 0,
-  val 3pLeftCornerOut: Int = 0,
-  val 3pLeftCornerTotal: Int = 0,
-  val 3pLeftCornerPercent: Float = 0.0f,
+  val ThreePLeftCornerIn: Int = 0,
+  val ThreePLeftCornerOut: Int = 0,
+  val ThreePLeftCornerTotal: Int = 0,
+  val ThreePLeftCornerPercent: Float = 0.0f,
   // Desde la zona
   val zoneLeftIn: Int = 0,
   val zoneLeftOut: Int = 0,

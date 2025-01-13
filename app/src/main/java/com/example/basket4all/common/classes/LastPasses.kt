@@ -13,6 +13,10 @@ class LastPasses {
         return noAssist
     }
 
+    fun getTotal(): Int {
+        return assist + noAssist
+    }
+
     /*** SETTERS ***/
     fun setAssist(value: Int) {
         assist = value

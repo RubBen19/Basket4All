@@ -1,7 +1,10 @@
+import com.example.basket4all.data.local.entities.MatchStats
+
 data class PlayerStatsUiScreen(
   // Variables de las estadísticas por partido
   val ppp: Float = 0.0f,
   val mpp: Float = 0.0f,
+  val app: Float = 0.0f,
   val rpp: Float = 0.0f,
   val fpp: Float = 0.0f,
   val lpp: Float = 0.0f,
@@ -9,14 +12,14 @@ data class PlayerStatsUiScreen(
   val bpp: Float = 0.0f,
   val mPlayed: Int = 0,
   // Estadística de tiro generales
-  val 2pIn: Int = 0,
-  val 2pOut: Int = 0,
-  val 2pShoots: Int = 0,
-  val 2pPercent: Float = 0.0f,
-  val 3pIn: Int = 0,
-  val 3pOut: Int = 0,
-  val 3pShoots: Int = 0,
-  val 3pPercent: Float = 0.0f,
+  val twoPIn: Int = 0,
+  val twoPOut: Int = 0,
+  val twoPShoots: Int = 0,
+  val twoPPercent: Float = 0.0f,
+  val ThreePIn: Int = 0,
+  val ThreePOut: Int = 0,
+  val ThreePShoots: Int = 0,
+  val ThreePPercent: Float = 0.0f,
   val FpIn: Int = 0,
   val FpOut: Int = 0,
   val FpShoots: Int = 0,
@@ -36,6 +39,10 @@ data class PlayerStatsUiScreen(
   val fouls: Int = 0,
   val losts: Int = 0,
   val steals: Int = 0,
-  val blocks: Int = 0
+  val blocks: Int = 0,
+  // Lista de partidos
+  val matchesPlayed: List<MatchStats> = listOf(),
+  // Flag
+  val loading: Boolean = false,
 )
   
