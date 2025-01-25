@@ -33,10 +33,12 @@ class TeamScreenViewModel(
             _uiState.update {
                 it.copy(
                     team = teamVM.getById(teamId),
+                    teamLogo = teamVM.getById(teamId).picture,
                     players = teamVM.getPlayers(teamId),
                     wins = stats.wins,
                     defeats = stats.matchPlayed - it.wins,
-                    points = stats.points.toDouble() / stats.matchPlayed
+                    points = if (stats.matchPlayed == 0) 0.0
+                    else (stats.points.toDouble() / stats.matchPlayed)
                 )
             }
             _uiState.update { it.copy(loading = false) }

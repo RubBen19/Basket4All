@@ -54,7 +54,7 @@ fun CourtDraw(playersList: List<Player2D>, playerMove: (Int, Offset) -> Unit) {
             ScrollPlayer(player2D, playerMove)
         }
         // Balón
-        ScrollableBall()
+        ScrollableBall(playerMove)
         // Canasta inferior y superior
         DrawBaskets(basketBoardColor, linesWidth)
     }
@@ -270,28 +270,29 @@ private fun ScrollPlayer(player2D: Player2D, playerMove: (Int, Offset) -> Unit) 
 }
 
 @Composable
-fun ScrollableBall() {
+fun ScrollableBall(ballMove: (Int, Offset) -> Unit) {
     var offset by remember { mutableStateOf(Offset(0f, 0f)) }
     val ballSize = 35f
     // Dibujo del balón
     Canvas(
         modifier = Modifier
-            .fillMaxSize()
+            .offset { IntOffset(offset.x.roundToInt(), offset.y.roundToInt()) }
+            .size((ballSize * 2).dp)
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
-                    offset = Offset(offset.x + dragAmount.x, offset.y + dragAmount.y)
+                    offset += dragAmount
+                    ballMove(0, offset)
                 }
             }
-            .wrapContentSize(Alignment.Center)
     ) {
         // Esfera
-        drawCircle(color = Color(0xFFFFA500), center =  offset, radius = ballSize)
+        drawCircle(color = Color(0xFFFFA500), center =  center, radius = ballSize)
         // Líneas
         drawLine(
             color = Color.Black,
-            start = Offset(offset.x - ballSize, offset.y),
-            end = Offset(offset.x + ballSize, offset.y),
+            start = Offset(center.x - ballSize, center.y),
+            end = Offset(center.x + ballSize, center.y),
             strokeWidth = 3f
         )
         drawArc(
@@ -299,7 +300,7 @@ fun ScrollableBall() {
             startAngle = 360f,
             sweepAngle = -180f,
             useCenter = false,
-            topLeft = Offset(offset.x - ballSize*0.97f, offset.y - (ballSize*1.4f)/2),
+            topLeft = Offset(center.x - ballSize*0.97f, center.y - (ballSize*1.4f)/2),
             size = Size(ballSize*0.97f*2, ballSize*1.4f),
             style = Stroke(width = 3f)
         )
@@ -308,7 +309,7 @@ fun ScrollableBall() {
             startAngle = 360f,
             sweepAngle = 180f,
             useCenter = false,
-            topLeft = Offset(offset.x - ballSize*0.97f, offset.y - (ballSize*1.4f)/2),
+            topLeft = Offset(center.x - ballSize*0.97f, center.y - (ballSize*1.4f)/2),
             size = Size(ballSize*0.97f*2, ballSize*1.4f),
             style = Stroke(width = 3f)
         )
@@ -317,7 +318,7 @@ fun ScrollableBall() {
             startAngle = 45f,
             sweepAngle = 180f,
             useCenter = false,
-            topLeft = Offset(offset.x - ballSize, offset.y - ballSize),
+            topLeft = Offset(center.x - ballSize, center.y - ballSize),
             size = Size(ballSize*2, ballSize*2),
             style = Stroke(width = 4f)
         )
@@ -326,7 +327,7 @@ fun ScrollableBall() {
             startAngle = 225f,
             sweepAngle = 180f,
             useCenter = false,
-            topLeft = Offset(offset.x - ballSize, offset.y - ballSize),
+            topLeft = Offset(center.x - ballSize, center.y - ballSize),
             size = Size(ballSize*2, ballSize*2),
             style = Stroke(width = 4f)
         )

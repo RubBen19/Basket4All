@@ -18,9 +18,9 @@ data class TeamStats(
     @ColumnInfo(name = "Puntos")
     var points: Int = 0,
     @ColumnInfo(name = "Faltas")
-    val fouls: Int = 0,
+    var fouls: Int = 0,
     @ColumnInfo(name = "Pérdidas")
-    val turnovers: Int = 0,
+    var turnovers: Int = 0,
     @ColumnInfo(name = "Rebotes")
-    val rebounds: Int = 0,
+    var rebounds: Int = 0,
 )

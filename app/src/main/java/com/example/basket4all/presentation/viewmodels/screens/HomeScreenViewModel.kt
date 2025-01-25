@@ -51,7 +51,12 @@ class HomeScreenViewModel(
             false -> coachesVM.getById(sessionManager.getUserId()).user.name
             else -> error("ERROR: Usuario no es Jugador ni Entrenador")
         }
-        _uiState.update { it.copy(username = name) }
+        _uiState.update {
+            it.copy(
+                username = name,
+                teamLogo = teamVM.getById(sessionManager.getTeamId()).picture
+            )
+        }
     }
 
     private suspend fun loadEvents() {

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.basket4all.R
+import com.example.basket4all.common.classes.MatchScore
 import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.data.local.entities.TeamEntity
@@ -65,9 +66,9 @@ fun categoryAssigner(date: LocalDate): Categories {
 
 // Función que imprime el logo del equipo en la parte central superior junto a un título bicolor.
 @Composable
-fun TeamLogoChildScreens(titleText1: String, titleText2: String) {
+fun TeamLogoChildScreens(image: Int, titleText1: String, titleText2: String) {
     Image(painter = painterResource(
-        id = R.drawable.logo_default),
+        id = image),
         contentDescription = "Logo equipo",
         modifier = Modifier.size(140.dp)
     )
@@ -117,7 +118,7 @@ fun getDaysOfWeek(): List<String> {
 fun MatchButton(
     team1: TeamEntity,
     team2: TeamEntity,
-    score: Score,
+    score: MatchScore,
     date: String,
     onClick: () -> Unit = { /*TODO*/ }
 ) {
@@ -129,7 +130,7 @@ fun MatchButton(
             .clickable { onClick.invoke() }
     ) {
         //Row imágenes y marcador
-        MatchButtonScoreVs(score, date)
+        MatchButtonScoreVs(team1.picture, team2.picture, score, date)
         // Row de nombres
         MatchButtonNames(team1, team2)
     }
@@ -162,14 +163,14 @@ private fun MatchButtonNames(team1: TeamEntity, team2: TeamEntity) {
 }
 
 @Composable
-private fun MatchButtonScoreVs(score: Score, date: String) {
+private fun MatchButtonScoreVs(localImage: Int, visitorImage:Int, score: MatchScore, date: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.logo_default),
+            painter = painterResource(id = localImage),
             contentDescription = "Team 1 logo",
             modifier = Modifier.size(80.dp)
         )
@@ -212,7 +213,7 @@ private fun MatchButtonScoreVs(score: Score, date: String) {
             )
         }
         Image(
-            painter = painterResource(id = R.drawable.logo_default),
+            painter = painterResource(id = visitorImage),
             contentDescription = "Team 2 logo",
             modifier = Modifier.size(80.dp)
         )

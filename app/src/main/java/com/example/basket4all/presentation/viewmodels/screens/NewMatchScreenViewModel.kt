@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.basket4all.common.classes.MatchScore
 import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.messengers.NewMatchCourier
 import com.example.basket4all.common.messengers.SessionManager
@@ -39,12 +40,28 @@ class NewMatchScreenViewModel(
     val dropdownExpanded: LiveData<Boolean> = _dropdownExpanded
     private val _rival: MutableLiveData<String> = MutableLiveData("Selecciona rival")
     val rival: LiveData<String> = _rival
-    private val _localScore: MutableLiveData<Int> = MutableLiveData(0)
-    val localScore: LiveData<Int> = _localScore
-    private val _visitorScore: MutableLiveData<Int> = MutableLiveData(0)
-    val visitorScore: LiveData<Int> = _visitorScore
+    // Marcador local
+    private val _localScoreQ1: MutableLiveData<Int> = MutableLiveData(0)
+    val localScoreQ1: LiveData<Int> = _localScoreQ1
+    private val _localScoreQ2: MutableLiveData<Int> = MutableLiveData(0)
+    val localScoreQ2: LiveData<Int> = _localScoreQ2
+    private val _localScoreQ3: MutableLiveData<Int> = MutableLiveData(0)
+    val localScoreQ3: LiveData<Int> = _localScoreQ3
+    private val _localScoreQ4: MutableLiveData<Int> = MutableLiveData(0)
+    val localScoreQ4: LiveData<Int> = _localScoreQ4
+    // Marcador visitante
+    private val _visitorScoreQ1: MutableLiveData<Int> = MutableLiveData(0)
+    val visitorScoreQ1: LiveData<Int> = _visitorScoreQ1
+    private val _visitorScoreQ2: MutableLiveData<Int> = MutableLiveData(0)
+    val visitorScoreQ2: LiveData<Int> = _visitorScoreQ2
+    private val _visitorScoreQ3: MutableLiveData<Int> = MutableLiveData(0)
+    val visitorScoreQ3: LiveData<Int> = _visitorScoreQ3
+    private val _visitorScoreQ4: MutableLiveData<Int> = MutableLiveData(0)
+    val visitorScoreQ4: LiveData<Int> = _visitorScoreQ4
+    // Seleccion de equipo local o visitante
     private val _localOrVisitor: MutableLiveData<String> = MutableLiveData("LOCAL")
     val localOrVisitor: LiveData<String> = _localOrVisitor
+    // Lista de jugadores
     private val _players: MutableLiveData<List<PlayerEntity>> = MutableLiveData(listOf())
     val players: LiveData<List<PlayerEntity>> = _players
     private val _playersSelected: MutableLiveData<List<String>> = MutableLiveData(
@@ -92,12 +109,22 @@ class NewMatchScreenViewModel(
         else _localOrVisitor.value = "LOCAL"
     }
 
-    fun changeLocalScore(newScore: String) {
-        _localScore.value = if (newScore == "") 0 else newScore.toInt()
+    fun changeLocalScore(newScore: String, q: Int) {
+        when (q) {
+            1 -> _localScoreQ1.value = if (newScore == "") 0 else newScore.toInt()
+            2 -> _localScoreQ2.value = if (newScore == "") 0 else newScore.toInt()
+            3 -> _localScoreQ3.value = if (newScore == "") 0 else newScore.toInt()
+            4 -> _localScoreQ4.value = if (newScore == "") 0 else newScore.toInt()
+        }
     }
 
-    fun changeVisitorScore(newScore: String) {
-        _visitorScore.value = if (newScore == "") 0 else newScore.toInt()
+    fun changeVisitorScore(newScore: String, q: Int) {
+        when (q) {
+            1 -> _visitorScoreQ1.value = if (newScore == "") 0 else newScore.toInt()
+            2 -> _visitorScoreQ2.value = if (newScore == "") 0 else newScore.toInt()
+            3 -> _visitorScoreQ3.value = if (newScore == "") 0 else newScore.toInt()
+            4 -> _visitorScoreQ4.value = if (newScore == "") 0 else newScore.toInt()
+        }
     }
 
     fun changeDropdownExpanded() {
@@ -126,10 +153,16 @@ class NewMatchScreenViewModel(
         val playerLists = _courier.value?.getPlayers()
         viewModelScope.launch {
             if(teamId != null && _date.value != null && ((playerLists?.size ?: 0) >= 5)) {
+                val matchScore = MatchScore(
+                    scoreQ1 = Score(_localScoreQ1.value?:0, _visitorScoreQ1.value?:0),
+                    scoreQ2 = Score(_localScoreQ2.value?:0, _visitorScoreQ2.value?:0),
+                    scoreQ3 = Score(_localScoreQ3.value?:0, _visitorScoreQ3.value?:0),
+                    scoreQ4 = Score(_localScoreQ4.value?:0, _visitorScoreQ4.value?:0)
+                )
                 val existMatch = matchVM.searchMatch(myTeam.teamId, teamId, _date.value!!)
                 if (existMatch != null) {
                     // Update the match
-                    existMatch.score = Score(_localScore.value?:0,_visitorScore.value?:0)
+                    existMatch.score = matchScore
                     matchVM.update(existMatch)
                 }
                 else {
@@ -138,9 +171,22 @@ class NewMatchScreenViewModel(
                         localTeamId = myTeam.teamId,
                         visitorTeamId = teamId,
                         date = _date.value!!,
-                        score = Score(_localScore.value?:0,_visitorScore.value?:0)
+                        score = matchScore
                     )
                     matchVM.insertMatch(match)
+                    // Save team stats
+                    val teamStats = teamStatsVM.getByTeamId(session.getTeamId())
+                    teamStats.matchPlayed += 1
+                    if (_localOrVisitor.value == "LOCAL" &&
+                        matchScore.getLocalScore() > matchScore.getVisitorScore()
+                    ) {
+                        teamStats.wins += 1
+                    }
+                    else if (_localOrVisitor.value == "VISITANTE" &&
+                        matchScore.getLocalScore() < matchScore.getVisitorScore()
+                    ) {
+                        teamStats.wins += 1
+                    }
                     // Save players and his stats
                     _courier.value?.getStats()?.forEach { player ->
                         val matchId = matchVM.searchEqualMatch(
@@ -160,6 +206,11 @@ class NewMatchScreenViewModel(
                                 player.id,
                                 matchStatsVM.playerMatchStats(player.id)
                             )
+                            teamStats.points += player.shots.getPoints()
+                            teamStats.fouls += player.faults.getTotal()
+                            teamStats.rebounds += player.rebounds.getTotal()
+                            teamStats.turnovers += player.losts
+                            teamStatsVM.update(teamStats)
                         }
                     }
                 }

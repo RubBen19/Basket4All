@@ -2,6 +2,10 @@ package com.example.basket4all.common.classes
 
 class Score(private var local: Int, private var visitor: Int) {
 
+    fun getTotal(): String {
+        return "$local - $visitor"
+    }
+
     fun getLocalScore(): Int {
         return this.local
     }

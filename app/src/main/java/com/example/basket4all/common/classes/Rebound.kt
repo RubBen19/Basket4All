@@ -17,6 +17,10 @@ class Rebound {
         return defRebound + ofRebound
     }
 
+    fun getTotal(): Int {
+        return defRebound + ofRebound
+    }
+
     /*** SETTERS ***/
     fun setDefRebound(value: Int) {
         defRebound = value

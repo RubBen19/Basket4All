@@ -17,7 +17,7 @@ data class TeamEntity(
     @ColumnInfo(name = "Club")
     val clubId: Int,
     @ColumnInfo(name = "Logo")
-    val picture: String = "",
+    val picture: Int = R.drawable.logo_default,
     @ColumnInfo(name = "Name")
     val name: String,
     @ColumnInfo(name = "Category")

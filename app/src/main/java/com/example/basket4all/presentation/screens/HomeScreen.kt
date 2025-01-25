@@ -87,7 +87,7 @@ fun HomeScreen (
         ) {
             //Logo del equipo para el fondo
             Image(
-                painter = painterResource(id = R.drawable.logo_default),
+                painter = painterResource(id = screenUiState.teamLogo),
                 contentDescription = "Team picture",
                 modifier = Modifier
                     .size(400.dp)

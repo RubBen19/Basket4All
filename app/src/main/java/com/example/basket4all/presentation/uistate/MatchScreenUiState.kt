@@ -1,16 +1,22 @@
+package com.example.basket4all.presentation.uistate
+
+import com.example.basket4all.data.local.entities.PlayerEntity
+
 data class MatchScreenUiState(
   // Marcador final y fecha
-  val localPoints: Int = 0,
-  val visitorPoints: Int = 0,
-  val date: String = "",
-  // Puntos marcados por el equipo local en cada cuarto
-  val localPointsQ1: Int = 0,
-  val localPointsQ2: Int = 0,
-  val localPointsQ3: Int = 0,
-  val localPointsQ4: Int = 0,
-  // Puntos marcados por el equipo visitante en cada cuarto
-  val visitorPointsQ1: Int = 0,
-  val visitorPointsQ2: Int = 0,
-  val visitorPointsQ3: Int = 0,
-  val visitorPointsQ4: Int = 0,
+  val score: String = "0-0",
+  val date: String = "Sin fecha",
+  // Puntos marcados en cada cuarto
+  val scoreQ1: String = "0-0",
+  val scoreQ2: String = "0-0",
+  val scoreQ3: String = "0-0",
+  val scoreQ4: String = "0-0",
+  // Premios individuales
+  val maxPP: PlayerEntity? = null,
+  val maxAP: PlayerEntity? = null,
+  val maxRP: PlayerEntity? = null,
+  val shooterP: PlayerEntity? = null,
+  val maxSP: PlayerEntity? = null,
+  // Flag de carga
+  val loading: Boolean = false
 )

@@ -8,7 +8,6 @@ import com.example.basket4all.data.local.daos.PlayerStatsDao
 import com.example.basket4all.data.local.entities.MatchStats
 import com.example.basket4all.data.local.entities.PlayerStats
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
 
 class PlayerStatsViewModel(private val playerStatsDao: PlayerStatsDao): ViewModel() {
 
@@ -41,7 +40,7 @@ class PlayerStatsViewModel(private val playerStatsDao: PlayerStatsDao): ViewMode
             globalStats.block.setOutBlock(
                 globalStats.block.getOutBlock() + stats.block.getOutBlock()
             )
-            globalStats.games.inc()
+            globalStats.games += 1
             globalStats.lastPass.setAssist(
                 globalStats.lastPass.getAssist() + stats.lastPass.getAssist()
             )

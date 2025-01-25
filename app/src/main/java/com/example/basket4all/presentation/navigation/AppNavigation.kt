@@ -22,7 +22,6 @@ import com.example.basket4all.presentation.screens.AddPlayerStatsScreen
 import com.example.basket4all.presentation.screens.CalendarScreen
 import com.example.basket4all.presentation.screens.CoachModeScreen
 import com.example.basket4all.presentation.screens.EditUserScreen
-import com.example.basket4all.presentation.screens.ExerciseScreen
 import com.example.basket4all.presentation.screens.HomeScreen
 import com.example.basket4all.presentation.screens.LogScreen
 import com.example.basket4all.presentation.screens.MatchesScreen
@@ -51,6 +50,7 @@ import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModelFacto
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.db.TeamViewModelFactory
 import com.example.basket4all.board_tool.BoardScreen
+import com.example.basket4all.presentation.screens.ClassificationScreen
 import com.example.basket4all.presentation.screens.MatchScreen
 import com.example.basket4all.presentation.screens.MatchStatsScreen
 import com.example.basket4all.presentation.screens.MiLigueScreen
@@ -172,11 +172,11 @@ fun AppNavigation() {
         ) {
             navIsVisible = true
             val teamId = it.arguments?.getInt("id") ?: sessionManager.getTeamId()
-            TeamStatsScreen(navController, teamStatsViewModel, teamId)
+            TeamStatsScreen(navController, teamStatsViewModel, teamsViewModel, teamId)
         }
-        composable(route = AppScreens.ExerciseScreen.route) {
+        composable(route = AppScreens.ClassificationScreen.route) {
             navIsVisible = true
-            ExerciseScreen(navController)
+            ClassificationScreen()
         }
         composable(route = AppScreens.TacticsScreen.route) {
             navIsVisible = true
@@ -191,7 +191,7 @@ fun AppNavigation() {
             CoachModeScreen(navController)
         }
         composable(route=AppScreens.NewMatchScreen.route) {
-            navIsVisible = true
+            navIsVisible = false
             NewMatchScreen(
                 navController,
                 teamsViewModel,
@@ -224,7 +224,7 @@ fun AppNavigation() {
         /* Pantalla de estadísticas de un jugador */
         composable(route = AppScreens.PlayerStatsScreen.route) {
             navIsVisible = false
-            PlayerStatsScreen(matchStatsViewModel, playerStatsViewModel, 1, navController)
+            PlayerStatsScreen(matchStatsViewModel, playerStatsViewModel, matchesViewModel, 1, navController)
         }
 
         /* Pantalla de recuèración de contraseña */

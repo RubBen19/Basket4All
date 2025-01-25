@@ -28,12 +28,6 @@ import com.example.basket4all.R
 import com.example.basket4all.data.local.entities.TeamStats
 import com.example.basket4all.ui.theme.Basket4allTheme
 import kotlin.math.roundToInt
-import kotlin.math.roundToLong
-
-@Composable
-fun ExerciseScreen(navController: NavController) {
-    ClassificationScreen()
-}
 
 @Composable
 fun ClassificationScreen() {
@@ -78,6 +72,15 @@ fun ClassificationScreen() {
                 TeamStats(teamId = 6, matchPlayed = 6, wins = 1, points = 265, fouls = 25, turnovers = 18, rebounds = 30),
                 TeamStats(teamId = 7, matchPlayed = 6, wins = 0, points = 160, fouls = 28, turnovers = 20, rebounds = 28)
             )
+            val images = listOf(
+                R.drawable.logo1,
+                R.drawable.logo2,
+                R.drawable.logo3,
+                R.drawable.logo4,
+                R.drawable.logo5,
+                R.drawable.tigers_cb_removebg_preview__1_,
+                R.drawable.logo_default
+            )
             LazyColumn {
                 items(teamList.size) { place ->
                     val team = teamList[place]
@@ -96,7 +99,7 @@ fun ClassificationScreen() {
                             color = MaterialTheme.colorScheme.primary
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.logo_default),
+                            painter = painterResource(id = images[place]),
                             contentDescription = "Logo",
                             modifier = Modifier.size(60.dp)
                         )

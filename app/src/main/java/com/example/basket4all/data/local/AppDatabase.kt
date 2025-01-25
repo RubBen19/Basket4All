@@ -7,6 +7,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.basket4all.R
+import com.example.basket4all.common.classes.MatchScore
 import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.enums.Categories
 import com.example.basket4all.common.enums.CoachRoles
@@ -97,12 +99,12 @@ abstract class AppDatabase : RoomDatabase() {
         private suspend fun insertInitialData() {
             // Creación de clubes
             val clubesNames: Array<String> = arrayOf(
-                "BASKET HOLOS SALESIANOS",
-                "MEJORADA 2012",
-                "SPARTAN SF C.D.E.",
-                "REFORDOMUS GRIÑON",
-                "PUREZA DE MARÍA",
-                "CB VILLA DE LEGANÉS",
+                "GREEN GOBLINS",
+                "BLUE RIVER",
+                "ORANGE STREET BASKET",
+                "RED FORCE",
+                "GWM",
+                "TIGERS",
             )
             val clubes: MutableList<ClubEntity> = mutableListOf()
             var id = 1
@@ -114,20 +116,29 @@ abstract class AppDatabase : RoomDatabase() {
 
             // Creación de equipos (2ª Autonómica ORO)
             val teamsNames: Array<String> = arrayOf(
-                "CB VILLA DE LEGANÉS",
-                "BASKET HOLOS SALESIANOS",
-                "MEJORADA 2012",
-                "SPARTAN SF C.D.E.",
-                "REFORDOMUS GRIÑON",
-                "PUREZA DE MARÍA"
+                "RED FORCE CB",
+                "GREEN GOBLINS CB",
+                "BLUE RIVER CB",
+                "ORANGE STREET BASKET CB",
+                "GWM CB",
+                "TIGERS CB",
             )
             val teams: MutableList<TeamEntity> = mutableListOf()
+            val logos: List<Int> = listOf(
+                R.drawable.logo2,
+                R.drawable.logo3,
+                R.drawable.logo5,
+                R.drawable.logo4,
+                R.drawable.logo1,
+                R.drawable.tigers_cb_removebg_preview__1_
+            )
             id = 1
             for (name in teamsNames) {
                 teams.add(
                     TeamEntity(
                         clubId = id,
                         teamId = id,
+                        picture = logos[id - 1],
                         name =  name,
                         category = Categories.SENIOR,
                         league = "2ª Autonómica ORO"
@@ -143,7 +154,12 @@ abstract class AppDatabase : RoomDatabase() {
                 6,
                 1,
                 LocalDate.of(2023, 10, 8),
-                Score(67, 47)
+                MatchScore(
+                    Score(17, 17),
+                    Score(10, 7),
+                    Score(22, 12),
+                    Score(18, 9)
+                )
             )
             matches.add(match1)
 
@@ -152,7 +168,12 @@ abstract class AppDatabase : RoomDatabase() {
                 1,
                 5,
                 LocalDate.of(2023, 10, 15),
-                Score(68, 65)
+                MatchScore(
+                    Score(12, 15),
+                    Score(20, 17),
+                    Score(12, 10),
+                    Score(24, 23)
+                )
             )
             matches.add(match2)
 
@@ -161,7 +182,12 @@ abstract class AppDatabase : RoomDatabase() {
                 4,
                 1,
                 LocalDate.of(2023, 10, 22),
-                Score(85, 80)
+                MatchScore(
+                    Score(25, 27),
+                    Score(20, 13),
+                    Score(20, 12),
+                    Score(20, 28)
+                )
             )
             matches.add(match3)
 
@@ -170,7 +196,12 @@ abstract class AppDatabase : RoomDatabase() {
                 1,
                 3,
                 LocalDate.of(2023, 10, 29),
-                Score(48, 65)
+                MatchScore(
+                    Score(17, 15),
+                    Score(10, 15),
+                    Score(13, 20),
+                    Score(8, 15)
+                )
             )
             matches.add(match4)
 
@@ -179,7 +210,12 @@ abstract class AppDatabase : RoomDatabase() {
                 5,
                 4,
                 LocalDate.of(2023, 10, 29),
-                Score(51, 73)
+                MatchScore(
+                    Score(11, 17),
+                    Score(10, 23),
+                    Score(20, 16),
+                    Score(10, 17)
+                )
             )
             matches.add(match5)
 
@@ -188,10 +224,16 @@ abstract class AppDatabase : RoomDatabase() {
                 3,
                 5,
                 LocalDate.of(2023, 11, 5),
-                Score(68, 58)
+                MatchScore(
+                    Score(17, 14),
+                    Score(17, 20),
+                    Score(15, 12),
+                    Score(19, 12)
+                )
             )
             matches.add(match6)
 
+            /*
             val match7 = MatchEntity(
                 7,
                 6,
@@ -245,6 +287,7 @@ abstract class AppDatabase : RoomDatabase() {
                 Score(63, 73)
             )
             matches.add(match12)
+             */
 
             // Some players insertion
             val user1 = User(
@@ -257,38 +300,38 @@ abstract class AppDatabase : RoomDatabase() {
             )
 
             val user2 = User(
-                email = "ismael@email.com",
+                email = "player1@email.com",
                 password = "password",
-                name = "Ismael",
-                surname1 = "Navarro",
-                surname2 = "Macias",
+                name = "Jugador",
+                surname1 = "Primero",
+                surname2 = "Uno",
                 birthdate = LocalDate.of(2000, 1, 1)
             )
 
             val user3 = User(
-                email = "samuel@gmail.com",
+                email = "player2@gmail.com",
                 password = "password",
-                name = "Samuel",
-                surname1 = "Gordillo",
-                surname2 = "Perez",
+                name = "Player",
+                surname1 = "Segundo",
+                surname2 = "dos",
                 birthdate = LocalDate.of(2000, 1, 1)
             )
 
             val user4 = User(
-                email = "david@email.com",
+                email = "player3@email.com",
                 password = "password",
-                name = "David",
-                surname1 = "Garcia",
-                surname2 = "Mayordomo",
+                name = "JP",
+                surname1 = "Tercero",
+                surname2 = "Tres",
                 birthdate = LocalDate.of(2000, 1, 1)
             )
 
             val user5 = User(
-                email = "gonza@email.com",
+                email = "player4@email.com",
                 password = "password",
-                name = "Gonzalo",
-                surname1 = "Crespo",
-                surname2 = "Dominguez",
+                name = "PJ",
+                surname1 = "Cuarto",
+                surname2 = "Cuatro",
                 birthdate = LocalDate.of(2000, 1, 1)
             )
             // Agrupación en listas de los distintos elementos
@@ -298,7 +341,7 @@ abstract class AppDatabase : RoomDatabase() {
             insertClubs(clubes)
             insertTeams(teams)
             // Insercción de partidos
-            insertMatches(matches)
+            //insertMatches(matches)
             // Insercción de los jugadores y entrenadores del villa de leganés
             insertPlayers(players, teams[0])
             insertCoaches(coaches, teams[0])

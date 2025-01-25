@@ -43,6 +43,6 @@ data class PlayerStatsUiScreen(
   // Lista de partidos
   val matchesPlayed: List<MatchStats> = listOf(),
   // Flag
-  val loading: Boolean = false,
+  val loading: Boolean = true,
 )
   

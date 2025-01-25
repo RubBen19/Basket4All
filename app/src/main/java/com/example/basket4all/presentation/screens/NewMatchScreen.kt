@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -98,6 +99,61 @@ fun NewMatchScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Título de la screen
+                item { Title() }
+                //Seleccionar jugadores (Pop-Up)
+                item { if (show) PlayerSelectionPopUp(navController, viewModel) }
+                //Seleccionar equipo rival
+                item { RivalSelection(viewModel) }
+                // Selector de fecha para el partido
+                item { DateField(viewModel) }
+                //Marcador
+                item { ScoreInput(viewModel) }
+                //Seleccionar si se ha sido local o visitante
+                item { LocarOrVisitor(viewModel) }
+                //Botón para seleccionar los jugadores
+                item {
+                    Button(
+                        onClick = { viewModel.changePlayerSelectionShow() },
+                        shape = RoundedCornerShape(8),
+                        modifier = Modifier
+                            .defaultMinSize(minWidth = 220.dp, minHeight = 70.dp)
+                            .padding(top = 28.dp)
+                    ) {
+                        Text(
+                            text = "Añadir jugadores",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+                item { //Lista de jugadores convocados
+                    Text(
+                        text = "Jugadores convocados",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(top = 28.dp)
+                    )
+                }
+                item {
+                    Column {
+                        playerSelected.forEach { playerName ->
+                            Text(
+                                text = playerName,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(4.dp)
+                            )
+                        }
+                    }
+                }
+            }
             //Botón para añadir el partido
             IconButton(
                 onClick = {
@@ -106,7 +162,7 @@ fun NewMatchScreen(
                 },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = 56.dp, end = 8.dp)
+                    .padding(bottom = 12.dp, end = 4.dp)
                     .size(60.dp)
                     .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
             ) {
@@ -116,56 +172,6 @@ fun NewMatchScreen(
                     tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(60.dp)
                 )
-            }
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Título de la screen
-                Title()
-                //Seleccionar jugadores (Pop-Up)
-                if (show) PlayerSelectionPopUp(navController, viewModel)
-                //Seleccionar equipo rival
-                RivalSelection(viewModel)
-                // Selector de fecha para el partido
-                DateField(viewModel)
-                //Marcador
-                ScoreInput(viewModel)
-                //Seleccionar si se ha sido local o visitante
-                LocarOrVisitor(viewModel)
-                //Botón para seleccionar los jugadores
-                Button(
-                    onClick = { viewModel.changePlayerSelectionShow() },
-                    shape = RoundedCornerShape(8),
-                    modifier = Modifier
-                        .defaultMinSize(minWidth = 220.dp, minHeight = 70.dp)
-                        .padding(top = 28.dp)
-                ) {
-                    Text(
-                        text = "Añadir jugadores",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        fontSize = 20.sp
-                    )
-                }
-                //Lista de jugadores convocados
-                Text(
-                    text = "Jugadores convocados",
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(top = 28.dp)
-                )
-                LazyColumn {
-                    items(playerSelected) { playerName ->
-                        Text(
-                            text = playerName,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontSize = 16.sp,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                    }
-                }
             }
         }
     }
@@ -255,11 +261,17 @@ private fun LocarOrVisitor(viewModel: NewMatchScreenViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScoreInput(viewModel: NewMatchScreenViewModel) {
-    val localScore by viewModel.localScore.observeAsState()
-    val visitorScore by viewModel.visitorScore.observeAsState()
+    val localScoreQ1 by viewModel.localScoreQ1.observeAsState()
+    val visitorScoreQ1 by viewModel.visitorScoreQ1.observeAsState()
+    val localScoreQ2 by viewModel.localScoreQ2.observeAsState()
+    val visitorScoreQ2 by viewModel.visitorScoreQ2.observeAsState()
+    val localScoreQ3 by viewModel.localScoreQ3.observeAsState()
+    val visitorScoreQ3 by viewModel.visitorScoreQ3.observeAsState()
+    val localScoreQ4 by viewModel.localScoreQ4.observeAsState()
+    val visitorScoreQ4 by viewModel.visitorScoreQ4.observeAsState()
 
     Text(
-        text = "Marcador",
+        text = "Marcador por cuartos",
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground,
         fontSize = 20.sp,
@@ -280,8 +292,41 @@ private fun ScoreInput(viewModel: NewMatchScreenViewModel) {
                 modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
             )
             OutlinedTextField(
-                value = localScore.toString(),
-                onValueChange = { viewModel.changeLocalScore(it) },
+                value = localScoreQ1.toString(),
+                onValueChange = { viewModel.changeLocalScore(it, 1) },
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Done,
+                ),
+                modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 50.dp)
+            )
+            OutlinedTextField(
+                value = localScoreQ2.toString(),
+                onValueChange = { viewModel.changeLocalScore(it, 2) },
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Done,
+                ),
+                modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 50.dp)
+            )
+            OutlinedTextField(
+                value = localScoreQ3.toString(),
+                onValueChange = { viewModel.changeLocalScore(it, 3) },
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Done,
+                ),
+                modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 50.dp)
+            )
+            OutlinedTextField(
+                value = localScoreQ4.toString(),
+                onValueChange = { viewModel.changeLocalScore(it, 4) },
                 textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(
@@ -303,8 +348,41 @@ private fun ScoreInput(viewModel: NewMatchScreenViewModel) {
                 modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
             )
             OutlinedTextField(
-                value = visitorScore.toString(),
-                onValueChange = { viewModel.changeVisitorScore(it) },
+                value = visitorScoreQ1.toString(),
+                onValueChange = { viewModel.changeVisitorScore(it, 1) },
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Done,
+                ),
+                modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 50.dp)
+            )
+            OutlinedTextField(
+                value = visitorScoreQ2.toString(),
+                onValueChange = { viewModel.changeVisitorScore(it, 2) },
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Done,
+                ),
+                modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 50.dp)
+            )
+            OutlinedTextField(
+                value = visitorScoreQ3.toString(),
+                onValueChange = { viewModel.changeVisitorScore(it, 3) },
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Done,
+                ),
+                modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 50.dp)
+            )
+            OutlinedTextField(
+                value = visitorScoreQ4.toString(),
+                onValueChange = { viewModel.changeVisitorScore(it, 4) },
                 textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(

@@ -10,5 +10,5 @@ class PlayerStatsClass {
     var losts: Int = 0
     var steals: Int = 0
     var minutes: Double = 0.0
-    val games: Int = 0
+    var games: Int = 0
 }

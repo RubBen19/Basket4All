@@ -27,21 +27,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.basket4all.R
 import com.example.basket4all.common.elements.LoadScreen
 import com.example.basket4all.common.elements.TeamLogoChildScreens
-import com.example.basket4all.data.local.entities.PlayerStats
 import com.example.basket4all.data.local.entities.TeamStats
 import com.example.basket4all.presentation.navigation.AppScreens
 import com.example.basket4all.presentation.viewmodels.db.TeamStatsViewModel
+import com.example.basket4all.presentation.viewmodels.db.TeamViewModel
 import com.example.basket4all.presentation.viewmodels.screens.TeamStatsScreenViewModel
 import com.example.basket4all.presentation.viewmodels.screens.TeamStatsScreenViewModelFactory
 
 @Composable
 fun TeamStatsScreen(
-    navController: NavHostController, teamStatsViewModel: TeamStatsViewModel, teamId: Int
+    navController: NavHostController,
+    teamStatsViewModel: TeamStatsViewModel,
+    teamsViewModel: TeamViewModel,
+    teamId: Int
 ) {
     val teamStatsScreenViewModel: TeamStatsScreenViewModel = viewModel(
-        factory = TeamStatsScreenViewModelFactory(teamStatsViewModel, teamId)
+        factory = TeamStatsScreenViewModelFactory(teamStatsViewModel, teamsViewModel, teamId)
     )
     val loading by teamStatsScreenViewModel.loading.observeAsState(false)
 
@@ -50,6 +54,7 @@ fun TeamStatsScreen(
     }
     else {
         val stats by teamStatsScreenViewModel.stats.observeAsState()
+        val image by teamStatsScreenViewModel.image.observeAsState(R.drawable.logo_default)
         Log.d("TSS", stats?.teamId.toString())
         //Fondo
         Box(
@@ -64,13 +69,13 @@ fun TeamStatsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 //Escudo equipo
-                TeamLogoChildScreens("Estadísticas", "Globales")
+                TeamLogoChildScreens(image,"Estadísticas", "Globales")
 
                 //Card de estadisticas
                 StatsCard(stats)
 
-                //Botones inferiores
-                BottomsButtons(navController, "Partidos", "Advanced Stats")
+                //Boton inferior de partido
+                BottomsButtons(navController, "Partidos")
             }
         }
     }
@@ -222,66 +227,32 @@ private fun StatsCard(stats: TeamStats?) {
 }
 
 @Composable
-private fun BottomsButtons(navController: NavHostController, text1: String, text2: String) {
-    Row(
+private fun BottomsButtons(navController: NavHostController, text1: String) {
+    //Botón para ver los partidos
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(top = 12.dp)
+            .fillMaxWidth(0.5f)
+            .fillMaxHeight(0.25f)
+            .border(
+                width = 2.dp,
+                brush = Brush.verticalGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.onBackground,
+                        MaterialTheme.colorScheme.primary
+                    )
+                ),
+                shape = RectangleShape
+            )
+            .clickable { navController.navigate(AppScreens.MatchesScreen.route) },
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //Botón para ver los partidos
-        Column(
-            modifier = Modifier
-                .padding(end = 4.dp)
-                .fillMaxWidth(0.5f)
-                .fillMaxHeight(0.25f)
-                .border(
-                    width = 2.dp,
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.onBackground,
-                            MaterialTheme.colorScheme.primary
-                        )
-                    ),
-                    shape = RectangleShape
-                )
-                .clickable { navController.navigate(AppScreens.MatchesScreen.route) },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = text1,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 20.sp
-            )
-        }
-        //Botón estadísticas avanzadas
-        Column(
-            modifier = Modifier
-                .padding(start = 4.dp)
-                .fillMaxWidth()
-                .fillMaxHeight(0.25f)
-                .border(
-                    width = 2.dp,
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.onBackground
-                        )
-                    ),
-                    shape = RectangleShape
-                )
-                .clickable { },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = text2,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 20.sp
-            )
-        }
+        Text(
+            text = text1,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 20.sp
+        )
     }
 }

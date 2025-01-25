@@ -1,6 +1,7 @@
 package com.example.basket4all.data.local
 
 import androidx.room.TypeConverter
+import com.example.basket4all.common.classes.MatchScore
 import com.example.basket4all.common.classes.PlayerStatsClass
 import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.enums.CoachRoles
@@ -69,6 +70,15 @@ class Converters {
 
     @TypeConverter
     fun toJsonFromScore (score: Score): String {
+        return gson.toJson(score)
+    }
+
+    @TypeConverter
+    fun fromJsonToMatchScore (value: String?): MatchScore {
+        return gson.fromJson(value, object : TypeToken<MatchScore>() {}.type) ?: MatchScore()
+    }
+    @TypeConverter
+    fun toJsonFromMatchScore (score: MatchScore): String {
         return gson.toJson(score)
     }
 

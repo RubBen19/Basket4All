@@ -124,6 +124,7 @@ fun ProfileScreen(
                     //Card del equipo
                     TeamCard(
                         teamName = screenUiState.team?.name ?: "",
+                        teamImage = screenUiState.team?.picture ?: R.drawable.logo_default,
                         league = screenUiState.team?.league ?: "",
                         category = screenUiState.team?.category?.name ?: "",
                         clickable = {
@@ -275,7 +276,7 @@ private fun Name(name: String, surname: String, number: String) {
 
 // Función para representar la clickable card del equipo al que pertenece junto a información básica
 @Composable
-private fun TeamCard(teamName: String, league: String, category: String, clickable: ()->Unit = {}) {
+private fun TeamCard(teamName: String, teamImage:Int, league: String, category: String, clickable: ()->Unit = {}) {
     Column(
         modifier = Modifier
             .border(
@@ -295,7 +296,7 @@ private fun TeamCard(teamName: String, league: String, category: String, clickab
     ) {
         //Logo del equipo
         Image(
-            painter = painterResource(id = R.drawable.tigers_cb_removebg_preview__1_),
+            painter = painterResource(id = teamImage),
             contentDescription = "Team picture",
             modifier = Modifier
                 .clip(CircleShape)
@@ -536,22 +537,18 @@ private fun CoachStatsCard() {
         Column (
             modifier = Modifier.padding(end = 32.dp)
         ) {
-
-            //Puntos por partido
             Text(
                 text = "4",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = fontSize,
             )
-            //Minutos por partido
             Text(
                 text = "1",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = fontSize,
             )
-            //Minutos por partido
             Text(
                 text = "75%",
                 fontWeight = FontWeight.Bold,

@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.example.basket4all.common.classes.MatchScore
 import com.example.basket4all.common.classes.Score
 import java.time.LocalDate
 
@@ -18,5 +19,5 @@ data class MatchEntity(
     @ColumnInfo("Date")
     val date: LocalDate,
     @ColumnInfo("Score")
-    var score: Score
+    var score: MatchScore
 )

@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.basket4all.R
+import com.example.basket4all.common.classes.MatchScore
 import com.example.basket4all.common.classes.Score
 import com.example.basket4all.common.elements.MatchButton
 import com.example.basket4all.common.elements.TeamLogoChildScreens
@@ -41,15 +43,15 @@ fun MatchesScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Logo equipo
-            TeamLogoChildScreens("Partidos", "Jugados")
+            TeamLogoChildScreens(R.drawable.logo2,"Partidos", "Jugados")
             // Lista de partidos jugados
             MatchesPlayedList()
         }
     }
 }
 
-val team1 = TeamEntity(1,1,"", "VILLA DE LEGANES CB", Categories.SENIOR, "")
-val team2 = TeamEntity(1,1,"", "BASKET HOLOS SALESIANOS", Categories.SENIOR, "")
+val team1 = TeamEntity(1,1, name = "VILLA DE LEGANES CB", category = Categories.SENIOR, league =  "")
+val team2 = TeamEntity(1,1, name = "BASKET HOLOS SALESIANOS", category = Categories.SENIOR, league = "")
 
 val testMatches = listOf(
     MatchEntity(
@@ -57,21 +59,12 @@ val testMatches = listOf(
         6,
         1,
         LocalDate.of(2023, 10, 8),
-        Score(67, 47)
-    ),
-    MatchEntity(
-        2,
-        1,
-        5,
-        LocalDate.of(2023, 10, 15),
-        Score(68, 65)
-    ),
-    MatchEntity(
-        4,
-        1,
-        3,
-        LocalDate.of(2023, 10, 29),
-        Score(48, 65)
+        MatchScore(
+            Score(11, 17),
+            Score(10, 23),
+            Score(20, 16),
+            Score(10, 17)
+        )
     )
 )
 

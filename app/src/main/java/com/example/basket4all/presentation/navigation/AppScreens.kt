@@ -9,7 +9,7 @@ sealed class AppScreens (val route: String) {
     object ProfileScreen: AppScreens("profile_screen")
     object CalendarScreen: AppScreens("calendar_screen")
     object TeamScreen: AppScreens("team_screen")
-    object ExerciseScreen: AppScreens("exercise_screen")
+    object ClassificationScreen: AppScreens("classification_screen")
     object TacticsScreen: AppScreens("tactics_screen")
     object MatchesScreen: AppScreens("matches_screen")
     object TeamStatsScreen: AppScreens("team_stats_screen")

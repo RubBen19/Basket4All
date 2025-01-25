@@ -21,7 +21,7 @@ sealed class NavBarItems(val iconID: Int, val name: String, val route: String) {
     data object ExerciseScreen: NavBarItems(
         iconID = R.drawable.emoji_events,
         name = "Clasificación",
-        route = AppScreens.ExerciseScreen.route
+        route = AppScreens.ClassificationScreen.route
     )
     data object TacticsScreen: NavBarItems(
         iconID = R.drawable.tactic,

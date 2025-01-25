@@ -74,9 +74,9 @@ fun MiLigueScreen() {
             modifier = Modifier.padding(12.dp)
         )
         LazyColumn {
-            item { RivalCard(name = "Orange Street Basket") }
-            item { RivalCard(name = "Green Goblins") }
-            item { RivalCard(name = "CB Lions") }
+            item { RivalCard(name = "Orange Street Basket", image = R.drawable.logo4) }
+            item { RivalCard(name = "Green Goblins", image = R.drawable.logo3) }
+            item { RivalCard(name = "CB Tigers", image = R.drawable.tigers_cb_removebg_preview__1_) }
             item {
                 Row(
                     modifier = Modifier
@@ -151,7 +151,7 @@ private fun DetailsBox(name: String, category: String, division: String) {
 } 
 
 @Composable
-private fun RivalCard(name: String) {
+private fun RivalCard(name: String, image: Int) {
     Card(
         shape = RoundedCornerShape(8.dp),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground),
@@ -164,7 +164,7 @@ private fun RivalCard(name: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo_default),
+                painter = painterResource(id = image),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(100.dp)

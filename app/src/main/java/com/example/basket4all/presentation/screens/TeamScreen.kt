@@ -73,7 +73,7 @@ fun TeamScreen(navController: NavHostController, teamViewModel: TeamViewModel,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Portrait(
-                    R.drawable.tigers_cb_removebg_preview__1_,
+                    screenUiState.teamLogo,
                     screenUiState.team?.name ?: "",
                     screenUiState.team?.category?.name ?: "",
                     screenUiState.team?.league ?: ""

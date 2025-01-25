@@ -7,6 +7,11 @@ import com.example.basket4all.data.local.entities.TeamStats
 import kotlinx.coroutines.flow.first
 
 class TeamStatsViewModel(private val teamStatsDao: TeamStatsDao): ViewModel() {
+
+    suspend fun update(teamStats: TeamStats) {
+        teamStatsDao.update(teamStats)
+    }
+
     suspend fun getByTeamId(id: Int): TeamStats {
         return teamStatsDao.getByTeam(id).first()
     }

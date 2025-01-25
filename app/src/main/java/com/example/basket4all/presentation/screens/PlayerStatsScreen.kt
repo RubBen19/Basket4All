@@ -25,36 +25,39 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.basket4all.R
-import com.example.basket4all.common.classes.PlayerStatsClass
 import com.example.basket4all.common.elements.LoadScreen
+import com.example.basket4all.data.local.entities.MatchStats
 import com.example.basket4all.presentation.navigation.AppScreens
 import com.example.basket4all.presentation.viewmodels.db.MatchStatsViewModel
+import com.example.basket4all.presentation.viewmodels.db.MatchesViewModel
 import com.example.basket4all.presentation.viewmodels.db.PlayerStatsViewModel
 import com.example.basket4all.presentation.viewmodels.screens.PlayerStatsScreenViewModel
 import com.example.basket4all.presentation.viewmodels.screens.PlayerStatsScreenViewModelFactory
-import com.example.basket4all.presentation.viewmodels.screens.ProfileViewModel
-import com.example.basket4all.presentation.viewmodels.screens.ProfileViewModelFactory
 
 @Composable
 fun PlayerStatsScreen(
     matchStatsVM: MatchStatsViewModel,
     playerStatsVM: PlayerStatsViewModel,
+    matchesVM: MatchesViewModel,
     playerID: Int,
     navController: NavHostController
 ) {
+
     // ViewModel
     val viewModel: PlayerStatsScreenViewModel = viewModel (
-        factory = PlayerStatsScreenViewModelFactory(matchStatsVM, playerStatsVM, playerID)
+        factory = PlayerStatsScreenViewModelFactory(matchStatsVM, playerStatsVM, matchesVM, playerID)
     )
 
     // Estado de la pantalla
@@ -79,14 +82,14 @@ fun PlayerStatsScreen(
         val success = listOf(
             screenUiState.twoPIn.toString(),
             screenUiState.ThreePIn.toString(),
-            screenUiState.FpIn.toString(),
-            screenUiState.ZpIn.toString()
+            screenUiState.ZpIn.toString(),
+            screenUiState.FpIn.toString()
         )
         val failed = listOf(
             screenUiState.twoPOut.toString(),
             screenUiState.ThreePOut.toString(),
-            screenUiState.FpOut.toString(),
-            screenUiState.ZpOut.toString()
+            screenUiState.ZpOut.toString(),
+            screenUiState.FpOut.toString()
         )
         val total = listOf(
             screenUiState.twoPShoots.toString(),
@@ -95,10 +98,10 @@ fun PlayerStatsScreen(
             screenUiState.FpShoots.toString()
         )
         val percent = listOf(
-            screenUiState.twoPPercent.toString(),
-            screenUiState.ThreePPercent.toString(),
-            screenUiState.ZpPercent.toString(),
-            screenUiState.FpShoots.toString()
+            String.format("%.1f", screenUiState.twoPPercent),
+            String.format("%.1f", screenUiState.ThreePPercent),
+            String.format("%.1f", screenUiState.ZpPercent),
+            String.format("%.1f", screenUiState.FpPercent)
         )
         Box(
             modifier = Modifier
@@ -141,9 +144,9 @@ fun PlayerStatsScreen(
                     GeneralStatsTable(
                         title = "Pases clave",
                         stats = listOf(
-                            "Total" to "18",
-                            "Asistencias" to "9",
-                            "Probabilidad de asistencia" to "50%"
+                            "Total" to screenUiState.totalPasses.toString(),
+                            "Asistencias" to screenUiState.assist.toString(),
+                            "Probabilidad de asistencia" to screenUiState.probAssist.toString()
                         )
                     )
                 }
@@ -152,8 +155,8 @@ fun PlayerStatsScreen(
                     GeneralStatsTable(
                         title = "Rebotes",
                         stats = listOf(
-                            "Ofensivo" to "12",
-                            "Defensivo" to "20"
+                            "Ofensivo" to screenUiState.offensiveReb.toString(),
+                            "Defensivo" to screenUiState.defensiveReb.toString()
                         )
                     )
                 }
@@ -162,20 +165,19 @@ fun PlayerStatsScreen(
                     GeneralStatsTable(
                         title = "Total",
                         stats = listOf(
-                            "Faltas" to "12",
-                            "Pérdidas" to "20",
-                            "Robos" to "4",
-                            "Tapones" to "6"
+                            "Faltas" to screenUiState.fouls.toString(),
+                            "Pérdidas" to screenUiState.losts.toString(),
+                            "Robos" to screenUiState.steals.toString(),
+                            "Tapones" to screenUiState.blocks.toString()
                         )
                     )
                 }
                 // Estadisticas por partido
                 item {
                     MatchesList(
+                        viewModel = viewModel,
                         title = "Partidos jugados",
-                        matches = listOf(
-                            PlayerStatsClass()
-                        ),
+                        matches = screenUiState.matchesPlayed,
                         navController = navController
                     )
                 }
@@ -333,7 +335,7 @@ private fun AdvancedStatsTable(
 }
 
 @Composable
-private fun MatchesList(title: String, matches: List <PlayerStatsClass>, navController: NavHostController) {
+private fun MatchesList(viewModel: PlayerStatsScreenViewModel, title: String, matches: List<MatchStats>, navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -350,6 +352,7 @@ private fun MatchesList(title: String, matches: List <PlayerStatsClass>, navCont
             modifier = Modifier.padding(vertical = 8.dp)
         )
         matches.forEach { match ->
+            val matchInfo by viewModel.match.observeAsState()
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -366,7 +369,7 @@ private fun MatchesList(title: String, matches: List <PlayerStatsClass>, navCont
                         modifier = Modifier.size(100.dp)
                     )
                     Text(
-                        text = "17/10/2024",
+                        text = matchInfo?.date.toString(),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -397,21 +400,21 @@ private fun MatchesList(title: String, matches: List <PlayerStatsClass>, navCont
                 }
                 Column {
                     Text(
-                        text = match.shots.getPoints().toString(),
+                        text = match.stats.shots.getPoints().toString(),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
-                        text = match.minutes.toString(),
+                        text = match.stats.minutes.toString(),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
-                        text = match.lastPass.getAssist().toString(),
+                        text = match.stats.lastPass.getAssist().toString(),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
